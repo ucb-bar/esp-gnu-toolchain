@@ -408,7 +408,7 @@ enum reg_class {
   RCLASS_FPR,
   RCLASS_CSR,
   RCLASS_VEC_GPR,
-  RCLASS_VEC_FPR,
+  RCLASS_VEC_SPR,
   RCLASS_MAX
 };
 
@@ -537,14 +537,27 @@ validate_riscv_insn (const struct riscv_opcode *opc)
         case 'g': USE_BITS (OP_MASK_IMMNGPR, OP_SH_IMMNGPR); break;
         case 'f': USE_BITS (OP_MASK_IMMNFPR, OP_SH_IMMNFPR); break;
         case 'n': USE_BITS (OP_MASK_IMMSEGNELM, OP_SH_IMMSEGNELM); break;
+        case 'o':	
+        case 'j': USE_BITS (OP_MASK_VIMM12, OP_SH_VIMM12); break;
+        case '<': USE_BITS (OP_MASK_VSHAMTW,	OP_SH_VSHAMTW);	break;
+        case '>':	USE_BITS (OP_MASK_VSHAMT,	OP_SH_VSHAMT);	break;
+        case 'k': USE_BITS (OP_MASK_VIMM20, OP_SH_VIMM20); break;
+        case 'q':	used_bits |= ENCODE_STYPE_VIMM(-1U); break;
+        case 'm': USE_BITS (OP_MASK_VRM, OP_SH_VRM); break;
         case 'd': USE_BITS (OP_MASK_VRD, OP_SH_VRD); break;
         case 's': USE_BITS (OP_MASK_VRS, OP_SH_VRS); break;
+        case 'u': USE_BITS (OP_MASK_VRS, OP_SH_VRS); /*fallthrough*/
         case 't': USE_BITS (OP_MASK_VRT, OP_SH_VRT); break;
         case 'r': USE_BITS (OP_MASK_VRR, OP_SH_VRR); break;
-        case 'D': USE_BITS (OP_MASK_VFD, OP_SH_VFD); break;
-        case 'S': USE_BITS (OP_MASK_VFS, OP_SH_VFS); break;
-        case 'T': USE_BITS (OP_MASK_VFT, OP_SH_VFT); break;
-        case 'R': USE_BITS (OP_MASK_VFR, OP_SH_VFR); break;
+        case 'D': USE_BITS (OP_MASK_VSD, OP_SH_VSD); break;
+        case 'S': USE_BITS (OP_MASK_VSS, OP_SH_VSS); break;
+        case 'T': USE_BITS (OP_MASK_VST, OP_SH_VST); break;
+        case 'R': USE_BITS (OP_MASK_VSR, OP_SH_VSR); break;
+        case 'e': USE_BITS (OP_MASK_SVRD, OP_SH_SVRD); break;
+        case 'E': USE_BITS (OP_MASK_SVRD, OP_SH_SVRD); break;
+        case 'v': USE_BITS (OP_MASK_SVRS1, OP_SH_SVRS1); break;
+        case 'w': USE_BITS (OP_MASK_SVSS1, OP_SH_SVSS1); break;
+
 
         default:
           as_bad (_("internal: bad RISC-V opcode (unknown extension operand type `#%c'): %s %s"),
@@ -648,7 +661,7 @@ md_begin (void)
   hash_reg_names (RCLASS_FPR, riscv_fpr_names_numeric, NFPR);
   hash_reg_names (RCLASS_FPR, riscv_fpr_names_abi, NFPR);
   hash_reg_names (RCLASS_VEC_GPR, riscv_vec_gpr_names, NVGPR);
-  hash_reg_names (RCLASS_VEC_FPR, riscv_vec_fpr_names, NVFPR);
+  hash_reg_names (RCLASS_VEC_SPR, riscv_vec_spr_names, NVSPR);
 
 #define DECLARE_CSR(name, num) hash_reg_name (RCLASS_CSR, #name, num);
 #include "opcode/riscv-opc.h"
@@ -1314,6 +1327,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                            (unsigned long)imm_expr.X_add_number, max);
               continue;
             }
+            break;
 
             /* Xhwacha */
             case '#':
@@ -1322,7 +1336,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                 case 'g':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 32 )
+                  if ((unsigned long) imm_expr.X_add_number > NVGPR )
                     as_warn( _( "Improper ngpr amount (%lu)" ),
                              (unsigned long) imm_expr.X_add_number );
                   INSERT_OPERAND( IMMNGPR, *ip, imm_expr.X_add_number );
@@ -1332,8 +1346,8 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                 case 'f':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 32 )
-                    as_warn( _( "Improper nfpr amount (%lu)" ),
+                  if ((unsigned long) imm_expr.X_add_number > NVSPR )
+                    as_warn( _( "Improper nspr amount (%lu)" ),
                              (unsigned long) imm_expr.X_add_number );
                   INSERT_OPERAND( IMMNFPR, *ip, imm_expr.X_add_number );
                   imm_expr.X_op = O_absent;
@@ -1349,6 +1363,60 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   imm_expr.X_op = O_absent;
                   s = expr_end;
                   continue;
+	              case 'j': /* sign-extended immediate */
+	                imm_reloc = BFD_RELOC_RISCV_LO12_I;
+	                p = percent_op_itype;
+	                goto alu_op;
+	              case 'q': /* store displacement */
+	                p = percent_op_stype;
+	                offset_reloc = BFD_RELOC_RISCV_LO12_S;
+	                goto load_store;
+	              case 'o': /* load displacement */
+	                p = percent_op_itype;
+	                offset_reloc = BFD_RELOC_RISCV_LO12_I;
+	                goto load_store;
+                case 'm':		/* rounding mode */
+                  if (arg_lookup (&s, riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
+                    {
+                      INSERT_OPERAND (VRM, *ip, regno);
+                      continue;
+                    }
+              break;
+	              case '<':		/* shift amount, 0 - 31 */
+	                my_getExpression (&imm_expr, s);
+	                check_absolute_expr (ip, &imm_expr);
+	                if ((unsigned long) imm_expr.X_add_number > 31)
+		          as_warn (_("Improper shift amount (%lu)"),
+			           (unsigned long) imm_expr.X_add_number);
+	                INSERT_OPERAND (VSHAMTW, *ip, imm_expr.X_add_number);
+	                imm_expr.X_op = O_absent;
+	                s = expr_end;
+	                continue;
+          
+	              case '>':		/* shift amount, 0 - (XLEN-1) */
+	                my_getExpression (&imm_expr, s);
+	                check_absolute_expr (ip, &imm_expr);
+	                if ((unsigned long) imm_expr.X_add_number > (rv64 ? 63 : 31))
+		          as_warn (_("Improper shift amount (%lu)"),
+			           (unsigned long) imm_expr.X_add_number);
+	                INSERT_OPERAND (VSHAMT, *ip, imm_expr.X_add_number);
+	                imm_expr.X_op = O_absent;
+	                s = expr_end;
+	                continue;
+	              case 'k':		/* upper 20 bits */
+	                p = percent_op_utype;
+	                if (!my_getSmallExpression (&imm_expr, &imm_reloc, s, p)
+		            && imm_expr.X_op == O_constant)
+		          {
+		            if (imm_expr.X_add_number < 0
+		                || imm_expr.X_add_number >= (signed)RISCV_BIGIMM_REACH)
+		              as_bad (_("lui expression not in range 0..1048575"));
+	                
+		            imm_reloc = BFD_RELOC_RISCV_HI20;
+		            imm_expr.X_add_number <<= RISCV_IMM_BITS;
+		          }
+	                s = expr_end;
+	                continue;
                 case 'd':
                   ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
                   if ( !ok )
@@ -1360,6 +1428,13 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   if ( !ok )
                     as_bad( _( "Invalid vector register" ) );
                   INSERT_OPERAND( VRS, *ip, regno );
+                  continue;
+                case 'u':
+                  ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                  if ( !ok )
+                    as_bad( _( "Invalid vector register" ) );
+                  INSERT_OPERAND( VRS, *ip, regno );
+                  INSERT_OPERAND( VRT, *ip, regno );
                   continue;
                 case 't':
                   ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
@@ -1374,28 +1449,52 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   INSERT_OPERAND( VRR, *ip, regno );
                   continue;
                 case 'D':
-                  ok = reg_lookup( &s, RCLASS_VEC_FPR, &regno );
+                  ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                   if ( !ok )
                     as_bad( _( "Invalid vector register" ) );
-                  INSERT_OPERAND( VFD, *ip, regno );
+                  INSERT_OPERAND( VSD, *ip, regno );
                   continue;
                 case 'S':
-                  ok = reg_lookup( &s, RCLASS_VEC_FPR, &regno );
+                  ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                   if ( !ok )
                     as_bad( _( "Invalid vector register" ) );
-                  INSERT_OPERAND( VFS, *ip, regno );
+                  INSERT_OPERAND( VSS, *ip, regno );
                   continue;
                 case 'T':
-                  ok = reg_lookup( &s, RCLASS_VEC_FPR, &regno );
+                  ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                   if ( !ok )
                     as_bad( _( "Invalid vector register" ) );
-                  INSERT_OPERAND( VFT, *ip, regno );
+                  INSERT_OPERAND( VST, *ip, regno );
                   continue;
                 case 'R':
-                  ok = reg_lookup( &s, RCLASS_VEC_FPR, &regno );
+                  ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                   if ( !ok )
                     as_bad( _( "Invalid vector register" ) );
-                  INSERT_OPERAND( VFR, *ip, regno );
+                  INSERT_OPERAND( VSR, *ip, regno );
+                  continue;
+                case 'e':
+                  ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                  if ( !ok )
+                    as_bad( _( "Invalid vector register" ) );
+                  INSERT_OPERAND( SVRD, *ip, regno );
+                  continue;
+                case 'E':
+                  ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                  if ( !ok )
+                    as_bad( _( "Invalid vector register" ) );
+                  INSERT_OPERAND( SVRD, *ip, regno );
+                  continue;
+                case 'v':
+                  ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                  if ( !ok )
+                    as_bad( _( "Invalid vector register" ) );
+                  INSERT_OPERAND( SVRS1, *ip, regno );
+                  continue;
+                case 'w':
+	                ok = reg_lookup (&s, RCLASS_GPR, &regno);
+                  if ( !ok )
+                    as_bad( _( "Invalid vector register" ) );
+                  INSERT_OPERAND( SVSS1, *ip, regno );
                   continue;
                 }
               break;

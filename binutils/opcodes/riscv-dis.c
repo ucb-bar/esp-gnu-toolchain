@@ -192,22 +192,22 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
             case 'D':
               (*info->fprintf_func)
                 ( info->stream, "%s",
-                  riscv_vec_fpr_names[(l >> OP_SH_VFD) & OP_MASK_VFD]);
+                  riscv_vec_spr_names[(l >> OP_SH_VSD) & OP_MASK_VSD]);
               break;
             case 'S':
               (*info->fprintf_func)
                 ( info->stream, "%s",
-                  riscv_vec_fpr_names[(l >> OP_SH_VFS) & OP_MASK_VFS]);
+                  riscv_vec_spr_names[(l >> OP_SH_VSS) & OP_MASK_VSS]);
               break;
             case 'T':
               (*info->fprintf_func)
                 ( info->stream, "%s",
-                  riscv_vec_fpr_names[(l >> OP_SH_VFT) & OP_MASK_VFT]);
+                  riscv_vec_spr_names[(l >> OP_SH_VST) & OP_MASK_VST]);
               break;
             case 'R':
               (*info->fprintf_func)
                 ( info->stream, "%s",
-                  riscv_vec_fpr_names[(l >> OP_SH_VFR) & OP_MASK_VFR]);
+                  riscv_vec_spr_names[(l >> OP_SH_VSR) & OP_MASK_VSR]);
               break;
           }
           break;
