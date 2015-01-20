@@ -17,31 +17,28 @@
 #define _FP_NANFRAC_S		((_FP_QNANBIT_S << 1) - 1)
 #define _FP_NANFRAC_D		((_FP_QNANBIT_D << 1) - 1), -1
 #define _FP_NANFRAC_Q		((_FP_QNANBIT_Q << 1) - 1), -1, -1, -1
-#define _FP_NANSIGN_S		0
-#define _FP_NANSIGN_D		0
-#define _FP_NANSIGN_Q		0
+#define _FP_NANSIGN_S		1
+#define _FP_NANSIGN_D		1
+#define _FP_NANSIGN_Q		1
 
-#define _FP_KEEPNANFRACP 1
-/* From my experiments it seems X is chosen unless one of the
-   NaNs is sNaN,  in which case the result is NANSIGN/NANFRAC.  */
+#define _FP_KEEPNANFRACP 0
+#define _FP_QNANNEGATEDP 0
+
+/* The canonical NaN has all bits set.  */
 #define _FP_CHOOSENAN(fs, wc, R, X, Y, OP)			\
   do {								\
-    if ((_FP_FRAC_HIGH_RAW_##fs(X) |				\
-	 _FP_FRAC_HIGH_RAW_##fs(Y)) & _FP_QNANBIT_##fs)		\
-      {								\
-	R##_s = _FP_NANSIGN_##fs;				\
-        _FP_FRAC_SET_##wc(R,_FP_NANFRAC_##fs);			\
-      }								\
-    else							\
-      {								\
-	R##_s = X##_s;						\
-        _FP_FRAC_COPY_##wc(R,X);				\
-      }								\
+    R##_s = _FP_NANSIGN_##fs;					\
+    _FP_FRAC_SET_##wc(R,_FP_NANFRAC_##fs);			\
     R##_c = FP_CLS_NAN;						\
   } while (0)
 
-#define FP_EX_INVALID           (1 << 4)
-#define FP_EX_DIVZERO           (1 << 3)
-#define FP_EX_OVERFLOW          (1 << 2)
-#define FP_EX_UNDERFLOW         (1 << 1)
-#define FP_EX_INEXACT           (1 << 0)
+#define FP_RND_NEAREST		FE_TONEAREST
+#define FP_RND_ZERO		FE_TOWARDZERO
+#define FP_RND_PINF		FE_UPWARD
+#define FP_RND_MINF		FE_DOWNWARD
+
+#define FP_EX_INVALID		FE_INVALID
+#define FP_EX_OVERFLOW		FE_OVERFLOW
+#define FP_EX_UNDERFLOW		FE_UNDERFLOW
+#define FP_EX_DIVZERO		FE_DIVBYZERO
+#define FP_EX_INEXACT		FE_INEXACT

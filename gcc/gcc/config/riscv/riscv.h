@@ -257,7 +257,7 @@ along with GCC; see the file COPYING3.  If not see
    registers.  */
 #define UNITS_PER_FPVALUE			\
   (TARGET_SOFT_FLOAT_ABI ? 0			\
-   : LONG_DOUBLE_TYPE_SIZE / BITS_PER_UNIT)
+   : DOUBLE_TYPE_SIZE / BITS_PER_UNIT)
 
 /* The number of bytes in a double.  */
 #define UNITS_PER_DOUBLE (TYPE_PRECISION (double_type_node) / BITS_PER_UNIT)
@@ -270,8 +270,7 @@ along with GCC; see the file COPYING3.  If not see
 
 #define FLOAT_TYPE_SIZE 32
 #define DOUBLE_TYPE_SIZE 64
-/* XXX The ABI says long doubles are IEEE-754-2008 float128s. */
-#define LONG_DOUBLE_TYPE_SIZE 64
+#define LONG_DOUBLE_TYPE_SIZE 128
 
 #ifdef IN_LIBGCC2
 # define LIBGCC2_LONG_DOUBLE_TYPE_SIZE LONG_DOUBLE_TYPE_SIZE

@@ -2340,9 +2340,9 @@ riscv_arg_partial_bytes (cumulative_args_t cum,
    list them in FIELDS (which should have two elements).  Return 0
    otherwise.
 
-   For n32 & n64, a structure with one or two fields is returned in
-   floating-point registers as long as every field has a floating-point
-   type.  */
+   A structure with one or two fields is returned in floating-point
+   registers as long as every field has a floating-point type that is
+   natively supported by the target ISA.  */
 
 static int
 mips_fpr_return_fields (const_tree valtype, tree *fields)
@@ -2359,7 +2359,8 @@ mips_fpr_return_fields (const_tree valtype, tree *fields)
       if (TREE_CODE (field) != FIELD_DECL)
 	continue;
 
-      if (!SCALAR_FLOAT_TYPE_P (TREE_TYPE (field)))
+      if (!SCALAR_FLOAT_TYPE_P (TREE_TYPE (field))
+	  || GET_MODE_SIZE (TYPE_MODE (TREE_TYPE (field))) > UNITS_PER_FPREG)
 	return 0;
 
       if (i == 2)
@@ -2470,12 +2471,6 @@ riscv_function_value (const_tree valtype, const_tree func, enum machine_mode mod
       if (!FLOAT_TYPE_P (valtype))
 	return gen_rtx_REG (mode, GP_RETURN);
     }
-
-  /* Handle long doubles for n32 & n64.  */
-  if (mode == TFmode)
-    return mips_return_fpr_pair (mode,
-    			     DImode, 0,
-    			     DImode, GET_MODE_SIZE (mode) / 2);
 
   if (mips_return_mode_in_fpr_p (mode))
     {
