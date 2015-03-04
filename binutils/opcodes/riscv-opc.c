@@ -57,20 +57,90 @@ const char * const riscv_fpr_names_abi[32] = {
   "fs8", "fs9", "fs10", "fs11", "ft8", "ft9", "ft10", "ft11"
 };
 
-const char * const riscv_vec_gpr_names[32] =
+const char * const riscv_vec_gpr_names[256] =
 {
-  "vx0",  "vx1",  "vx2",  "vx3",  "vx4",  "vx5",  "vx6",  "vx7",
-  "vx8",  "vx9",  "vx10", "vx11", "vx12", "vx13", "vx14", "vx15",
-  "vx16", "vx17", "vx18", "vx19", "vx20", "vx21", "vx22", "vx23",
-  "vx24", "vx25", "vx26", "vx27", "vx28", "vx29", "vx30", "vx31"
+ "vx0",  "vx1",  "vx2",  "vx3",  "vx4",  "vx5",  "vx6",  "vx7",
+ "vx8",  "vx9",  "vx10",  "vx11",  "vx12",  "vx13",  "vx14",  "vx15",
+ "vx16",  "vx17",  "vx18",  "vx19",  "vx20",  "vx21",  "vx22",  "vx23",
+ "vx24",  "vx25",  "vx26",  "vx27",  "vx28",  "vx29",  "vx30",  "vx31",
+ "vx32",  "vx33",  "vx34",  "vx35",  "vx36",  "vx37",  "vx38",  "vx39",
+ "vx40",  "vx41",  "vx42",  "vx43",  "vx44",  "vx45",  "vx46",  "vx47",
+ "vx48",  "vx49",  "vx50",  "vx51",  "vx52",  "vx53",  "vx54",  "vx55",
+ "vx56",  "vx57",  "vx58",  "vx59",  "vx60",  "vx61",  "vx62",  "vx63",
+ "vx64",  "vx65",  "vx66",  "vx67",  "vx68",  "vx69",  "vx70",  "vx71",
+ "vx72",  "vx73",  "vx74",  "vx75",  "vx76",  "vx77",  "vx78",  "vx79",
+ "vx80",  "vx81",  "vx82",  "vx83",  "vx84",  "vx85",  "vx86",  "vx87",
+ "vx88",  "vx89",  "vx90",  "vx91",  "vx92",  "vx93",  "vx94",  "vx95",
+ "vx96",  "vx97",  "vx98",  "vx99", "vx100", "vx101", "vx102", "vx103",
+ "vx104", "vx105", "vx106", "vx107", "vx108", "vx109", "vx110", "vx111",
+ "vx112", "vx113", "vx114", "vx115", "vx116", "vx117", "vx118", "vx119",
+ "vx120", "vx121", "vx122", "vx123", "vx124", "vx125", "vx126", "vx127",
+ "vx128", "vx129", "vx130", "vx131", "vx132", "vx133", "vx134", "vx135",
+ "vx136", "vx137", "vx138", "vx139", "vx140", "vx141", "vx142", "vx143",
+ "vx144", "vx145", "vx146", "vx147", "vx148", "vx149", "vx150", "vx151",
+ "vx152", "vx153", "vx154", "vx155", "vx156", "vx157", "vx158", "vx159",
+ "vx160", "vx161", "vx162", "vx163", "vx164", "vx165", "vx166", "vx167",
+ "vx168", "vx169", "vx170", "vx171", "vx172", "vx173", "vx174", "vx175",
+ "vx176", "vx177", "vx178", "vx179", "vx180", "vx181", "vx182", "vx183",
+ "vx184", "vx185", "vx186", "vx187", "vx188", "vx189", "vx190", "vx191",
+ "vx192", "vx193", "vx194", "vx195", "vx196", "vx197", "vx198", "vx199",
+ "vx200", "vx201", "vx202", "vx203", "vx204", "vx205", "vx206", "vx207",
+ "vx208", "vx209", "vx210", "vx211", "vx212", "vx213", "vx214", "vx215",
+ "vx216", "vx217", "vx218", "vx219", "vx220", "vx221", "vx222", "vx223",
+ "vx224", "vx225", "vx226", "vx227", "vx228", "vx229", "vx230", "vx231",
+ "vx232", "vx233", "vx234", "vx235", "vx236", "vx237", "vx238", "vx239",
+ "vx240", "vx241", "vx242", "vx243", "vx244", "vx245", "vx246", "vx247",
+ "vx248", "vx249", "vx250", "vx251", "vx252", "vx253", "vx254", "vx255"
 };
 
-const char * const riscv_vec_fpr_names[32] =
+const char * const riscv_vec_spr_names[256] =
 {
-  "vf0",  "vf1",  "vf2",  "vf3",  "vf4",  "vf5",  "vf6",  "vf7",
-  "vf8",  "vf9",  "vf10", "vf11", "vf12", "vf13", "vf14", "vf15",
-  "vf16", "vf17", "vf18", "vf19", "vf20", "vf21", "vf22", "vf23",
-  "vf24", "vf25", "vf26", "vf27", "vf28", "vf29", "vf30", "vf31"
+ "vs0",  "vs1",  "vs2",  "vs3",  "vs4",  "vs5",  "vs6",  "vs7",
+ "vs8",  "vs9",  "vs10",  "vs11",  "vs12",  "vs13",  "vs14",  "vs15",
+ "vs16",  "vs17",  "vs18",  "vs19",  "vs20",  "vs21",  "vs22",  "vs23",
+ "vs24",  "vs25",  "vs26",  "vs27",  "vs28",  "vs29",  "vs30",  "vs31",
+ "vs32",  "vs33",  "vs34",  "vs35",  "vs36",  "vs37",  "vs38",  "vs39",
+ "vs40",  "vs41",  "vs42",  "vs43",  "vs44",  "vs45",  "vs46",  "vs47",
+ "vs48",  "vs49",  "vs50",  "vs51",  "vs52",  "vs53",  "vs54",  "vs55",
+ "vs56",  "vs57",  "vs58",  "vs59",  "vs60",  "vs61",  "vs62",  "vs63",
+ "vs64",  "vs65",  "vs66",  "vs67",  "vs68",  "vs69",  "vs70",  "vs71",
+ "vs72",  "vs73",  "vs74",  "vs75",  "vs76",  "vs77",  "vs78",  "vs79",
+ "vs80",  "vs81",  "vs82",  "vs83",  "vs84",  "vs85",  "vs86",  "vs87",
+ "vs88",  "vs89",  "vs90",  "vs91",  "vs92",  "vs93",  "vs94",  "vs95",
+ "vs96",  "vs97",  "vs98",  "vs99", "vs100", "vs101", "vs102", "vs103",
+ "vs104", "vs105", "vs106", "vs107", "vs108", "vs109", "vs110", "vs111",
+ "vs112", "vs113", "vs114", "vs115", "vs116", "vs117", "vs118", "vs119",
+ "vs120", "vs121", "vs122", "vs123", "vs124", "vs125", "vs126", "vs127",
+ "vs128", "vs129", "vs130", "vs131", "vs132", "vs133", "vs134", "vs135",
+ "vs136", "vs137", "vs138", "vs139", "vs140", "vs141", "vs142", "vs143",
+ "vs144", "vs145", "vs146", "vs147", "vs148", "vs149", "vs150", "vs151",
+ "vs152", "vs153", "vs154", "vs155", "vs156", "vs157", "vs158", "vs159",
+ "vs160", "vs161", "vs162", "vs163", "vs164", "vs165", "vs166", "vs167",
+ "vs168", "vs169", "vs170", "vs171", "vs172", "vs173", "vs174", "vs175",
+ "vs176", "vs177", "vs178", "vs179", "vs180", "vs181", "vs182", "vs183",
+ "vs184", "vs185", "vs186", "vs187", "vs188", "vs189", "vs190", "vs191",
+ "vs192", "vs193", "vs194", "vs195", "vs196", "vs197", "vs198", "vs199",
+ "vs200", "vs201", "vs202", "vs203", "vs204", "vs205", "vs206", "vs207",
+ "vs208", "vs209", "vs210", "vs211", "vs212", "vs213", "vs214", "vs215",
+ "vs216", "vs217", "vs218", "vs219", "vs220", "vs221", "vs222", "vs223",
+ "vs224", "vs225", "vs226", "vs227", "vs228", "vs229", "vs230", "vs231",
+ "vs232", "vs233", "vs234", "vs235", "vs236", "vs237", "vs238", "vs239",
+ "vs240", "vs241", "vs242", "vs243", "vs244", "vs245", "vs246", "vs247",
+ "vs248", "vs249", "vs250", "vs251", "vs252", "vs253", "vs254", "vs255"
+};
+
+const char * const riscv_vec_apr_names[32] =
+{
+  "va0",   "va1",   "va2",   "va3",   "va4",   "va5",   "va6",   "va7",
+  "va8",   "va9",   "va10",  "va11",  "va12",  "va13",  "va14",  "va15",
+  "va16",  "va17",  "va18",  "va19",  "va20",  "va21",  "va22",  "va23",
+  "va24",  "va25",  "va26",  "va27",  "va28",  "va29",  "va30",  "va31"
+};
+
+const char * const riscv_vec_ppr_names[16] =
+{
+  "vp0",   "vp1",   "vp2",   "vp3",   "vp4",   "vp5",   "vp6",   "vp7",
+  "vp8",   "vp9",   "vp10",  "vp11",  "vp12",  "vp13",  "vp14",  "vp15"
 };
 
 /* The order of overloaded instructions matters.  Label arguments and
@@ -102,6 +172,17 @@ const char * const riscv_vec_fpr_names[32] =
 #define MASK_AQ (OP_MASK_AQ << OP_SH_AQ)
 #define MASK_RL (OP_MASK_RL << OP_SH_RL)
 #define MASK_AQRL (MASK_AQ | MASK_RL)
+
+#define MASK_VRD (OP_MASK_VRD << OP_SH_VRD)
+#define MASK_VRS1 (OP_MASK_VRS << OP_SH_VRS)
+#define MASK_VRS2 ((insn_t)OP_MASK_VRT << OP_SH_VRT)
+#define MASK_VIMM ENCODE_ITYPE_VIMM(-1U)
+#define MASK_VRM ((insn_t)OP_MASK_VRM << OP_SH_VRM)
+#define MASK_VAQ ((insn_t)OP_MASK_VAQ << OP_SH_VAQ)
+#define MASK_VRL ((insn_t)OP_MASK_VRL << OP_SH_VRL)
+#define MASK_VAQRL (MASK_VAQ | MASK_VRL)
+#define MASK_VPREV (OP_MASK_VPREV << OP_SH_VPREV)
+#define MASK_VSUCC (OP_MASK_VSUCC << OP_SH_VSUCC)
 
 static int match_opcode(const struct riscv_opcode *op, insn_t insn)
 {
@@ -505,59 +586,6 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"csrrci",    "I",   "d,E,Z",  MATCH_CSRRCI, MASK_CSRRCI, match_opcode,  WR_xd|RD_xs1 },
 {"sret",      "I",   "",     MATCH_SRET, MASK_SRET, match_opcode,  0 },
 
-/* Half-precision floating-point instruction subset */
-{"flh",       "Xhwacha",   "D,o(s)",  MATCH_FLH, MASK_FLH, match_opcode, WR_fd|RD_xs1 },
-{"fsh",       "Xhwacha",   "T,q(s)",  MATCH_FSH, MASK_FSH, match_opcode, RD_xs1|RD_fs2 },
-{"fsgnj.h",   "Xhwacha",   "D,S,T",  MATCH_FSGNJ_H, MASK_FSGNJ_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fsgnjn.h",  "Xhwacha",   "D,S,T",  MATCH_FSGNJN_H, MASK_FSGNJN_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fsgnjx.h",  "Xhwacha",   "D,S,T",  MATCH_FSGNJX_H, MASK_FSGNJX_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fadd.h",    "Xhwacha",   "D,S,T",  MATCH_FADD_H | MASK_RM, MASK_FADD_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fadd.h",    "Xhwacha",   "D,S,T,m",  MATCH_FADD_H, MASK_FADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fsub.h",    "Xhwacha",   "D,S,T",  MATCH_FSUB_H | MASK_RM, MASK_FSUB_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fsub.h",    "Xhwacha",   "D,S,T,m",  MATCH_FSUB_H, MASK_FSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fmul.h",    "Xhwacha",   "D,S,T",  MATCH_FMUL_H | MASK_RM, MASK_FMUL_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fmul.h",    "Xhwacha",   "D,S,T,m",  MATCH_FMUL_H, MASK_FMUL_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fdiv.h",    "Xhwacha",   "D,S,T",  MATCH_FDIV_H | MASK_RM, MASK_FDIV_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fdiv.h",    "Xhwacha",   "D,S,T,m",  MATCH_FDIV_H, MASK_FDIV_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fsqrt.h",   "Xhwacha",   "D,S",  MATCH_FSQRT_H | MASK_RM, MASK_FSQRT_H | MASK_RM, match_opcode, WR_fd|RD_fs1 },
-{"fsqrt.h",   "Xhwacha",   "D,S,m",  MATCH_FSQRT_H, MASK_FSQRT_H, match_opcode, WR_fd|RD_fs1 },
-{"fmin.h",    "Xhwacha",   "D,S,T",  MATCH_FMIN_H, MASK_FMIN_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fmax.h",    "Xhwacha",   "D,S,T",  MATCH_FMAX_H, MASK_FMAX_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
-{"fmadd.h",   "Xhwacha",   "D,S,T,R",  MATCH_FMADD_H | MASK_RM, MASK_FMADD_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fmadd.h",   "Xhwacha",   "D,S,T,R,m",  MATCH_FMADD_H, MASK_FMADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fnmadd.h",  "Xhwacha",   "D,S,T,R",  MATCH_FNMADD_H | MASK_RM, MASK_FNMADD_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fnmadd.h",  "Xhwacha",   "D,S,T,R,m",  MATCH_FNMADD_H, MASK_FNMADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fmsub.h",   "Xhwacha",   "D,S,T,R",  MATCH_FMSUB_H | MASK_RM, MASK_FMSUB_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fmsub.h",   "Xhwacha",   "D,S,T,R,m",  MATCH_FMSUB_H, MASK_FMSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fnmsub.h",  "Xhwacha",   "D,S,T,R",  MATCH_FNMSUB_H | MASK_RM, MASK_FNMSUB_H | MASK_RM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fnmsub.h",  "Xhwacha",   "D,S,T,R,m",  MATCH_FNMSUB_H, MASK_FNMSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
-{"fcvt.s.h",  "Xhwacha",   "D,S",  MATCH_FCVT_S_H, MASK_FCVT_S_H | MASK_RM, match_opcode,  WR_fd|RD_fs1 },
-{"fcvt.h.s",  "Xhwacha",   "D,S",  MATCH_FCVT_H_S | MASK_RM, MASK_FCVT_H_S | MASK_RM, match_opcode,  WR_fd|RD_fs1 },
-{"fcvt.h.s",  "Xhwacha",   "D,S,m",  MATCH_FCVT_H_S, MASK_FCVT_H_S, match_opcode,  WR_fd|RD_fs1 },
-{"fcvt.d.h",  "Xhwacha",   "D,S",  MATCH_FCVT_D_H, MASK_FCVT_D_H | MASK_RM, match_opcode,  WR_fd|RD_fs1 },
-{"fcvt.h.d",  "Xhwacha",   "D,S",  MATCH_FCVT_H_D | MASK_RM, MASK_FCVT_H_D | MASK_RM, match_opcode,  WR_fd|RD_fs1 },
-{"fcvt.h.d",  "Xhwacha",   "D,S,m",  MATCH_FCVT_H_D, MASK_FCVT_H_D, match_opcode,  WR_fd|RD_fs1 },
-{"feq.h",     "Xhwacha",   "d,S,T",    MATCH_FEQ_H, MASK_FEQ_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
-{"flt.h",     "Xhwacha",   "d,S,T",    MATCH_FLT_H, MASK_FLT_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
-{"fle.h",     "Xhwacha",   "d,S,T",    MATCH_FLE_H, MASK_FLE_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
-{"fgt.h",     "Xhwacha",   "d,T,S",    MATCH_FLT_H, MASK_FLT_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
-{"fge.h",     "Xhwacha",   "d,T,S",    MATCH_FLE_H, MASK_FLE_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
-{"fmv.x.h",   "Xhwacha",   "d,S",  MATCH_FMV_X_H, MASK_FMV_X_H, match_opcode, WR_xd|RD_fs1 },
-{"fmv.h.x",   "Xhwacha",   "D,s",  MATCH_FMV_H_X, MASK_FMV_H_X, match_opcode, WR_fd|RD_xs1 },
-{"fcvt.w.h",  "Xhwacha",   "d,S",  MATCH_FCVT_W_H | MASK_RM, MASK_FCVT_W_H | MASK_RM, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.w.h",  "Xhwacha",   "d,S,m",  MATCH_FCVT_W_H, MASK_FCVT_W_H, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.wu.h", "Xhwacha",   "d,S",  MATCH_FCVT_WU_H | MASK_RM, MASK_FCVT_WU_H | MASK_RM, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.wu.h", "Xhwacha",   "d,S,m",  MATCH_FCVT_WU_H, MASK_FCVT_WU_H, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.h.w",  "Xhwacha",   "D,s",  MATCH_FCVT_H_W, MASK_FCVT_H_W | MASK_RM, match_opcode,  WR_fd|RD_xs1 },
-{"fcvt.h.wu", "Xhwacha",   "D,s",  MATCH_FCVT_H_WU, MASK_FCVT_H_WU | MASK_RM, match_opcode,  WR_fd|RD_xs1 },
-{"fcvt.l.h",  "Xhwacha", "d,S",  MATCH_FCVT_L_H | MASK_RM, MASK_FCVT_L_H | MASK_RM, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.l.h",  "Xhwacha", "d,S,m",  MATCH_FCVT_L_H, MASK_FCVT_L_H, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.lu.h", "Xhwacha", "d,S",  MATCH_FCVT_LU_H | MASK_RM, MASK_FCVT_LU_H | MASK_RM, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.lu.h", "Xhwacha", "d,S,m",  MATCH_FCVT_LU_H, MASK_FCVT_LU_H, match_opcode, WR_xd|RD_fs1 },
-{"fcvt.h.l",  "Xhwacha", "D,s",  MATCH_FCVT_H_L | MASK_RM, MASK_FCVT_H_L | MASK_RM, match_opcode,  WR_fd|RD_xs1 },
-{"fcvt.h.l",  "Xhwacha", "D,s,m",  MATCH_FCVT_H_L, MASK_FCVT_H_L, match_opcode,  WR_fd|RD_xs1 },
-{"fcvt.h.lu", "Xhwacha", "D,s",  MATCH_FCVT_H_LU | MASK_RM, MASK_FCVT_H_L | MASK_RM, match_opcode,  WR_fd|RD_xs1 },
-{"fcvt.h.lu", "Xhwacha", "D,s,m",  MATCH_FCVT_H_LU, MASK_FCVT_H_LU, match_opcode,  WR_fd|RD_xs1 },
 
 /* Rocket Custom Coprocessor extension */
 {"custom0",   "Xcustom", "d,s,t,^j", MATCH_CUSTOM0_RD_RS1_RS2, MASK_CUSTOM0_RD_RS1_RS2, match_opcode, 0},
@@ -585,106 +613,7 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"custom3",   "Xcustom", "^d,s,^t,^j", MATCH_CUSTOM3_RS1, MASK_CUSTOM3_RS1, match_opcode, 0},
 {"custom3",   "Xcustom", "^d,^s,^t,^j", MATCH_CUSTOM3, MASK_CUSTOM3, match_opcode, 0},
 
-/* Xhwacha extension */
-{"stop",      "Xhwacha", "", MATCH_STOP, MASK_STOP, match_opcode, 0},
-{"utidx",     "Xhwacha", "d", MATCH_UTIDX, MASK_UTIDX, match_opcode, WR_xd},
-{"movz",      "Xhwacha", "d,s,t", MATCH_MOVZ, MASK_MOVZ, match_opcode, WR_xd|RD_xs1|RD_xs2},
-{"movn",      "Xhwacha", "d,s,t", MATCH_MOVN, MASK_MOVN, match_opcode, WR_xd|RD_xs1|RD_xs2},
-{"fmovz",     "Xhwacha", "D,s,T", MATCH_FMOVZ, MASK_FMOVZ, match_opcode, WR_fd|RD_xs1|RD_fs2},
-{"fmovn",     "Xhwacha", "D,s,T", MATCH_FMOVN, MASK_FMOVN, match_opcode, WR_fd|RD_xs1|RD_fs2},
-
-/* unit stride */
-/* xloads */
-{"vld",       "Xhwacha", "#d,s", MATCH_VLD, MASK_VLD, match_opcode, 0},
-{"vlw",       "Xhwacha", "#d,s", MATCH_VLW, MASK_VLW, match_opcode, 0},
-{"vlwu",      "Xhwacha", "#d,s", MATCH_VLWU, MASK_VLWU, match_opcode, 0},
-{"vlh",       "Xhwacha", "#d,s", MATCH_VLH, MASK_VLH, match_opcode, 0},
-{"vlhu",      "Xhwacha", "#d,s", MATCH_VLHU, MASK_VLHU, match_opcode, 0},
-{"vlb",       "Xhwacha", "#d,s", MATCH_VLB, MASK_VLB, match_opcode, 0},
-{"vlbu",      "Xhwacha", "#d,s", MATCH_VLBU, MASK_VLBU, match_opcode, 0},
-/* floads */
-{"vfld",      "Xhwacha", "#D,s", MATCH_VFLD, MASK_VFLD, match_opcode, 0},
-{"vflw",      "Xhwacha", "#D,s", MATCH_VFLW, MASK_VFLW, match_opcode, 0},
-
-/* stride */
-/* xloads */
-{"vlstd",     "Xhwacha", "#d,s,t", MATCH_VLSTD, MASK_VLSTD, match_opcode, 0},
-{"vlstw",     "Xhwacha", "#d,s,t", MATCH_VLSTW, MASK_VLSTW, match_opcode, 0},
-{"vlstwu",    "Xhwacha", "#d,s,t", MATCH_VLSTWU, MASK_VLSTWU, match_opcode, 0},
-{"vlsth",     "Xhwacha", "#d,s,t", MATCH_VLSTH, MASK_VLSTH, match_opcode, 0},
-{"vlsthu",    "Xhwacha", "#d,s,t", MATCH_VLSTHU, MASK_VLSTHU, match_opcode, 0},
-{"vlstb",     "Xhwacha", "#d,s,t", MATCH_VLSTB, MASK_VLSTB, match_opcode, 0},
-{"vlstbu",    "Xhwacha", "#d,s,t", MATCH_VLSTBU, MASK_VLSTBU, match_opcode, 0},
-/* floads */
-{"vflstd",    "Xhwacha", "#D,s,t", MATCH_VFLSTD, MASK_VFLSTD, match_opcode, 0},
-{"vflstw",    "Xhwacha", "#D,s,t", MATCH_VFLSTW, MASK_VFLSTW, match_opcode, 0},
-
-/* segment */
-/* xloads */
-{"vlsegd",    "Xhwacha", "#d,s,#n", MATCH_VLSEGD, MASK_VLSEGD, match_opcode, 0},
-{"vlsegw",    "Xhwacha", "#d,s,#n", MATCH_VLSEGW, MASK_VLSEGW, match_opcode, 0},
-{"vlsegwu",   "Xhwacha", "#d,s,#n", MATCH_VLSEGWU, MASK_VLSEGWU, match_opcode, 0},
-{"vlsegh",    "Xhwacha", "#d,s,#n", MATCH_VLSEGH, MASK_VLSEGH, match_opcode, 0},
-{"vlseghu",   "Xhwacha", "#d,s,#n", MATCH_VLSEGHU, MASK_VLSEGHU, match_opcode, 0},
-{"vlsegb",    "Xhwacha", "#d,s,#n", MATCH_VLSEGB, MASK_VLSEGB, match_opcode, 0},
-{"vlsegbu",   "Xhwacha", "#d,s,#n", MATCH_VLSEGBU, MASK_VLSEGBU, match_opcode, 0},
-/* floads */
-{"vflsegd",   "Xhwacha", "#D,s,#n", MATCH_VFLSEGD, MASK_VFLSEGD, match_opcode, 0},
-{"vflsegw",   "Xhwacha", "#D,s,#n", MATCH_VFLSEGW, MASK_VFLSEGW, match_opcode, 0},
-
-/* stride segment */
-/* xloads */
-{"vlsegstd",  "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTD, MASK_VLSEGSTD, match_opcode, 0},
-{"vlsegstw",  "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTW, MASK_VLSEGSTW, match_opcode, 0},
-{"vlsegstwu", "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTWU, MASK_VLSEGSTWU, match_opcode, 0},
-{"vlsegsth",  "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTH, MASK_VLSEGSTH, match_opcode, 0},
-{"vlsegsthu", "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTHU, MASK_VLSEGSTHU, match_opcode, 0},
-{"vlsegstb",  "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTB, MASK_VLSEGSTB, match_opcode, 0},
-{"vlsegstbu", "Xhwacha", "#d,s,t,#n", MATCH_VLSEGSTBU, MASK_VLSEGSTBU, match_opcode, 0},
-/* floads */
-{"vflsegstd", "Xhwacha", "#D,s,t,#n", MATCH_VFLSEGSTD, MASK_VFLSEGSTD, match_opcode, 0},
-{"vflsegstw", "Xhwacha", "#D,s,t,#n", MATCH_VFLSEGSTW, MASK_VFLSEGSTW, match_opcode, 0},
-
-/* unit stride */
-/* xstores */
-{"vsd",       "Xhwacha", "#d,s", MATCH_VSD, MASK_VSD, match_opcode, 0},
-{"vsw",       "Xhwacha", "#d,s", MATCH_VSW, MASK_VSW, match_opcode, 0},
-{"vsh",       "Xhwacha", "#d,s", MATCH_VSH, MASK_VSH, match_opcode, 0},
-{"vsb",       "Xhwacha", "#d,s", MATCH_VSB, MASK_VSB, match_opcode, 0},
-/* fstores */
-{"vfsd",      "Xhwacha", "#D,s", MATCH_VFSD, MASK_VFSD, match_opcode, 0},
-{"vfsw",      "Xhwacha", "#D,s", MATCH_VFSW, MASK_VFSW, match_opcode, 0},
-
-/* stride */
-/* xstores */
-{"vsstd",     "Xhwacha", "#d,s,t", MATCH_VSSTD, MASK_VSSTD, match_opcode, 0},
-{"vsstw",     "Xhwacha", "#d,s,t", MATCH_VSSTW, MASK_VSSTW, match_opcode, 0},
-{"vssth",     "Xhwacha", "#d,s,t", MATCH_VSSTH, MASK_VSSTH, match_opcode, 0},
-{"vsstb",     "Xhwacha", "#d,s,t", MATCH_VSSTB, MASK_VSSTB, match_opcode, 0},
-/* fstores */
-{"vfsstd",    "Xhwacha", "#D,s,t", MATCH_VFSSTD, MASK_VFSSTD, match_opcode, 0},
-{"vfsstw",    "Xhwacha", "#D,s,t", MATCH_VFSSTW, MASK_VFSSTW, match_opcode, 0},
-
-/* segment */
-/* xstores */
-{"vssegd",    "Xhwacha", "#d,s,#n", MATCH_VSSEGD, MASK_VSSEGD, match_opcode, 0},
-{"vssegw",    "Xhwacha", "#d,s,#n", MATCH_VSSEGW, MASK_VSSEGW, match_opcode, 0},
-{"vssegh",    "Xhwacha", "#d,s,#n", MATCH_VSSEGH, MASK_VSSEGH, match_opcode, 0},
-{"vssegb",    "Xhwacha", "#d,s,#n", MATCH_VSSEGB, MASK_VSSEGB, match_opcode, 0},
-/* fstores */
-{"vfssegd",   "Xhwacha", "#D,s,#n", MATCH_VFSSEGD, MASK_VFSSEGD, match_opcode, 0},
-{"vfssegw",   "Xhwacha", "#D,s,#n", MATCH_VFSSEGW, MASK_VFSSEGW, match_opcode, 0},
-
-/* stride segment */
-/* xsegstores */
-{"vssegstd",  "Xhwacha", "#d,s,t,#n", MATCH_VSSEGSTD, MASK_VSSEGSTD, match_opcode, 0},
-{"vssegstw",  "Xhwacha", "#d,s,t,#n", MATCH_VSSEGSTW, MASK_VSSEGSTW, match_opcode, 0},
-{"vssegsth",  "Xhwacha", "#d,s,t,#n", MATCH_VSSEGSTH, MASK_VSSEGSTH, match_opcode, 0},
-{"vssegstb",  "Xhwacha", "#d,s,t,#n", MATCH_VSSEGSTB, MASK_VSSEGSTB, match_opcode, 0},
-/* fsegstores */
-{"vfssegstd", "Xhwacha", "#D,s,t,#n", MATCH_VFSSEGSTD, MASK_VFSSEGSTD, match_opcode, 0},
-{"vfssegstw", "Xhwacha", "#D,s,t,#n", MATCH_VFSSEGSTW, MASK_VFSSEGSTW, match_opcode, 0},
-
+/* Xhwacha extension ct instructions*/
 {"vsetcfg",   "Xhwacha", "s", MATCH_VSETCFG, MASK_VSETCFG | MASK_IMM, match_opcode, 0},
 {"vsetcfg",   "Xhwacha", "#g,#f", MATCH_VSETCFG, MASK_VSETCFG | MASK_RS1, match_opcode, 0},
 {"vsetcfg",   "Xhwacha", "s,#g,#f", MATCH_VSETCFG, MASK_VSETCFG, match_opcode, 0},
@@ -692,12 +621,10 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vsetvl",    "Xhwacha", "d,s", MATCH_VSETVL, MASK_VSETVL, match_opcode, 0},
 {"vgetcfg",   "Xhwacha", "d", MATCH_VGETCFG, MASK_VGETCFG, match_opcode, 0},
 {"vgetvl",    "Xhwacha", "d", MATCH_VGETVL, MASK_VGETVL, match_opcode, 0},
+{"vuncfg",    "Xhwacha", "", MATCH_VUNCFG, MASK_VUNCFG, match_opcode, 0},
 
-{"vmvv",      "Xhwacha", "#d,#s", MATCH_VMVV, MASK_VMVV, match_opcode, 0},
-{"vmsv",      "Xhwacha", "#d,s", MATCH_VMSV, MASK_VMSV, match_opcode, 0},
-{"vfmvv",     "Xhwacha", "#D,#S", MATCH_VFMVV, MASK_VFMVV, match_opcode, 0},
-{"vfmsv.d",   "Xhwacha", "#D,s", MATCH_VFMSV_D, MASK_VFMSV_D, match_opcode, 0},
-{"vfmsv.s",   "Xhwacha", "#D,s", MATCH_VFMSV_S, MASK_VFMSV_S, match_opcode, 0},
+{"vmss",      "Xhwacha", "#E,s", MATCH_VMSS, MASK_VMSS, match_opcode, 0},
+{"vmsa",      "Xhwacha", "#e,s", MATCH_VMSA, MASK_VMSA, match_opcode, 0},
 
 {"vf",        "Xhwacha", "q(s)", MATCH_VF, MASK_VF, match_opcode, 0},
 {"vf",        "Xhwacha", "A,s", 0, (int) M_VF, match_never, INSN_MACRO },
@@ -709,12 +636,482 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vxcptrestore", "Xhwacha", "s", MATCH_VXCPTRESTORE, MASK_VXCPTRESTORE, match_opcode, 0},
 {"vxcptkill",    "Xhwacha", "", MATCH_VXCPTKILL, MASK_VXCPTKILL, match_opcode, 0},
 
-{"vxcptevac",    "Xhwacha", "s", MATCH_VXCPTEVAC, MASK_VXCPTEVAC, match_opcode, 0},
-{"vxcpthold",    "Xhwacha", "", MATCH_VXCPTHOLD, MASK_VXCPTHOLD, match_opcode, 0},
-{"venqcmd",      "Xhwacha", "s,t", MATCH_VENQCMD, MASK_VENQCMD, match_opcode, 0},
-{"venqimm1",     "Xhwacha", "s,t", MATCH_VENQIMM1, MASK_VENQIMM1, match_opcode, 0},
-{"venqimm2",     "Xhwacha", "s,t", MATCH_VENQIMM2, MASK_VENQIMM2, match_opcode, 0},
-{"venqcnt",      "Xhwacha", "s,t", MATCH_VENQCNT, MASK_VENQCNT, match_opcode, 0},
+/* Xhwacha extension work thread instructions*/
+{"vstop",     "Xhwacha", "", MATCH_VSTOP, MASK_VSTOP, match_opcode, 0},
+{"vfence",    "Xhwacha", "#G,#H", MATCH_VFENCE, MASK_VFENCE, match_opcode, 0},
+{"vfence",    "Xhwacha", "",  MATCH_VFENCE | MASK_VPREV | MASK_VSUCC, MASK_VFENCE | MASK_VRD,  match_opcode,   INSN_ALIAS },
+{"veidx",     "Xhwacha", "#N,#p,#d", MATCH_VEIDX, MASK_VEIDX, match_opcode, WR_xd},
+{"vfirst",    "Xhwacha", "#N,#p,#D,#s", MATCH_VFIRST, MASK_VFIRST, match_opcode, WR_xd},
+
+/* work thread control flow instructions */
+{"vcjal",     "Xhwacha", "#N,#p,#c,#D,#k", MATCH_VCJAL, MASK_VCJAL, match_opcode, WR_xd},
+{"vcjalr",    "Xhwacha", "#N,#p,#c,#D,#S,#k", MATCH_VCJALR, MASK_VCJALR, match_opcode, WR_xd},
+
+/* scalar load upper */
+{"vlui",      "Xhwacha", "#D,#j", MATCH_VLUI, MASK_VLUI, match_opcode, WR_xd},
+{"vauipc",    "Xhwacha", "#D,#j", MATCH_VAUIPC, MASK_VAUIPC, match_opcode, WR_xd},
+
+/* vector loads */
+/* unit stride */
+/* xloads */
+{"vld",       "Xhwacha", "#N,#p,#d,#A", MATCH_VLD, MASK_VLD, match_opcode, 0},
+{"vlw",       "Xhwacha", "#N,#p,#d,#A", MATCH_VLW, MASK_VLW, match_opcode, 0},
+{"vlwu",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLWU, MASK_VLWU, match_opcode, 0},
+{"vlh",       "Xhwacha", "#N,#p,#d,#A", MATCH_VLH, MASK_VLH, match_opcode, 0},
+{"vlhu",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLHU, MASK_VLHU, match_opcode, 0},
+{"vlb",       "Xhwacha", "#N,#p,#d,#A", MATCH_VLB, MASK_VLB, match_opcode, 0},
+{"vlbu",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLBU, MASK_VLBU, match_opcode, 0},
+
+/* stride */
+/* xloads */
+{"vlstd",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTD, MASK_VLSTD, match_opcode, 0},
+{"vlstw",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTW, MASK_VLSTW, match_opcode, 0},
+{"vlstwu",    "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTWU, MASK_VLSTWU, match_opcode, 0},
+{"vlsth",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTH, MASK_VLSTH, match_opcode, 0},
+{"vlsthu",    "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTHU, MASK_VLSTHU, match_opcode, 0},
+{"vlstb",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTB, MASK_VLSTB, match_opcode, 0},
+{"vlstbu",    "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLSTBU, MASK_VLSTBU, match_opcode, 0},
+
+/* segment */
+/* xloads */
+{"vlsegd",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGD, MASK_VLSEGD, match_opcode, 0},
+{"vlsegw",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGW, MASK_VLSEGW, match_opcode, 0},
+{"vlsegwu",   "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGWU, MASK_VLSEGWU, match_opcode, 0},
+{"vlsegh",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGH, MASK_VLSEGH, match_opcode, 0},
+{"vlseghu",   "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGHU, MASK_VLSEGHU, match_opcode, 0},
+{"vlsegb",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGB, MASK_VLSEGB, match_opcode, 0},
+{"vlsegbu",   "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VLSEGBU, MASK_VLSEGBU, match_opcode, 0},
+
+/* stride segment */
+/* xloads */
+{"vlsegstd",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTD, MASK_VLSEGSTD, match_opcode, 0},
+{"vlsegstw",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTW, MASK_VLSEGSTW, match_opcode, 0},
+{"vlsegstwu", "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTWU, MASK_VLSEGSTWU, match_opcode, 0},
+{"vlsegsth",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTH, MASK_VLSEGSTH, match_opcode, 0},
+{"vlsegsthu", "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTHU, MASK_VLSEGSTHU, match_opcode, 0},
+{"vlsegstb",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTB, MASK_VLSEGSTB, match_opcode, 0},
+{"vlsegstbu", "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VLSEGSTBU, MASK_VLSEGSTBU, match_opcode, 0},
+
+/* unit stride */
+/* xstores */
+{"vsd",       "Xhwacha", "#N,#p,#d,#A", MATCH_VSD, MASK_VSD, match_opcode, 0},
+{"vsw",       "Xhwacha", "#N,#p,#d,#A", MATCH_VSW, MASK_VSW, match_opcode, 0},
+{"vsh",       "Xhwacha", "#N,#p,#d,#A", MATCH_VSH, MASK_VSH, match_opcode, 0},
+{"vsb",       "Xhwacha", "#N,#p,#d,#A", MATCH_VSB, MASK_VSB, match_opcode, 0},
+
+/* stride */
+/* xstores */
+{"vsstd",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSSTD, MASK_VSSTD, match_opcode, 0},
+{"vsstw",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSSTW, MASK_VSSTW, match_opcode, 0},
+{"vssth",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSSTH, MASK_VSSTH, match_opcode, 0},
+{"vsstb",     "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSSTB, MASK_VSSTB, match_opcode, 0},
+
+/* segment */
+/* xstores */
+{"vssegd",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VSSEGD, MASK_VSSEGD, match_opcode, 0},
+{"vssegw",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VSSEGW, MASK_VSSEGW, match_opcode, 0},
+{"vssegh",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VSSEGH, MASK_VSSEGH, match_opcode, 0},
+{"vssegb",    "Xhwacha", "#N,#p,#d,#A,#n", MATCH_VSSEGB, MASK_VSSEGB, match_opcode, 0},
+
+/* stride segment */
+/* xsegstores */
+{"vssegstd",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VSSEGSTD, MASK_VSSEGSTD, match_opcode, 0},
+{"vssegstw",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VSSEGSTW, MASK_VSSEGSTW, match_opcode, 0},
+{"vssegsth",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VSSEGSTH, MASK_VSSEGSTH, match_opcode, 0},
+{"vssegstb",  "Xhwacha", "#N,#p,#d,#A,#B,#n", MATCH_VSSEGSTB, MASK_VSSEGSTB, match_opcode, 0},
+
+/* indexed load/stores */
+/* xloads */
+{"vlxd",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXD, MASK_VLXD, match_opcode, 0},
+{"vlxw",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXW, MASK_VLXW, match_opcode, 0},
+{"vlxwu",      "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXWU,MASK_VLXWU, match_opcode, 0},
+{"vlxh",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXH, MASK_VLXH, match_opcode, 0},
+{"vlxhu",      "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXHU,MASK_VLXHU, match_opcode, 0},
+{"vlxb",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXB, MASK_VLXB, match_opcode, 0},
+{"vlxbu",      "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VLXBU,MASK_VLXBU, match_opcode, 0},
+/* xstores */
+{"vsxd",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VSXD, MASK_VSXD, match_opcode, 0},
+{"vsxw",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VSXW, MASK_VSXW, match_opcode, 0},
+{"vsxh",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VSXH, MASK_VSXH, match_opcode, 0},
+{"vsxb",       "Xhwacha", "#N,#p,#d,#S,#t", MATCH_VSXB, MASK_VSXB, match_opcode, 0},
+
+/* shared loads from shared registers */
+/* xloads */
+{"vlsd",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSD, MASK_VLSD, match_opcode, 0},
+{"vlsw",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSW, MASK_VLSW, match_opcode, 0},
+{"vlswu",      "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSWU,MASK_VLSWU, match_opcode, 0},
+{"vlsh",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSH, MASK_VLSH, match_opcode, 0},
+{"vlshu",      "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSHU,MASK_VLSHU, match_opcode, 0},
+{"vlsb",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSB, MASK_VLSB, match_opcode, 0},
+{"vlsbu",      "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VLSBU,MASK_VLSBU, match_opcode, 0},
+/* xstores */
+{"vssd",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VSSD, MASK_VSSD, match_opcode, 0},
+{"vssw",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VSSW, MASK_VSSW, match_opcode, 0},
+{"vssh",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VSSH, MASK_VSSH, match_opcode, 0},
+{"vssb",       "Xhwacha", "#N,#p,#d,#S,#T", MATCH_VSSB, MASK_VSSB, match_opcode, 0},
+
+/* shared loads from address registers */
+/* xloads */
+{"vlad",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAD, MASK_VLAD, match_opcode, 0},
+{"vlaw",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAW, MASK_VLAW, match_opcode, 0},
+{"vlawu",      "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAWU,MASK_VLAWU, match_opcode, 0},
+{"vlah",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAH, MASK_VLAH, match_opcode, 0},
+{"vlahu",      "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAHU,MASK_VLAHU, match_opcode, 0},
+{"vlab",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLAB, MASK_VLAB, match_opcode, 0},
+{"vlabu",      "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VLABU,MASK_VLABU, match_opcode, 0},
+/* xstores */
+{"vsad",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSAD, MASK_VSAD, match_opcode, 0},
+{"vsaw",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSAW, MASK_VSAW, match_opcode, 0},
+{"vsah",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSAH, MASK_VSAH, match_opcode, 0},
+{"vsab",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSAB, MASK_VSAB, match_opcode, 0},
+
+/* Vector-vector ut operations */
+{"vandi",      "I",   "#N,#p,#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   WR_xd|RD_xs1 },
+{"vand",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VAND, MASK_VAND, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vand",       "I",   "#N,#p,#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vaddi",      "I",   "#N,#p,#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  WR_xd|RD_xs1 },
+{"vadd",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VADD, MASK_VADD, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vadd",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t,0",MATCH_VADD, MASK_VADD, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vadd",       "I",   "#N,#p,#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  INSN_ALIAS|WR_xd|RD_xs1 },
+{"vslli",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   WR_xd|RD_xs1 },
+{"vsll",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSLL, MASK_VSLL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsll",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrli",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   WR_xd|RD_xs1 },
+{"vsrl",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRL, MASK_VSRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsrl",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrai",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   WR_xd|RD_xs1 },
+{"vsra",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRA, MASK_VSRA, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsra",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsub",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSUB, MASK_VSUB, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vori",       "I",   "#N,#p,#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   WR_xd|RD_xs1 },
+{"vor",        "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VOR, MASK_VOR, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vor",        "I",   "#N,#p,#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vseqz",      "I",   "#N,#p,#d,#s",  MATCH_VSLTIU | ENCODE_ITYPE_VIMM(1), MASK_VSLTIU | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsnez",      "I",   "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSLTU, MASK_VSLTU | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 },
+{"vsltz",      "I",   "#N,#p,#v,#w,#x,#d,#s",  MATCH_VSLT, MASK_VSLT | MASK_VRS2, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsgtz",      "I",   "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSLT, MASK_VSLT | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 },
+{"vslti",      "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vslt",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSLT, MASK_VSLT, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vslt",       "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   WR_xd|RD_xs1 },
+{"vsltiu",     "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   WR_xd|RD_xs1 },
+{"vsltu",      "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSLTU, MASK_VSLTU, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsltu",      "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsgt",       "I",   "#N,#p,#v,#w,#x,#d,#t,#s",  MATCH_VSLT, MASK_VSLT, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1|RD_xs2 },
+{"vsgtu",      "I",   "#N,#p,#v,#w,#x,#d,#t,#s",  MATCH_VSLTU, MASK_VSLTU, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1|RD_xs2 },
+{"vxori",      "I",   "#N,#p,#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   WR_xd|RD_xs1 },
+{"vxor",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VXOR, MASK_VXOR, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vxor",       "I",   "#N,#p,#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsext.w",    "64I", "#N,#p,#d,#s",  MATCH_VADDIW, MASK_VADDIW | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vaddiw",     "64I", "#N,#p,#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   WR_xd|RD_xs1 },
+{"vaddw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VADDW, MASK_VADDW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vaddw",      "64I", "#N,#p,#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vnegw",      "64I", "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSUBW, MASK_VSUBW | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 }, /* sub 0 */
+{"vslliw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   WR_xd|RD_xs1 },
+{"vsllw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSLLW, MASK_VSLLW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsllw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrliw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   WR_xd|RD_xs1 },
+{"vsrlw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRLW, MASK_VSRLW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsrlw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsraiw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   WR_xd|RD_xs1 },
+{"vsraw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRAW, MASK_VSRAW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vsraw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsubw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSUBW, MASK_VSUBW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+
+/* Vector Comparison worker-thread operations */
+{"vcmpeq",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VCMPEQ, MASK_VCMPEQ, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vcmplt",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VCMPLT, MASK_VCMPLT, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vcmpltu", "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VCMPLTU, MASK_VCMPLTU, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+
+/* Vector predicate register load/stores */
+{"vpl", "Xhwacha", "#N,#p,#F,#A", MATCH_VPL, MASK_VPL, match_opcode, 0},
+{"vps", "Xhwacha", "#N,#p,#F,#A", MATCH_VPS, MASK_VPS, match_opcode, 0},
+
+/* Vector predicate register arithmetic */
+{"vpop",     "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q,#z", MATCH_VPOP, MASK_VPOP, match_opcode, 0 },
+{"vpclear",  "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPCLEAR, MASK_VPCLEAR, match_opcode, 0 },
+{"vpset",    "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPSET, MASK_VPSET, match_opcode, 0 },
+{"vpxorxor", "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPXORXOR, MASK_VPXORXOR, match_opcode, 0 },
+{"vpxorand", "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPXORAND, MASK_VPXORAND, match_opcode, 0 },
+{"vpxoror",  "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPXOROR, MASK_VPXOROR, match_opcode, 0 },
+{"vandxor",  "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPANDXOR, MASK_VPANDXOR, match_opcode, 0 },
+{"vandand",  "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPANDAND, MASK_VPANDAND, match_opcode, 0 },
+{"vandor",   "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPANDOR, MASK_VPANDOR, match_opcode, 0 },
+{"vorxor",   "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPORXOR, MASK_VPORXOR, match_opcode, 0 },
+{"vorand",   "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPORAND, MASK_VPORAND, match_opcode, 0 },
+{"voror",    "Xhwacha",   "#N,#p,#w,#x,#y,#F,#O,#P,#Q",    MATCH_VPOROR, MASK_VPOROR, match_opcode, 0 },
+
+/* Atomic memory operation instruction subset */
+{"vamoadd.w",     "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_W, MASK_VAMOADD_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.w",    "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_W, MASK_VAMOSWAP_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.w",     "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_W, MASK_VAMOAND_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.w",      "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_W, MASK_VAMOOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.w",     "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_W, MASK_VAMOXOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.w",     "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_W, MASK_VAMOMAX_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.w",    "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_W, MASK_VAMOMAXU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.w",     "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_W, MASK_VAMOMIN_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.w",    "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_W, MASK_VAMOMINU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.w.aq",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_W | MASK_VAQ, MASK_VAMOADD_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.w.aq", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_W | MASK_VAQ, MASK_VAMOSWAP_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.w.aq",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_W | MASK_VAQ, MASK_VAMOAND_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.w.aq",   "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_W | MASK_VAQ, MASK_VAMOOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.w.aq",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_W | MASK_VAQ, MASK_VAMOXOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.w.aq",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_W | MASK_VAQ, MASK_VAMOMAX_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.w.aq", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_W | MASK_VAQ, MASK_VAMOMAXU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.w.aq",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_W | MASK_VAQ, MASK_VAMOMIN_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.w.aq", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_W | MASK_VAQ, MASK_VAMOMINU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.w.rl",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_W | MASK_VRL, MASK_VAMOADD_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.w.rl", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_W | MASK_VRL, MASK_VAMOSWAP_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.w.rl",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_W | MASK_VRL, MASK_VAMOAND_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.w.rl",   "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_W | MASK_VRL, MASK_VAMOOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.w.rl",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_W | MASK_VRL, MASK_VAMOXOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.w.rl",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_W | MASK_VRL, MASK_VAMOMAX_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.w.rl", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_W | MASK_VRL, MASK_VAMOMAXU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.w.rl",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_W | MASK_VRL, MASK_VAMOMIN_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.w.rl", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_W | MASK_VRL, MASK_VAMOMINU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.w.sc",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_W | MASK_VAQRL, MASK_VAMOADD_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.w.sc", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_W | MASK_VAQRL, MASK_VAMOSWAP_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.w.sc",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_W | MASK_VAQRL, MASK_VAMOAND_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.w.sc",   "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_W | MASK_VAQRL, MASK_VAMOOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.w.sc",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_W | MASK_VAQRL, MASK_VAMOXOR_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.w.sc",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_W | MASK_VAQRL, MASK_VAMOMAX_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.w.sc", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_W | MASK_VAQRL, MASK_VAMOMAXU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.w.sc",  "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_W | MASK_VAQRL, MASK_VAMOMIN_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.w.sc", "A",   "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_W | MASK_VAQRL, MASK_VAMOMINU_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.d",     "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_D, MASK_VAMOADD_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.d",    "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_D, MASK_VAMOSWAP_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.d",     "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_D, MASK_VAMOAND_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.d",      "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_D, MASK_VAMOOR_D | MASK_VAQRL, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vamoxor.d",     "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_D, MASK_VAMOXOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.d",     "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_D, MASK_VAMOMAX_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.d",    "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_D, MASK_VAMOMAXU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.d",     "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_D, MASK_VAMOMIN_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.d",    "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_D, MASK_VAMOMINU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.d.aq",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_D | MASK_VAQ, MASK_VAMOADD_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.d.aq", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_D | MASK_VAQ, MASK_VAMOSWAP_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.d.aq",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_D | MASK_VAQ, MASK_VAMOAND_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.d.aq",   "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_D | MASK_VAQ, MASK_VAMOOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.d.aq",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_D | MASK_VAQ, MASK_VAMOXOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.d.aq",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_D | MASK_VAQ, MASK_VAMOMAX_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.d.aq", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_D | MASK_VAQ, MASK_VAMOMAXU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.d.aq",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_D | MASK_VAQ, MASK_VAMOMIN_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.d.aq", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_D | MASK_VAQ, MASK_VAMOMINU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.d.rl",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_D | MASK_VRL, MASK_VAMOADD_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.d.rl", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_D | MASK_VRL, MASK_VAMOSWAP_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.d.rl",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_D | MASK_VRL, MASK_VAMOAND_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.d.rl",   "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_D | MASK_VRL, MASK_VAMOOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.d.rl",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_D | MASK_VRL, MASK_VAMOXOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.d.rl",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_D | MASK_VRL, MASK_VAMOMAX_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.d.rl", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_D | MASK_VRL, MASK_VAMOMAXU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.d.rl",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_D | MASK_VRL, MASK_VAMOMIN_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.d.rl", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_D | MASK_VRL, MASK_VAMOMINU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoadd.d.sc",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOADD_D | MASK_VAQRL, MASK_VAMOADD_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoswap.d.sc", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOSWAP_D | MASK_VAQRL, MASK_VAMOSWAP_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoand.d.sc",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOAND_D | MASK_VAQRL, MASK_VAMOAND_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoor.d.sc",   "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOOR_D | MASK_VAQRL, MASK_VAMOOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamoxor.d.sc",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOXOR_D | MASK_VAQRL, MASK_VAMOXOR_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomax.d.sc",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAX_D | MASK_VAQRL, MASK_VAMOMAX_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomaxu.d.sc", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMAXU_D | MASK_VAQRL, MASK_VAMOMAXU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamomin.d.sc",  "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMIN_D | MASK_VAQRL, MASK_VAMOMIN_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+{"vamominu.d.sc", "64A", "#N,#p,#v,#w,#x,#d,#t,0(#S)",  MATCH_VAMOMINU_D | MASK_VAQRL, MASK_VAMOMINU_D | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
+
+/* Multiply/Divide instruction subset */
+{"vmul",       "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VMUL, MASK_VMUL, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vmulh",      "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VMULH, MASK_VMULH, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vmulhu",     "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VMULHU, MASK_VMULHU, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vmulhsu",    "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VMULHSU, MASK_VMULHSU, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vdiv",       "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VDIV, MASK_VDIV, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vdivu",      "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VDIVU, MASK_VDIVU, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vrem",       "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VREM, MASK_VREM, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vremu",      "M",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VREMU, MASK_VREMU, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vmulw",      "64M", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VMULW, MASK_VMULW, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vdivw",      "64M", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VDIVW, MASK_VDIVW, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vdivuw",     "64M", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VDIVUW, MASK_VDIVUW, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vremw",      "64M", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VREMW, MASK_VREMW, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+{"vremuw",     "64M", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VREMUW, MASK_VREMUW, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
+
+/* Single-precision floating-point instruction subset */
+{"vfmv.s",     "F",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJ_S, MASK_VFSGNJ_S, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfneg.s",    "F",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJN_S, MASK_VFSGNJN_S, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfabs.s",    "F",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJX_S, MASK_VFSGNJX_S, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnj.s",   "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJ_S, MASK_VFSGNJ_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjn.s",  "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJN_S, MASK_VFSGNJN_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjx.s",  "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJX_S, MASK_VFSGNJX_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_S | MASK_VRM, MASK_VFADD_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_S, MASK_VFADD_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_S | MASK_VRM, MASK_VFSUB_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_S, MASK_VFSUB_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_S | MASK_VRM, MASK_VFMUL_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_S, MASK_VFMUL_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFDIV_S | MASK_VRM, MASK_VFDIV_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFDIV_S, MASK_VFDIV_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsqrt.s",   "F",   "#N,#p,#v,#w,#d,#s",  MATCH_VFSQRT_S | MASK_VRM, MASK_VFSQRT_S | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfsqrt.s",   "F",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFSQRT_S, MASK_VFSQRT_S, match_opcode,  WR_fd|RD_fs1 },
+{"vfmin.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMIN_S, MASK_VFMIN_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmax.s",    "F",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMAX_S, MASK_VFMAX_S, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmadd.s",   "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMADD_S | MASK_VRM, MASK_VFMADD_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmadd.s",   "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMADD_S, MASK_VFMADD_S, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.s",  "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMADD_S | MASK_VRM, MASK_VFNMADD_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.s",  "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMADD_S, MASK_VFNMADD_S, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.s",   "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMSUB_S | MASK_VRM, MASK_VFMSUB_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.s",   "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMSUB_S, MASK_VFMSUB_S, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.s",  "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMSUB_S | MASK_VRM, MASK_VFNMSUB_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.s",  "F",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMSUB_S, MASK_VFNMSUB_S, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfclass.s",  "F",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCLASS_S, MASK_VFCLASS_S, match_opcode,   WR_xd|RD_fs1 },
+{"vfcmpeq.s",  "F",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPEQ_S, MASK_VFCMPEQ_S, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmplt.s",  "F",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLT_S, MASK_VFCMPLT_S, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmple.s",  "F",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLE_S, MASK_VFCMPLE_S, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpgt.s",  "F",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLT_S, MASK_VFCMPLT_S, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpge.s",  "F",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLE_S, MASK_VFCMPLE_S, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcvt.w.s",  "F",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_W_S | MASK_VRM, MASK_VFCVT_W_S | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.w.s",  "F",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_W_S, MASK_VFCVT_W_S, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.s", "F",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_WU_S | MASK_VRM, MASK_VFCVT_WU_S | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.s", "F",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_WU_S, MASK_VFCVT_WU_S, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.s.w",  "F",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_S_W | MASK_VRM, MASK_VFCVT_S_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.w",  "F",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_S_W, MASK_VFCVT_S_W, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.wu", "F",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_S_WU | MASK_VRM, MASK_VFCVT_S_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.wu", "F",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_S_WU, MASK_VFCVT_S_WU, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.l.s",  "64F", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_L_S | MASK_VRM, MASK_VFCVT_L_S | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.l.s",  "64F", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_L_S, MASK_VFCVT_L_S, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.s", "64F", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_LU_S | MASK_VRM, MASK_VFCVT_LU_S | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.s", "64F", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_LU_S, MASK_VFCVT_LU_S, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.s.l",  "64F", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_S_L | MASK_VRM, MASK_VFCVT_S_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.l",  "64F", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_S_L, MASK_VFCVT_S_L, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.lu", "64F", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_S_LU | MASK_VRM, MASK_VFCVT_S_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.s.lu", "64F", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_S_LU, MASK_VFCVT_S_LU, match_opcode,   WR_fd|RD_xs1 },
+
+/* Double-precision floating-point instruction subset */
+{"vfmv.d",     "D",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJ_D, MASK_VFSGNJ_D, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfneg.d",    "D",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJN_D, MASK_VFSGNJN_D, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfabs.d",    "D",   "#N,#p,#v,#w,#x,#d,#u",  MATCH_VFSGNJX_D, MASK_VFSGNJX_D, match_rs1_eq_rs2,   INSN_ALIAS|WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnj.d",   "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJ_D, MASK_VFSGNJ_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjn.d",  "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJN_D, MASK_VFSGNJN_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjx.d",  "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJX_D, MASK_VFSGNJX_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_D | MASK_VRM, MASK_VFADD_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_D, MASK_VFADD_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_D | MASK_VRM, MASK_VFSUB_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_D, MASK_VFSUB_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_D | MASK_VRM, MASK_VFMUL_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_D, MASK_VFMUL_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFDIV_D | MASK_VRM, MASK_VFDIV_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFDIV_D, MASK_VFDIV_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfsqrt.d",   "D",   "#N,#p,#v,#w,#d,#s",  MATCH_VFSQRT_D | MASK_VRM, MASK_VFSQRT_D | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfsqrt.d",   "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFSQRT_D, MASK_VFSQRT_D, match_opcode,  WR_fd|RD_fs1 },
+{"vfmin.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMIN_D, MASK_VFMIN_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmax.d",    "D",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMAX_D, MASK_VFMAX_D, match_opcode,   WR_fd|RD_fs1|RD_fs2 },
+{"vfmadd.d",   "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMADD_D | MASK_VRM, MASK_VFMADD_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmadd.d",   "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMADD_D, MASK_VFMADD_D, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.d",  "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMADD_D | MASK_VRM, MASK_VFNMADD_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.d",  "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMADD_D, MASK_VFNMADD_D, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.d",   "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMSUB_D | MASK_VRM, MASK_VFMSUB_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.d",   "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMSUB_D, MASK_VFMSUB_D, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.d",  "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMSUB_D | MASK_VRM, MASK_VFNMSUB_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.d",  "D",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMSUB_D, MASK_VFNMSUB_D, match_opcode,   WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfcvt.d.s",  "D",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_D_S, MASK_VFCVT_D_S | MASK_VRM, match_opcode,   WR_fd|RD_fs1 },
+{"vfcvt.s.d",  "D",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_S_D | MASK_VRM, MASK_VFCVT_S_D | MASK_VRM, match_opcode,   WR_fd|RD_fs1 },
+{"vfcvt.s.d",  "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_S_D, MASK_VFCVT_S_D, match_opcode,   WR_fd|RD_fs1 },
+{"vfclass.d",  "D",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCLASS_D, MASK_VFCLASS_D, match_opcode,   WR_xd|RD_fs1 },
+{"vfcmpeq.d",  "D",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPEQ_D, MASK_VFCMPEQ_D, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmplt.d",  "D",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLT_D, MASK_VFCMPLT_D, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmple.d",  "D",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLE_D, MASK_VFCMPLE_D, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpgt.d",  "D",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLT_D, MASK_VFCMPLT_D, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpge.d",  "D",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLE_D, MASK_VFCMPLE_D, match_opcode,  WR_xd|RD_fs1|RD_fs2 },
+{"vfcvt.w.d",  "D",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_W_D | MASK_VRM, MASK_VFCVT_W_D | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.w.d",  "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_W_D, MASK_VFCVT_W_D, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.d", "D",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_WU_D | MASK_VRM, MASK_VFCVT_WU_D | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.d", "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_WU_D, MASK_VFCVT_WU_D, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.d.w",  "D",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_D_W | MASK_VRM, MASK_VFCVT_D_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.w",  "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_D_W, MASK_VFCVT_D_W, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.wu", "D",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_D_WU | MASK_VRM, MASK_VFCVT_D_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.wu", "D",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_D_WU, MASK_VFCVT_D_WU, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.l.d",  "64D", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_L_D | MASK_VRM, MASK_VFCVT_L_D | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.l.d",  "64D", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_L_D, MASK_VFCVT_L_D, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.d", "64D", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_LU_D | MASK_VRM, MASK_VFCVT_LU_D | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.d", "64D", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_LU_D, MASK_VFCVT_LU_D, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.d.l",  "64D", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_D_L | MASK_VRM, MASK_VFCVT_D_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.l",  "64D", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_D_L, MASK_VFCVT_D_L, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.lu", "64D", "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_D_LU | MASK_VRM, MASK_VFCVT_D_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.d.lu", "64D", "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_D_LU, MASK_VFCVT_D_LU, match_opcode,   WR_fd|RD_xs1 },
+
+/* Half-precision floating-point instruction subset */
+{"vfsgnj.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJ_H, MASK_VFSGNJ_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjn.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJN_H, MASK_VFSGNJN_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsgnjx.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSGNJX_H, MASK_VFSGNJX_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_H | MASK_VRM, MASK_VFADD_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_H, MASK_VFADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_H | MASK_VRM, MASK_VFSUB_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_H, MASK_VFSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_H | MASK_VRM, MASK_VFMUL_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_H, MASK_VFMUL_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFDIV_H | MASK_VRM, MASK_VFDIV_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfdiv.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFDIV_H, MASK_VFDIV_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsqrt.h",   "Xhwacha",   "#N,#p,#v,#w,#d,#s",  MATCH_VFSQRT_H | MASK_VRM, MASK_VFSQRT_H | MASK_VRM, match_opcode, WR_fd|RD_fs1 },
+{"vfsqrt.h",   "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFSQRT_H, MASK_VFSQRT_H, match_opcode, WR_fd|RD_fs1 },
+{"vfmin.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMIN_H, MASK_VFMIN_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmax.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMAX_H, MASK_VFMAX_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmadd.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMADD_H | MASK_VRM, MASK_VFMADD_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmadd.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMADD_H, MASK_VFMADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMADD_H | MASK_VRM, MASK_VFNMADD_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMADD_H, MASK_VFNMADD_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMSUB_H | MASK_VRM, MASK_VFMSUB_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMSUB_H, MASK_VFMSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMSUB_H | MASK_VRM, MASK_VFNMSUB_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMSUB_H, MASK_VFNMSUB_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfcvt.s.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_S_H, MASK_VFCVT_S_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfcvt.h.s",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_H_S | MASK_VRM, MASK_VFCVT_H_S | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfcvt.h.s",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_S, MASK_VFCVT_H_S, match_opcode,  WR_fd|RD_fs1 },
+{"vfcvt.d.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_D_H, MASK_VFCVT_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfcvt.h.d",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",  MATCH_VFCVT_H_D | MASK_VRM, MASK_VFCVT_H_D | MASK_VRM, match_opcode,  WR_fd|RD_fs1 },
+{"vfcvt.h.d",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_D, MASK_VFCVT_H_D, match_opcode,  WR_fd|RD_fs1 },
+{"vfcmpeq.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPEQ_H, MASK_VFCMPEQ_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
+{"vfcmplt.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLT_H, MASK_VFCMPLT_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
+{"vfcmple.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#s,#t",    MATCH_VFCMPLE_H, MASK_VFCMPLE_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpgt.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLT_H, MASK_VFCMPLT_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
+{"vfcmpge.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#F,#t,#s",    MATCH_VFCMPLE_H, MASK_VFCMPLE_H, match_opcode, WR_xd|RD_fs1|RD_fs2 },
+{"vfcvt.w.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_W_H | MASK_VRM, MASK_VFCVT_W_H | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.w.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_W_H, MASK_VFCVT_W_H, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.h", "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_WU_H | MASK_VRM, MASK_VFCVT_WU_H | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.wu.h", "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_WU_H, MASK_VFCVT_WU_H, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.h.w",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_H_W | MASK_VRM, MASK_VFCVT_H_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.w",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_W, MASK_VFCVT_H_W, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.wu", "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_H_WU | MASK_VRM, MASK_VFCVT_H_W | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.wu", "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_WU, MASK_VFCVT_H_WU, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.l.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_L_H | MASK_VRM, MASK_VFCVT_L_H | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.l.h",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_L_H, MASK_VFCVT_L_H, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.h", "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_LU_H | MASK_VRM, MASK_VFCVT_LU_H | MASK_VRM, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.lu.h", "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_LU_H, MASK_VFCVT_LU_H, match_opcode,  WR_xd|RD_fs1 },
+{"vfcvt.h.l",  "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_H_L | MASK_VRM, MASK_VFCVT_H_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.l",  "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_L, MASK_VFCVT_H_L, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.lu", "Xhwacha",   "#N,#p,#v,#w,#d,#s",     MATCH_VFCVT_H_LU | MASK_VRM, MASK_VFCVT_H_L | MASK_VRM, match_opcode,   WR_fd|RD_xs1 },
+{"vfcvt.h.lu", "Xhwacha",   "#N,#p,#v,#w,#d,#s,#m",  MATCH_VFCVT_H_LU, MASK_VFCVT_H_LU, match_opcode,   WR_fd|RD_xs1 },
+
+/* Mixed-precision floating-point instruction subset */
+{"vfadd.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_S_H | MASK_VRM, MASK_VFADD_S_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_S_H, MASK_VFADD_S_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_S_H | MASK_VRM, MASK_VFSUB_S_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_S_H, MASK_VFSUB_S_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_S_H | MASK_VRM, MASK_VFMUL_S_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.s.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_S_H, MASK_VFMUL_S_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_D_H | MASK_VRM, MASK_VFADD_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_D_H, MASK_VFADD_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_D_H | MASK_VRM, MASK_VFSUB_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_D_H, MASK_VFSUB_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_D_H | MASK_VRM, MASK_VFMUL_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d.h",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_D_H, MASK_VFMUL_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmadd.d.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMADD_D_H | MASK_VRM, MASK_VFMADD_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmadd.d.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMADD_D_H, MASK_VFMADD_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.d.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMADD_D_H | MASK_VRM, MASK_VFNMADD_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmadd.d.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMADD_D_H, MASK_VFNMADD_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.d.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFMSUB_D_H | MASK_VRM, MASK_VFMSUB_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfmsub.d.h",   "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFMSUB_D_H, MASK_VFMSUB_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.d.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r",  MATCH_VFNMSUB_D_H | MASK_VRM, MASK_VFNMSUB_D_H | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfnmsub.d.h",  "Xhwacha",   "#N,#p,#v,#w,#x,#y,#d,#s,#t,#r,#m",  MATCH_VFNMSUB_D_H, MASK_VFNMSUB_D_H, match_opcode,  WR_fd|RD_fs1|RD_fs2|RD_fs3 },
+{"vfadd.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFADD_D_S | MASK_VRM, MASK_VFADD_D_S | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfadd.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFADD_D_S, MASK_VFADD_D_S, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFSUB_D_S | MASK_VRM, MASK_VFSUB_D_S | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfsub.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFSUB_D_S, MASK_VFSUB_D_S, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VFMUL_D_S | MASK_VRM, MASK_VFMUL_D_S | MASK_VRM, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+{"vfmul.d.s",    "Xhwacha",   "#N,#p,#v,#w,#x,#d,#s,#t,#m",  MATCH_VFMUL_D_S, MASK_VFMUL_D_S, match_opcode,  WR_fd|RD_fs1|RD_fs2 },
+
 };
 
 #define RISCV_NUM_OPCODES \
