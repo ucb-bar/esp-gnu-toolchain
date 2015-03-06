@@ -1629,25 +1629,25 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                 case 'F':
                   ok = reg_lookup( &s, RCLASS_VEC_PPR, &regno );
                   if ( !ok )
-                    as_bad( _( "Invalid vector predicate register" ) );
+                    as_bad( _( "Invalid vector predicate register vpd" ) );
                   INSERT_OPERAND( VPD, *ip, regno );
                   continue;
                 case 'O':
                   ok = reg_lookup( &s, RCLASS_VEC_PPR, &regno );
                   if ( !ok )
-                    as_bad( _( "Invalid vector predicate register" ) );
+                    as_bad( _( "Invalid vector predicate register vprs1" ) );
                   INSERT_OPERAND( VPS, *ip, regno );
                   continue;
                 case 'P':
                   ok = reg_lookup( &s, RCLASS_VEC_PPR, &regno );
                   if ( !ok )
-                    as_bad( _( "Invalid vector predicate register" ) );
+                    as_bad( _( "Invalid vector predicate register vprs2" ) );
                   INSERT_OPERAND( VPT, *ip, regno );
                   continue;
                 case 'Q':
                   ok = reg_lookup( &s, RCLASS_VEC_PPR, &regno );
                   if ( !ok )
-                    as_bad( _( "Invalid vector predicate register" ) );
+                    as_bad( _( "Invalid vector predicate register vprs3" ) );
                   INSERT_OPERAND( VPR, *ip, regno );
                   continue;
                 case 'e':
