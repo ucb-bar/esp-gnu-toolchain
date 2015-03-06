@@ -1440,7 +1440,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   if(EXTRACT_OPERAND( VD, *ip)){
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
                     if ( !ok )
-                      as_bad( _( "Invalid vector register" ) );
+                      as_bad( _( "Invalid vector register vvd" ) );
                   }else{
                     ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                     if ( !ok )
@@ -1452,7 +1452,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   if(EXTRACT_OPERAND( VS1, *ip)){
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
                     if ( !ok )
-                      as_bad( _( "Invalid vector register" ) );
+                      as_bad( _( "Invalid vector register vvr1" ) );
                   }else{
                     ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                     if ( !ok )
@@ -1477,7 +1477,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   if(EXTRACT_OPERAND( VS2, *ip)){
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
                     if ( !ok )
-                      as_bad( _( "Invalid vector register" ) );
+                      as_bad( _( "Invalid vector register vvr2" ) );
                   }else{
                     ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                     if ( !ok )
@@ -1489,7 +1489,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   if(EXTRACT_OPERAND( VS3, *ip)){
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
                     if ( !ok )
-                      as_bad( _( "Invalid vector register" ) );
+                      as_bad( _( "Invalid vector register vvr3" ) );
                   }else{
                     ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
                     if ( !ok )
