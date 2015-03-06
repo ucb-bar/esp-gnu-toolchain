@@ -693,18 +693,12 @@ int riscv_unrecognized_line (int c)
   bfd_boolean ok = TRUE;
   switch (c)
   {
-    case '!':
-      if (input_line_pointer[0] == '@')
+    case '@':
+      if (input_line_pointer[0] == '!')
       {
         riscv_predneg = TRUE;
         input_line_pointer++;
-        ok = reg_lookup(&input_line_pointer, RCLASS_VEC_PPR, &riscv_prednum);
-        if ( !ok )
-          as_bad( _( "Invalid vector predicate register" ) );
-        return 1;
       }
-      as_bad( _( "Invalid vector predicate, expected '@'" ) );
-    case '@':
       ok = reg_lookup(&input_line_pointer, RCLASS_VEC_PPR, &riscv_prednum);
       if ( !ok )
         as_bad( _( "Invalid vector predicate register" ) );

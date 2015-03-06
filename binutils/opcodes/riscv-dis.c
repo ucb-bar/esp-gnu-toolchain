@@ -125,17 +125,12 @@ print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
               if(EXTRACT_OPERAND(VN,l) ||
                  EXTRACT_OPERAND(VPRED,l) > 0){
               (*info->fprintf_func)
-                ( info->stream, "@%-4s ",
-                  riscv_vec_ppr_names[EXTRACT_OPERAND(VPRED,l)]);
+                ( info->stream, "@%s%-4s%s",
+                  EXTRACT_OPERAND(VN,l) ? "!" : "", riscv_vec_ppr_names[EXTRACT_OPERAND(VPRED,l)],
+                  EXTRACT_OPERAND(VN,l) ? "" : " ");
               }else
                 (*info->fprintf_func) (info->stream, "      ");
 
-              continue;
-            case 'N':
-              if(EXTRACT_OPERAND(VN,l))
-                (*info->fprintf_func) (info->stream, "!");
-              else
-                (*info->fprintf_func) (info->stream, " ");
               continue;
             default:
               continue;
