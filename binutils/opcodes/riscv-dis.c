@@ -116,12 +116,14 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset)
 /* Print insn prefixes for hwacha.  */
 static void
 print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
+  bfd_boolean scalar = 1;
   for (; *d != '\0'; d++)
     {
       switch (*d){
         case '#':
           switch ( *++d ) {
             case 'p':
+              scalar = 0;
               if(EXTRACT_OPERAND(VN,l) ||
                  EXTRACT_OPERAND(VPRED,l) > 0){
               (*info->fprintf_func)
@@ -131,6 +133,10 @@ print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
               }else
                 (*info->fprintf_func) (info->stream, "      ");
 
+              continue;
+            case 'd': case 'D':
+              if(scalar)
+                (*info->fprintf_func) (info->stream, "@s    ");
               continue;
             default:
               continue;

@@ -1387,13 +1387,15 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   s = expr_end;
                   continue;
 	              case 'j': /* sign-extended immediate */
-	                imm_reloc = BFD_RELOC_RISCV_LO12_I;
-	                p = percent_op_itype;
-	                goto alu_op;
-	              case 'q': /* store displacement */
-	                p = percent_op_stype;
-	                offset_reloc = BFD_RELOC_RISCV_LO12_S;
-	                goto load_store;
+                  my_getExpression( &imm_expr, s );
+                  /* check_absolute_expr( ip, &imm_expr ); */
+                  if ((unsigned long) imm_expr.X_add_number > ((unsigned long)(1 << 32) - 1) )
+                    as_warn( _( "Improper vimm amount (%lu)" ),
+                             (unsigned long) imm_expr.X_add_number );
+                  INSERT_OPERAND( VIMM, *ip, imm_expr.X_add_number);
+                  imm_expr.X_op = O_absent;
+                  s = expr_end;
+                  continue;
                 case 'm':		/* rounding mode */
                   if (arg_lookup (&s, riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
                     {
@@ -1429,7 +1431,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
 		          {
 		            if (imm_expr.X_add_number < 0
 		                || imm_expr.X_add_number >= (signed)RISCV_BIGIMM_REACH)
-		              as_bad (_("lui expression not in range 0..1048575"));
+		              as_bad (_("vlui expression not in range 0..1048575"));
 	                
 		            imm_reloc = BFD_RELOC_RISCV_HI20;
 		            imm_expr.X_add_number <<= RISCV_IMM_BITS;

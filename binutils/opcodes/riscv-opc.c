@@ -181,6 +181,8 @@ const char * const riscv_vec_ppr_names[16] =
 #define MASK_VAQ ((insn_t)OP_MASK_VAQ << OP_SH_VAQ)
 #define MASK_VRL ((insn_t)OP_MASK_VRL << OP_SH_VRL)
 #define MASK_VAQRL (MASK_VAQ | MASK_VRL)
+#define MASK_VPRED ((insn_t)OP_MASK_VPRED << OP_SH_VPRED)
+#define MASK_VN ((insn_t)OP_MASK_VN << OP_SH_VN)
 #define MASK_VPREV (OP_MASK_VPREV << OP_SH_VPREV)
 #define MASK_VSUCC (OP_MASK_VSUCC << OP_SH_VSUCC)
 
@@ -651,6 +653,9 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vlui",      "Xhwacha", "#D,#j", MATCH_VLUI, MASK_VLUI, match_opcode, WR_xd},
 {"vauipc",    "Xhwacha", "#D,#j", MATCH_VAUIPC, MASK_VAUIPC, match_opcode, WR_xd},
 
+/* vnop */
+{"vnop",      "Xhwacha",   "",  MATCH_VADDI, MASK_VADDI | MASK_VRD | MASK_VRS1 | MASK_VIMM | MASK_VPRED | MASK_VN, match_opcode,  INSN_ALIAS},
+
 /* vector loads */
 /* unit stride */
 /* xloads */
@@ -766,55 +771,55 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vsab",       "Xhwacha", "#N,#p,#d,#A,#B", MATCH_VSAB, MASK_VSAB, match_opcode, 0},
 
 /* Vector-vector ut operations */
-{"vandi",      "I",   "#N,#p,#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   WR_xd|RD_xs1 },
+{"vandi",      "I",   "#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   WR_xd|RD_xs1 },
 {"vand",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VAND, MASK_VAND, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vand",       "I",   "#N,#p,#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vaddi",      "I",   "#N,#p,#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  WR_xd|RD_xs1 },
+{"vand",       "I",   "#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vaddi",      "I",   "#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  WR_xd|RD_xs1 },
 {"vadd",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VADD, MASK_VADD, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
 {"vadd",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t,0",MATCH_VADD, MASK_VADD, match_opcode,  WR_xd|RD_xs1|RD_xs2 },
-{"vadd",       "I",   "#N,#p,#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  INSN_ALIAS|WR_xd|RD_xs1 },
-{"vslli",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   WR_xd|RD_xs1 },
+{"vadd",       "I",   "#d,#s,#j",  MATCH_VADDI, MASK_VADDI, match_opcode,  INSN_ALIAS|WR_xd|RD_xs1 },
+{"vslli",      "I",   "#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   WR_xd|RD_xs1 },
 {"vsll",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSLL, MASK_VSLL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsll",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vsrli",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   WR_xd|RD_xs1 },
+{"vsll",       "I",   "#d,#s,#>",   MATCH_VSLLI, MASK_VSLLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrli",      "I",   "#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   WR_xd|RD_xs1 },
 {"vsrl",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRL, MASK_VSRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsrl",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vsrai",      "I",   "#N,#p,#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   WR_xd|RD_xs1 },
+{"vsrl",       "I",   "#d,#s,#>",   MATCH_VSRLI, MASK_VSRLI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrai",      "I",   "#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   WR_xd|RD_xs1 },
 {"vsra",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRA, MASK_VSRA, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsra",       "I",   "#N,#p,#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsra",       "I",   "#d,#s,#>",   MATCH_VSRAI, MASK_VSRAI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vsub",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSUB, MASK_VSUB, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vori",       "I",   "#N,#p,#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   WR_xd|RD_xs1 },
+{"vori",       "I",   "#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   WR_xd|RD_xs1 },
 {"vor",        "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VOR, MASK_VOR, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vor",        "I",   "#N,#p,#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vseqz",      "I",   "#N,#p,#d,#s",  MATCH_VSLTIU | ENCODE_ITYPE_VIMM(1), MASK_VSLTIU | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vor",        "I",   "#d,#s,#j",  MATCH_VORI, MASK_VORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vseqz",      "I",   "#d,#s",  MATCH_VSLTIU | ENCODE_ITYPE_VIMM(1), MASK_VSLTIU | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vsnez",      "I",   "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSLTU, MASK_VSLTU | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 },
 {"vsltz",      "I",   "#N,#p,#v,#w,#x,#d,#s",  MATCH_VSLT, MASK_VSLT | MASK_VRS2, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vsgtz",      "I",   "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSLT, MASK_VSLT | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 },
-{"vslti",      "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vslti",      "I",   "#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vslt",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSLT, MASK_VSLT, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vslt",       "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   WR_xd|RD_xs1 },
-{"vsltiu",     "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   WR_xd|RD_xs1 },
+{"vslt",       "I",   "#d,#s,#j",  MATCH_VSLTI, MASK_VSLTI, match_opcode,   WR_xd|RD_xs1 },
+{"vsltiu",     "I",   "#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   WR_xd|RD_xs1 },
 {"vsltu",      "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSLTU, MASK_VSLTU, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsltu",      "I",   "#N,#p,#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsltu",      "I",   "#d,#s,#j",  MATCH_VSLTIU, MASK_VSLTIU, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vsgt",       "I",   "#N,#p,#v,#w,#x,#d,#t,#s",  MATCH_VSLT, MASK_VSLT, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1|RD_xs2 },
 {"vsgtu",      "I",   "#N,#p,#v,#w,#x,#d,#t,#s",  MATCH_VSLTU, MASK_VSLTU, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1|RD_xs2 },
-{"vxori",      "I",   "#N,#p,#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   WR_xd|RD_xs1 },
+{"vxori",      "I",   "#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   WR_xd|RD_xs1 },
 {"vxor",       "I",   "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VXOR, MASK_VXOR, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vxor",       "I",   "#N,#p,#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vsext.w",    "64I", "#N,#p,#d,#s",  MATCH_VADDIW, MASK_VADDIW | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vaddiw",     "64I", "#N,#p,#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   WR_xd|RD_xs1 },
+{"vxor",       "I",   "#d,#s,#j",  MATCH_VXORI, MASK_VXORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsext.w",    "64I", "#d,#s",  MATCH_VADDIW, MASK_VADDIW | MASK_VIMM, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vaddiw",     "64I", "#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   WR_xd|RD_xs1 },
 {"vaddw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VADDW, MASK_VADDW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vaddw",      "64I", "#N,#p,#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vaddw",      "64I", "#d,#s,#j",  MATCH_VADDIW, MASK_VADDIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vnegw",      "64I", "#N,#p,#v,#w,#x,#d,#t",  MATCH_VSUBW, MASK_VSUBW | MASK_VRS1, match_opcode,   INSN_ALIAS|WR_xd|RD_xs2 }, /* sub 0 */
-{"vslliw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   WR_xd|RD_xs1 },
+{"vslliw",     "64I", "#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   WR_xd|RD_xs1 },
 {"vsllw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSLLW, MASK_VSLLW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsllw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vsrliw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   WR_xd|RD_xs1 },
+{"vsllw",      "64I", "#d,#s,#<",   MATCH_VSLLIW, MASK_VSLLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsrliw",     "64I", "#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   WR_xd|RD_xs1 },
 {"vsrlw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRLW, MASK_VSRLW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsrlw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
-{"vsraiw",     "64I", "#N,#p,#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   WR_xd|RD_xs1 },
+{"vsrlw",      "64I", "#d,#s,#<",   MATCH_VSRLIW, MASK_VSRLIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsraiw",     "64I", "#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   WR_xd|RD_xs1 },
 {"vsraw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",   MATCH_VSRAW, MASK_VSRAW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
-{"vsraw",      "64I", "#N,#p,#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
+{"vsraw",      "64I", "#d,#s,#<",   MATCH_VSRAIW, MASK_VSRAIW, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
 {"vsubw",      "64I", "#N,#p,#v,#w,#x,#d,#s,#t",  MATCH_VSUBW, MASK_VSUBW, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
 
 /* Vector Comparison worker-thread operations */
