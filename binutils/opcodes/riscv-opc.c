@@ -311,6 +311,7 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"rdtimeh",   "32I", "d",  MATCH_RDTIMEH, MASK_RDTIMEH, match_opcode,  WR_xd },
 {"sbreak",    "I",   "",    MATCH_SBREAK, MASK_SBREAK, match_opcode,   0 },
 {"scall",     "I",   "",    MATCH_SCALL, MASK_SCALL, match_opcode,   0 },
+{"ecall",     "I",   "",    MATCH_SCALL, MASK_SCALL, match_opcode,   0 },
 {"xori",      "I",   "d,s,j",  MATCH_XORI, MASK_XORI, match_opcode,   WR_xd|RD_xs1 },
 {"xor",       "I",   "d,s,t",  MATCH_XOR, MASK_XOR, match_opcode,   WR_xd|RD_xs1|RD_xs2 },
 {"xor",       "I",   "d,s,j",  MATCH_XORI, MASK_XORI, match_opcode,   INSN_ALIAS|WR_xd|RD_xs1 },
@@ -587,6 +588,10 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"csrrsi",    "I",   "d,E,Z",  MATCH_CSRRSI, MASK_CSRRSI, match_opcode,  WR_xd|RD_xs1 },
 {"csrrci",    "I",   "d,E,Z",  MATCH_CSRRCI, MASK_CSRRCI, match_opcode,  WR_xd|RD_xs1 },
 {"sret",      "I",   "",     MATCH_SRET, MASK_SRET, match_opcode,  0 },
+{"eret",      "I",   "",     MATCH_SRET, MASK_SRET, match_opcode,  0 },
+{"mrts",      "I",   "",     MATCH_MRTS, MASK_MRTS, match_opcode,  0 },
+{"sfence.vm", "I",   "",     MATCH_SFENCE_VM | MASK_RS1, MASK_SFENCE_VM | MASK_RS1, match_opcode,  0 },
+{"sfence.vm", "I",   "s",    MATCH_SFENCE_VM, MASK_SFENCE_VM, match_opcode,  RD_xs1 },
 
 
 /* Rocket Custom Coprocessor extension */
@@ -637,6 +642,13 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vxcptsave",    "Xhwacha", "s", MATCH_VXCPTSAVE, MASK_VXCPTSAVE, match_opcode, 0},
 {"vxcptrestore", "Xhwacha", "s", MATCH_VXCPTRESTORE, MASK_VXCPTRESTORE, match_opcode, 0},
 {"vxcptkill",    "Xhwacha", "", MATCH_VXCPTKILL, MASK_VXCPTKILL, match_opcode, 0},
+
+{"vxcptevac",    "Xhwacha", "s", MATCH_VXCPTEVAC, MASK_VXCPTEVAC, match_opcode, 0},
+{"vxcpthold",    "Xhwacha", "s", MATCH_VXCPTHOLD, MASK_VXCPTHOLD, match_opcode, 0},
+{"venqcmd",      "Xhwacha", "s,t", MATCH_VENQCMD, MASK_VENQCMD, match_opcode, 0},
+{"venqimm1",     "Xhwacha", "s,t", MATCH_VENQIMM1, MASK_VENQIMM1, match_opcode, 0},
+{"venqimm2",     "Xhwacha", "s,t", MATCH_VENQIMM2, MASK_VENQIMM2, match_opcode, 0},
+{"venqcnt",      "Xhwacha", "s,t", MATCH_VENQCNT, MASK_VENQCNT, match_opcode, 0},
 
 /* Xhwacha extension work thread instructions*/
 {"vstop",     "Xhwacha", "", MATCH_VSTOP, MASK_VSTOP, match_opcode, 0},
