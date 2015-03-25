@@ -250,9 +250,8 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
                   (int)((l >> OP_SH_VIMM) & OP_MASK_VIMM));
               break;
             case 'm':
-              (*info->fprintf_func)
-                ( info->stream, "%d",
-                  (int)((l >> OP_SH_VIMM) & OP_MASK_VIMM));
+	            arg_print(info, (l >> OP_SH_VRM) & OP_MASK_VRM,
+		              riscv_rm, ARRAY_SIZE(riscv_rm));
               break;
             case '<':
               (*info->fprintf_func)
