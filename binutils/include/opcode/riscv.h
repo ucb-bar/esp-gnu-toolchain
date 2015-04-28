@@ -239,8 +239,8 @@ static const char* const riscv_pred_succ[16] = {
 
 #define OP_MASK_IMMNGPR         0xff
 #define OP_SH_IMMNGPR           20
-#define OP_MASK_IMMNFPR         0xf
-#define OP_SH_IMMNFPR           28
+#define OP_MASK_IMMNPPR         0xf
+#define OP_SH_IMMNPPR           28
 #define OP_MASK_IMMSEGNELM      0x7
 #define OP_SH_IMMSEGNELM        50
 #define OP_MASK_CUSTOM_IMM      0x7f

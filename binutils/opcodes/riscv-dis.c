@@ -237,7 +237,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
             case 'f':
               (*info->fprintf_func)
                 ( info->stream, "%d",
-                  (int)((l >> OP_SH_IMMNFPR) & OP_MASK_IMMNFPR));
+                  (int)((l >> OP_SH_IMMNPPR) & OP_MASK_IMMNPPR));
               break;
             case 'n':
               (*info->fprintf_func)

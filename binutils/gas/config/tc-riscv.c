@@ -531,7 +531,7 @@ validate_riscv_insn (const struct riscv_opcode *opc)
       switch (c = *p++)
         {
         case 'g': USE_BITS (OP_MASK_IMMNGPR, OP_SH_IMMNGPR); break;
-        case 'f': USE_BITS (OP_MASK_IMMNFPR, OP_SH_IMMNFPR); break;
+        case 'f': USE_BITS (OP_MASK_IMMNPPR, OP_SH_IMMNPPR); break;
         case 'n': USE_BITS (OP_MASK_IMMSEGNELM, OP_SH_IMMSEGNELM); break;
         case 'j': USE_BITS (OP_MASK_VIMM, OP_SH_VIMM); break;
         case 'm': USE_BITS (OP_MASK_VRM, OP_SH_VRM); break;
@@ -1359,20 +1359,22 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                 case 'g':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > NVGPR )
-                    as_warn( _( "Improper ngpr amount (%lu)" ),
+                  if ((unsigned long) imm_expr.X_add_number > NVGPR || 
+                      (unsigned long) imm_expr.X_add_number == 0)
+                    as_bad( _( "Improper ngpr amount (%lu)" ),
                              (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( IMMNGPR, *ip, imm_expr.X_add_number );
+                  INSERT_OPERAND( IMMNGPR, *ip, imm_expr.X_add_number - 1);
                   imm_expr.X_op = O_absent;
                   s = expr_end;
                   continue;
                 case 'f':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > NVSPR )
-                    as_warn( _( "Improper nspr amount (%lu)" ),
+                  if ((unsigned long) imm_expr.X_add_number > NVSPR || 
+                      (unsigned long) imm_expr.X_add_number == 0)
+                    as_bad( _( "Improper nppr amount (%lu)" ),
                              (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( IMMNFPR, *ip, imm_expr.X_add_number );
+                  INSERT_OPERAND( IMMNPPR, *ip, imm_expr.X_add_number - 1);
                   imm_expr.X_op = O_absent;
                   s = expr_end;
                   continue;
