@@ -132,11 +132,6 @@ print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
                   EXTRACT_OPERAND(VN,l) ? "" : " ");
               }else
                 (*info->fprintf_func) (info->stream, "      ");
-
-              continue;
-            case 'd': case 'D':
-              if(scalar)
-                (*info->fprintf_func) (info->stream, "@s    ");
               continue;
             default:
               continue;
@@ -148,23 +143,28 @@ print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
           continue;
       }
 	}
+  if(scalar)
+    (*info->fprintf_func) (info->stream, "@s    ");
 }
 
 /* Print insn suffixes for hwacha.  */
 static void
 print_insn_suffix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
+  bfd_boolean suffix = 0;
   for (; *d != '\0'; d++)
     {
       switch (*d){
         case '#':
           switch ( *++d ) {
             case 'w':
+              suffix = 1;
               if(EXTRACT_OPERAND(VS1,l))
                 (*info->fprintf_func) (info->stream, ".v");
               else
                 (*info->fprintf_func) (info->stream, ".s");
               continue;
             case 'x':
+              suffix = 1;
               if(EXTRACT_OPERAND(VS1,l))
                 (*info->fprintf_func) (info->stream, ".v");
               else
@@ -175,6 +175,7 @@ print_insn_suffix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
                 (*info->fprintf_func) (info->stream, "s");
               continue;
             case 'y':
+              suffix = 1;
               if(EXTRACT_OPERAND(VS1,l))
                 (*info->fprintf_func) (info->stream, ".v");
               else
@@ -198,6 +199,8 @@ print_insn_suffix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
           continue;
       }
 	}
+  if(!suffix)
+    (*info->fprintf_func) (info->stream, "\t");
 }
 
 
@@ -622,10 +625,12 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 	      && !(no_aliases && (op->pinfo & INSN_ALIAS))
 	      && !(op->subset[0] == 'X' && strcmp(op->subset, extension)))
 	    {
-	      print_insn_prefix (op->args, word, memaddr, info);
+        if(op->subset == "Xhwacha")
+	        print_insn_prefix (op->args, word, memaddr, info);
 	      (*info->fprintf_func) (info->stream, "%s", op->name);
-	      print_insn_suffix (op->args, word, memaddr, info);
-        if(op->name[0] == 'v')
+        if(op->subset == "Xhwacha")
+	        print_insn_suffix (op->args, word, memaddr, info);
+        if(op->subset == "Xhwacha")
 	        (*info->fprintf_func) (info->stream, "\t");
 	      print_insn_args (op->args, word, memaddr, info);
 	      if (pd->print_addr != (bfd_vma)-1)
