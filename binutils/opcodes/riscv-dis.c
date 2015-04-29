@@ -625,12 +625,12 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 	      && !(no_aliases && (op->pinfo & INSN_ALIAS))
 	      && !(op->subset[0] == 'X' && strcmp(op->subset, extension)))
 	    {
-        if(op->subset == "Xhwacha")
+        if(op->subset == "Xhwacha" && insnlen == 8)
 	        print_insn_prefix (op->args, word, memaddr, info);
 	      (*info->fprintf_func) (info->stream, "%s", op->name);
-        if(op->subset == "Xhwacha")
+        if(op->subset == "Xhwacha" && insnlen == 8)
 	        print_insn_suffix (op->args, word, memaddr, info);
-        if(op->subset == "Xhwacha")
+        if(op->subset == "Xhwacha" && insnlen == 8)
 	        (*info->fprintf_func) (info->stream, "\t");
 	      print_insn_args (op->args, word, memaddr, info);
 	      if (pd->print_addr != (bfd_vma)-1)
