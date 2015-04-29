@@ -475,9 +475,9 @@ reg_lookup (char **s, enum reg_class class, unsigned int *regnop)
 }
 
 static int
-arg_lookup(char **s, const char* const* array, size_t size, unsigned *regnop)
+arg_lookup(char **s, const char sep, const char* const* array, size_t size, unsigned *regnop)
 {
-  const char *p = strchr(*s, ',');
+  const char *p = strchr(*s, sep);
   size_t i, len = p ? (size_t)(p - *s) : strlen(*s);
   
   for (i = 0; i < size; i++)
@@ -545,9 +545,9 @@ validate_riscv_insn (const struct riscv_opcode *opc)
         case 'G':	USE_BITS (OP_MASK_VPREV,		OP_SH_VPREV); break;
         case 'H':	USE_BITS (OP_MASK_VSUCC,		OP_SH_VSUCC); break;
         case 'v': USE_BITS (OP_MASK_VD, OP_SH_VD); break;
+        case 'y': USE_BITS (OP_MASK_VS3, OP_SH_VS3); /*fallthrough*/
+        case 'x': USE_BITS (OP_MASK_VS2, OP_SH_VS2); /*fallthrough*/
         case 'w': USE_BITS (OP_MASK_VS1, OP_SH_VS1); break;
-        case 'x': USE_BITS (OP_MASK_VS2, OP_SH_VS2); break;
-        case 'y': USE_BITS (OP_MASK_VS3, OP_SH_VS3); break;
         case 'd': USE_BITS (OP_MASK_VRD, OP_SH_VRD); break;
         case 's': USE_BITS (OP_MASK_VRS, OP_SH_VRS); break;
         case 'u': USE_BITS (OP_MASK_VRS, OP_SH_VRS); /*fallthrough*/
@@ -682,6 +682,9 @@ md_begin (void)
   record_alignment (text_section, 2);
 }
 
+/* Whether the current line has a scalar prefix or not */
+static bfd_boolean riscv_scalar = FALSE;
+
 /* Whether or not the current line has a negated predicate or not */
 static bfd_boolean riscv_predneg = FALSE;
 
@@ -694,6 +697,12 @@ int riscv_unrecognized_line (int c)
   switch (c)
   {
     case '@':
+      if (input_line_pointer[0] == 's')
+      {
+        riscv_scalar = TRUE;
+        input_line_pointer++;
+        return 1;
+      }
       if (input_line_pointer[0] == '!')
       {
         riscv_predneg = TRUE;
@@ -1257,6 +1266,9 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
   /* If the instruction contains a '.', we first try to match an instruction
      including the '.'.  Then we try again without the '.'.  */
   insn = NULL;
+
+  /* try progressively smaller instructions moving in by one '.' each time */
+
   for (s = str; *s != '\0' && !ISSPACE (*s); ++s)
     continue;
 
@@ -1264,43 +1276,74 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
      the call to hash_find.  Save the character we replaced just in case we
      have to re-parse the instruction.  */
   if (ISSPACE (*s))
-    {
-      save_c = *s;
-      *s++ = '\0';
-    }
+  {
+    save_c = *s;
+    *s++ = '\0';
+  }
 
   insn = (struct riscv_opcode *) hash_find (op_hash, str);
 
   /* If we didn't find the instruction in the opcode table, try again, but
      this time with just the instruction up to, but not including the
-     first '.'.  */
+     second '.'.  */
   if (insn == NULL)
+  {
+    /* Restore the character we overwrite above (if any).  */
+    if (save_c)
+	    *(--s) = save_c;
+    save_c = 0;
+
+    /* scan up to the last dot */
+    char* last_dot = 0;
+    for (s = str; *s != '\0' && !ISSPACE (*s); ++s)
+      last_dot = *s == '.' ? s : last_dot;
+
+    s = last_dot;
+    /* If we stopped on whitespace, then replace the whitespace with null for
+       the call to hash_find.  Save the character we replaced just in case we
+       have to re-parse the instruction.  */
+    if (ISSPACE (*s) || *s == '.')
     {
+      save_c = *s;
+      *s++ = '\0';
+    }
+
+    /* If we did not find a '.', then we can quit now.  */
+    if (!last_dot)
+	  {
+	    insn_error = "unrecognized opcode";
+	    return;
+	  }
+
+    /* Lookup the instruction in the hash table.  */
+    if ((insn = (struct riscv_opcode *) hash_find (op_hash, str)) == NULL)
+	  {
       /* Restore the character we overwrite above (if any).  */
       if (save_c)
-	*(--s) = save_c;
+        *(--s) = save_c;
 
       /* Scan up to the first '.' or whitespace.  */
       for (s = str;
-	   *s != '\0' && *s != '.' && !ISSPACE (*s);
-	   ++s)
-	continue;
+        *s != '\0' && *s != '.' && !ISSPACE (*s);
+        ++s)
+        continue;
 
       /* If we did not find a '.', then we can quit now.  */
       if (*s != '.')
-	{
-	  insn_error = "unrecognized opcode";
-	  return;
-	}
+      {
+        insn_error = "unrecognized opcode";
+        return;
+      }
 
       /* Lookup the instruction in the hash table.  */
       *s++ = '\0';
       if ((insn = (struct riscv_opcode *) hash_find (op_hash, str)) == NULL)
-	{
-	  insn_error = "unrecognized opcode";
-	  return;
-	}
-    }
+      {
+        insn_error = "unrecognized opcode";
+        return;
+      }
+	  }
+  }
 
   argsStart = s;
   for (;;)
@@ -1399,7 +1442,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   s = expr_end;
                   continue;
                 case 'm':		/* rounding mode */
-                  if (arg_lookup (&s, riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
+                  if (arg_lookup (&s, ',', riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
                     {
                       INSERT_OPERAND (VRM, *ip, regno);
                       continue;
@@ -1570,45 +1613,58 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   s = expr_end;
                   continue;
                 case 'v':
-                  my_getExpression( &imm_expr, s );
-                  /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 1 )
-                    as_warn( _( "Improper predicate negation amount (%lu)" ),
-                             (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( VD, *ip, imm_expr.X_add_number );
-                  imm_expr.X_op = O_absent;
-                  s = expr_end;
+                  /* handled in riscv_unrecognized_line */
+                  INSERT_OPERAND(VD, *ip, !riscv_scalar);
+                  riscv_scalar = FALSE;
+                  //absorb ","
+                  if(*(args+1) == ',')
+                  {
+	                  ++argnum;
+                    args++;
+                  }
                   continue;
-                case 'w':
-                  my_getExpression( &imm_expr, s );
-                  /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 1 )
-                    as_warn( _( "Improper predicate negation amount (%lu)" ),
-                             (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( VS1, *ip, imm_expr.X_add_number );
-                  imm_expr.X_op = O_absent;
-                  s = expr_end;
-                  continue;
-                case 'x':
-                  my_getExpression( &imm_expr, s );
-                  /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 1 )
-                    as_warn( _( "Improper predicate negation amount (%lu)" ),
-                             (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( VS2, *ip, imm_expr.X_add_number );
-                  imm_expr.X_op = O_absent;
-                  s = expr_end;
-                  continue;
-                case 'y':
-                  my_getExpression( &imm_expr, s );
-                  /* check_absolute_expr( ip, &imm_expr ); */
-                  if ((unsigned long) imm_expr.X_add_number > 1 )
-                    as_warn( _( "Improper predicate negation amount (%lu)" ),
-                             (unsigned long) imm_expr.X_add_number );
-                  INSERT_OPERAND( VS3, *ip, imm_expr.X_add_number );
-                  imm_expr.X_op = O_absent;
-                  s = expr_end;
-                  continue;
+                case 'w': //parse one input insts
+                  if (arg_lookup ( &s, ' ', riscv_hwacha_svbits, ARRAY_SIZE(riscv_hwacha_svbits), &regno))
+                  {
+                    if(regno > 1 ) {
+                      as_bad( _( "Invalid vector/scalar suffix" ) );
+                    }
+                    INSERT_OPERAND(VS1, *ip, regno & 0x1);
+                    //advance args since we don't have a ','
+	                  ++argnum;
+                    args++;
+                    continue;
+                  }
+                  break;
+                case 'x': //parse two input insts
+                  if (arg_lookup ( &s, ' ', riscv_hwacha_svbits, ARRAY_SIZE(riscv_hwacha_svbits), &regno))
+                  {
+                    if(regno < 8 || regno > 11) {
+                      as_bad( _( "Invalid vector/scalar suffix" ) );
+                    }
+                    INSERT_OPERAND(VS1, *ip, (regno & 0x02) >> 1);
+                    INSERT_OPERAND(VS2, *ip, regno & 0x1);
+                    //advance args since we don't have a ','
+	                  ++argnum;
+                    args++;
+                    continue;
+                  }else{ as_warn(_("#x lookup failed")); }
+                  break;
+                case 'y': //parse three input insts
+                  if (arg_lookup ( &s, ' ', riscv_hwacha_svbits, ARRAY_SIZE(riscv_hwacha_svbits), &regno))
+                  {
+                    if(regno < 16) {
+                      as_bad( _( "Invalid vector/scalar suffix" ) );
+                    }
+                    INSERT_OPERAND(VS1, *ip, (regno & 0x4) >> 2);
+                    INSERT_OPERAND(VS2, *ip, (regno & 0x2) >> 1);
+                    INSERT_OPERAND(VS3, *ip, regno & 0x1);
+                    //advance args since we don't have a ','
+	                  ++argnum;
+                    args++;
+                    continue;
+                  }
+                  break;
                 case 'z':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
@@ -1621,7 +1677,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                   continue;
 	              case 'G':
 	              case 'H':		/* fence predecessor/successor */
-                        if (arg_lookup (&s, riscv_pred_succ, ARRAY_SIZE(riscv_pred_succ), &regno))
+                        if (arg_lookup (&s, ',', riscv_pred_succ, ARRAY_SIZE(riscv_pred_succ), &regno))
                           {
 	                    if (*args == 'G')
 	                      INSERT_OPERAND(VPREV, *ip, regno);
@@ -1737,7 +1793,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
 	      continue;
 
             case 'm':		/* rounding mode */
-              if (arg_lookup (&s, riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
+              if (arg_lookup (&s, ',', riscv_rm, ARRAY_SIZE(riscv_rm), &regno))
                 {
                   INSERT_OPERAND (RM, *ip, regno);
                   continue;
@@ -1746,7 +1802,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
 
 	    case 'P':
 	    case 'Q':		/* fence predecessor/successor */
-              if (arg_lookup (&s, riscv_pred_succ, ARRAY_SIZE(riscv_pred_succ), &regno))
+              if (arg_lookup (&s, ',', riscv_pred_succ, ARRAY_SIZE(riscv_pred_succ), &regno))
                 {
 	          if (*args == 'P')
 	            INSERT_OPERAND(PRED, *ip, regno);

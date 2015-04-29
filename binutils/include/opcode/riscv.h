@@ -77,6 +77,11 @@ static const char* const riscv_pred_succ[16] = {
   0,   "w",  "r",  "rw",  "o",  "ow",  "or",  "orw",
   "i", "iw", "ir", "irw", "io", "iow", "ior", "iorw",
 };
+static const char * const riscv_hwacha_svbits[24] = {
+  "s",    "v",    0,      0,      0,      0,      0,      0,
+  "ss",   "sv",   "vs",   "vv",   0,      0,      0,      0,
+  "sss",  "ssv",  "svs",  "svv",  "vss",  "vsv",  "vvs",  "vvv"
+};
 
 #define RVC_JUMP_BITS 10
 #define RVC_JUMP_ALIGN_BITS 1

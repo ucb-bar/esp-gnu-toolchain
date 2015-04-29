@@ -165,12 +165,24 @@ print_insn_suffix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
                 (*info->fprintf_func) (info->stream, ".s");
               continue;
             case 'x':
+              if(EXTRACT_OPERAND(VS1,l))
+                (*info->fprintf_func) (info->stream, ".v");
+              else
+                (*info->fprintf_func) (info->stream, ".s");
               if(EXTRACT_OPERAND(VS2,l))
                 (*info->fprintf_func) (info->stream, "v");
               else
                 (*info->fprintf_func) (info->stream, "s");
               continue;
             case 'y':
+              if(EXTRACT_OPERAND(VS1,l))
+                (*info->fprintf_func) (info->stream, ".v");
+              else
+                (*info->fprintf_func) (info->stream, ".s");
+              if(EXTRACT_OPERAND(VS2,l))
+                (*info->fprintf_func) (info->stream, "v");
+              else
+                (*info->fprintf_func) (info->stream, "s");
               if(EXTRACT_OPERAND(VS3,l))
                 (*info->fprintf_func) (info->stream, "v");
               else
@@ -411,6 +423,8 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	  break;
 
 	case '0':
+    if(*(d+1)=='(') 
+	    (*info->fprintf_func) (info->stream, "%c", *d);
 	  break;
 
 	case 'b':
