@@ -685,6 +685,9 @@ md_begin (void)
 /* Whether the current line has a scalar prefix or not */
 static bfd_boolean riscv_scalar = FALSE;
 
+/* Whether we are auto-detecing the sv bits on the current line */
+static bfd_boolean riscv_sv_auto = FALSE;
+
 /* Whether or not the current line has a negated predicate or not */
 static bfd_boolean riscv_predneg = FALSE;
 
@@ -1353,6 +1356,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
 
       create_insn (ip, insn);
       insn_error = NULL;
+      riscv_sv_auto = FALSE;
       argnum = 1;
       for (args = insn->args;; ++args)
 	{
@@ -1484,63 +1488,117 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
 	                s = expr_end;
 	                continue;
                 case 'd':
-                  if(EXTRACT_OPERAND( VD, *ip)){
+                  if (riscv_sv_auto) {
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector register vvd" ) );
-                  }else{
-                    ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector shared vsd register" ) );
+                    if ( !ok ) {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vd" ) );
+                      INSERT_OPERAND( VD, *ip, 0);
+                    } else INSERT_OPERAND( VD, *ip, 1);
+                  } else {
+                    if (EXTRACT_OPERAND( VD, *ip)) {
+                      ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vvd" ) );
+                    } else {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector shared vsd register" ) );
+                    }
                   }
                   INSERT_OPERAND( VRD, *ip, regno );
                   continue;
                 case 's':
-                  if(EXTRACT_OPERAND( VS1, *ip)){
+                  if (riscv_sv_auto) {
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector register vvr1" ) );
-                  }else{
-                    ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector shared vsr1 register" ) );
+                    if ( !ok ) {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vs1" ) );
+                      INSERT_OPERAND( VS1, *ip, 0);
+                    } else INSERT_OPERAND( VS1, *ip, 1);
+                  } else {
+                    if (EXTRACT_OPERAND( VS1, *ip)) {
+                      ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vvr1" ) );
+                    } else {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector shared vsr1 register" ) );
+                    }
                   }
                   INSERT_OPERAND( VRS, *ip, regno );
                   continue;
                 case 'u':
-                  if(EXTRACT_OPERAND( VS1, *ip)){
+                  if (riscv_sv_auto) {
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector register" ) );
-                  }else{
-                    ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector shared register" ) );
+                    if ( !ok ) {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vs1" ) );
+                      INSERT_OPERAND( VS1, *ip, 0);
+                      INSERT_OPERAND( VS2, *ip, 0);
+                    } else {
+                      INSERT_OPERAND( VS1, *ip, 1);
+                      INSERT_OPERAND( VS2, *ip, 1);
+                    }
+                  } else {
+                    if (EXTRACT_OPERAND( VS1, *ip)) {
+                      ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register" ) );
+                    } else {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector shared register" ) );
+                    }
                   }
                   INSERT_OPERAND( VRS, *ip, regno );
                   INSERT_OPERAND( VRT, *ip, regno );
                   continue;
                 case 't':
-                  if(EXTRACT_OPERAND( VS2, *ip)){
+                  if (riscv_sv_auto) {
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector register vvr2" ) );
-                  }else{
-                    ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector shared vsr2 register" ) );
+                    if ( !ok ) {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vs2" ) );
+                      INSERT_OPERAND( VS2, *ip, 0);
+                    } else INSERT_OPERAND( VS2, *ip, 1);
+                  } else {
+                    if (EXTRACT_OPERAND( VS2, *ip)) {
+                      ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vvr2" ) );
+                    } else {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector shared vsr2 register" ) );
+                    }
                   }
                   INSERT_OPERAND( VRT, *ip, regno );
                   continue;
                 case 'r':
-                  if(EXTRACT_OPERAND( VS3, *ip)){
+                  if (riscv_sv_auto) {
                     ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector register vvr3" ) );
-                  }else{
-                    ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
-                    if ( !ok )
-                      as_bad( _( "Invalid vector shared vsr3 register" ) );
+                    if ( !ok ) {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vs3" ) );
+                      INSERT_OPERAND( VS3, *ip, 0);
+                    } else INSERT_OPERAND( VS3, *ip, 1);
+                  } else {
+                    if (EXTRACT_OPERAND( VS3, *ip)) {
+                      ok = reg_lookup( &s, RCLASS_VEC_GPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector register vvr3" ) );
+                    } else {
+                      ok = reg_lookup( &s, RCLASS_VEC_SPR, &regno );
+                      if ( !ok )
+                        as_bad( _( "Invalid vector shared vsr3 register" ) );
+                    }
                   }
                   INSERT_OPERAND( VRR, *ip, regno );
                   continue;
@@ -1630,12 +1688,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                       as_bad( _( "Invalid vector/scalar suffix" ) );
                     }
                     INSERT_OPERAND(VS1, *ip, regno & 0x1);
-                    //advance args since we don't have a ','
-	                  ++argnum;
-                    args++;
-                    continue;
-                  }
-                  break;
+                  } else riscv_sv_auto = TRUE;
+                  //advance args since we don't have a ','
+	                ++argnum;
+                  args++;
+                  continue;
                 case 'x': //parse two input insts
                   if (arg_lookup ( &s, ' ', riscv_hwacha_svbits, ARRAY_SIZE(riscv_hwacha_svbits), &regno))
                   {
@@ -1644,12 +1701,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                     }
                     INSERT_OPERAND(VS1, *ip, (regno & 0x02) >> 1);
                     INSERT_OPERAND(VS2, *ip, regno & 0x1);
-                    //advance args since we don't have a ','
-	                  ++argnum;
-                    args++;
-                    continue;
-                  }else{ as_warn(_("#x lookup failed")); }
-                  break;
+                  } else riscv_sv_auto = TRUE;
+                  //advance args since we don't have a ','
+	                ++argnum;
+                  args++;
+                  continue;
                 case 'y': //parse three input insts
                   if (arg_lookup ( &s, ' ', riscv_hwacha_svbits, ARRAY_SIZE(riscv_hwacha_svbits), &regno))
                   {
@@ -1659,12 +1715,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
                     INSERT_OPERAND(VS1, *ip, (regno & 0x4) >> 2);
                     INSERT_OPERAND(VS2, *ip, (regno & 0x2) >> 1);
                     INSERT_OPERAND(VS3, *ip, regno & 0x1);
-                    //advance args since we don't have a ','
-	                  ++argnum;
-                    args++;
-                    continue;
-                  }
-                  break;
+                  } else riscv_sv_auto = TRUE;
+                  //advance args since we don't have a ','
+	                ++argnum;
+                  args++;
+                  continue;
                 case 'z':
                   my_getExpression( &imm_expr, s );
                   /* check_absolute_expr( ip, &imm_expr ); */
