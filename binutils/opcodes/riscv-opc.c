@@ -754,33 +754,33 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 
 /* shared loads from shared registers */
 /* xloads */
-{"vlsd",      "Xhwacha", "#N,#p,#d,#S", MATCH_VLSD, MASK_VLSD, match_opcode, 0},
-{"vlsw",      "Xhwacha", "#N,#p,#d,#S", MATCH_VLSW, MASK_VLSW, match_opcode, 0},
-{"vlswu",     "Xhwacha", "#N,#p,#d,#S", MATCH_VLSWU,MASK_VLSWU, match_opcode, 0},
-{"vlsh",      "Xhwacha", "#N,#p,#d,#S", MATCH_VLSH, MASK_VLSH, match_opcode, 0},
-{"vlshu",     "Xhwacha", "#N,#p,#d,#S", MATCH_VLSHU,MASK_VLSHU, match_opcode, 0},
-{"vlsb",      "Xhwacha", "#N,#p,#d,#S", MATCH_VLSB, MASK_VLSB, match_opcode, 0},
-{"vlsbu",     "Xhwacha", "#N,#p,#d,#S", MATCH_VLSBU,MASK_VLSBU, match_opcode, 0},
+{"vlsd",      "Xhwacha", "#d,#S", MATCH_VLSD, MASK_VLSD, match_opcode, 0},
+{"vlsw",      "Xhwacha", "#d,#S", MATCH_VLSW, MASK_VLSW, match_opcode, 0},
+{"vlswu",     "Xhwacha", "#d,#S", MATCH_VLSWU,MASK_VLSWU, match_opcode, 0},
+{"vlsh",      "Xhwacha", "#d,#S", MATCH_VLSH, MASK_VLSH, match_opcode, 0},
+{"vlshu",     "Xhwacha", "#d,#S", MATCH_VLSHU,MASK_VLSHU, match_opcode, 0},
+{"vlsb",      "Xhwacha", "#d,#S", MATCH_VLSB, MASK_VLSB, match_opcode, 0},
+{"vlsbu",     "Xhwacha", "#d,#S", MATCH_VLSBU,MASK_VLSBU, match_opcode, 0},
 /* xstores */
-{"vssd",      "Xhwacha", "#N,#p,#S,#T", MATCH_VSSD, MASK_VSSD, match_opcode, 0},
-{"vssw",      "Xhwacha", "#N,#p,#S,#T", MATCH_VSSW, MASK_VSSW, match_opcode, 0},
-{"vssh",      "Xhwacha", "#N,#p,#S,#T", MATCH_VSSH, MASK_VSSH, match_opcode, 0},
-{"vssb",      "Xhwacha", "#N,#p,#S,#T", MATCH_VSSB, MASK_VSSB, match_opcode, 0},
+{"vssd",      "Xhwacha", "#S,#T", MATCH_VSSD, MASK_VSSD, match_opcode, 0},
+{"vssw",      "Xhwacha", "#S,#T", MATCH_VSSW, MASK_VSSW, match_opcode, 0},
+{"vssh",      "Xhwacha", "#S,#T", MATCH_VSSH, MASK_VSSH, match_opcode, 0},
+{"vssb",      "Xhwacha", "#S,#T", MATCH_VSSB, MASK_VSSB, match_opcode, 0},
 
 /* shared loads from address registers */
 /* xloads */
-{"vlad",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLAD, MASK_VLAD, match_opcode, 0},
-{"vlaw",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLAW, MASK_VLAW, match_opcode, 0},
-{"vlawu",     "Xhwacha", "#N,#p,#d,#A", MATCH_VLAWU,MASK_VLAWU, match_opcode, 0},
-{"vlah",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLAH, MASK_VLAH, match_opcode, 0},
-{"vlahu",     "Xhwacha", "#N,#p,#d,#A", MATCH_VLAHU,MASK_VLAHU, match_opcode, 0},
-{"vlab",      "Xhwacha", "#N,#p,#d,#A", MATCH_VLAB, MASK_VLAB, match_opcode, 0},
-{"vlabu",     "Xhwacha", "#N,#p,#d,#A", MATCH_VLABU,MASK_VLABU, match_opcode, 0},
+{"vlad",      "Xhwacha", "#d,#A", MATCH_VLAD, MASK_VLAD, match_opcode, 0},
+{"vlaw",      "Xhwacha", "#d,#A", MATCH_VLAW, MASK_VLAW, match_opcode, 0},
+{"vlawu",     "Xhwacha", "#d,#A", MATCH_VLAWU,MASK_VLAWU, match_opcode, 0},
+{"vlah",      "Xhwacha", "#d,#A", MATCH_VLAH, MASK_VLAH, match_opcode, 0},
+{"vlahu",     "Xhwacha", "#d,#A", MATCH_VLAHU,MASK_VLAHU, match_opcode, 0},
+{"vlab",      "Xhwacha", "#d,#A", MATCH_VLAB, MASK_VLAB, match_opcode, 0},
+{"vlabu",     "Xhwacha", "#d,#A", MATCH_VLABU,MASK_VLABU, match_opcode, 0},
 /* xstores */
-{"vsad",      "Xhwacha", "#N,#p,#A,#T", MATCH_VSAD, MASK_VSAD, match_opcode, 0},
-{"vsaw",      "Xhwacha", "#N,#p,#A,#T", MATCH_VSAW, MASK_VSAW, match_opcode, 0},
-{"vsah",      "Xhwacha", "#N,#p,#A,#T", MATCH_VSAH, MASK_VSAH, match_opcode, 0},
-{"vsab",      "Xhwacha", "#N,#p,#A,#T", MATCH_VSAB, MASK_VSAB, match_opcode, 0},
+{"vsad",      "Xhwacha", "#A,#T", MATCH_VSAD, MASK_VSAD, match_opcode, 0},
+{"vsaw",      "Xhwacha", "#A,#T", MATCH_VSAW, MASK_VSAW, match_opcode, 0},
+{"vsah",      "Xhwacha", "#A,#T", MATCH_VSAH, MASK_VSAH, match_opcode, 0},
+{"vsab",      "Xhwacha", "#A,#T", MATCH_VSAB, MASK_VSAB, match_opcode, 0},
 
 /* Vector-vector ut operations */
 {"vandi",     "Xhwacha", "#d,#s,#j",  MATCH_VANDI, MASK_VANDI, match_opcode,   WR_xd|RD_xs1 },
