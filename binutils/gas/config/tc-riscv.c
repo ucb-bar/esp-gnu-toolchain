@@ -1297,7 +1297,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
     save_c = 0;
 
     /* scan up to the last dot */
-    char* last_dot = 0;
+    char* last_dot = NULL;
     for (s = str; *s != '\0' && !ISSPACE (*s); ++s)
       last_dot = *s == '.' ? s : last_dot;
 
