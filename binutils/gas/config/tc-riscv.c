@@ -1301,6 +1301,13 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
     for (s = str; *s != '\0' && !ISSPACE (*s); ++s)
       last_dot = *s == '.' ? s : last_dot;
 
+    /* If we did not find a '.', then we can quit now.  */
+    if (!last_dot)
+	  {
+	    insn_error = "unrecognized opcode";
+	    return;
+	  }
+
     s = last_dot;
     /* If we stopped on whitespace, then replace the whitespace with null for
        the call to hash_find.  Save the character we replaced just in case we
@@ -1310,13 +1317,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip)
       save_c = *s;
       *s++ = '\0';
     }
-
-    /* If we did not find a '.', then we can quit now.  */
-    if (!last_dot)
-	  {
-	    insn_error = "unrecognized opcode";
-	    return;
-	  }
 
     /* Lookup the instruction in the hash table.  */
     if ((insn = (struct riscv_opcode *) hash_find (op_hash, str)) == NULL)
