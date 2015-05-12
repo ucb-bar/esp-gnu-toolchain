@@ -58,6 +58,10 @@ along with GCC; see the file COPYING3.  If not see
         builtin_define ("__riscv_atomic");                              \
       }                                                                 \
                                                                         \
+      if (TARGET_HWACHA4) {                                             \
+        builtin_define ("__riscv_hwacha4");                             \
+      }                                                                 \
+                                                                        \
       /* These defines reflect the ABI in use, not whether the  	\
 	 FPU is directly accessible.  */				\
       if (TARGET_HARD_FLOAT_ABI) {					\

@@ -77,3 +77,7 @@ Use LRA instead of reload
 mcmodel=
 Target RejectNegative Joined Var(riscv_cmodel_string)
 Use given RISC-V code model (medlow or medany)
+
+mhwacha4
+Target Report RejectNegative Mask(HWACHA4)
+Enable Hwacha v4 code generation
