@@ -1527,9 +1527,6 @@
     DONE;
 })
 
-;; The difference between these two is whether or not ints are allowed
-;; in FP registers (off by default, use -mdebugh to enable).
-
 (define_insn "*mov<mode>_internal"
   [(set (match_operand:IMOVE32 0 "nonimmediate_operand" "=r,r,r,m,*f,*f,*r,*m")
 	(match_operand:IMOVE32 1 "move_operand" "r,T,m,rJ,*r*J,*m,*f,*f"))]
@@ -1905,7 +1902,11 @@
 	 (label_ref (match_operand 0 "" ""))
 	 (pc)))]
   ""
-  "b%C1\t%2,%z3,%0"
+{
+  if (GET_CODE (operands[3]) == CONST_INT)
+    return "b%C1z\t%2,%0";
+  return "b%C1\t%2,%3,%0";
+}
   [(set_attr "type" "branch")
    (set_attr "mode" "none")])
 
@@ -1948,7 +1949,7 @@
 	 (match_operator 0 "equality_operator"
 	  [(zero_extract:GPR (match_operand:GPR 2 "register_operand" "r")
 		 (const_int 1)
-		 (match_operand 3 "const_int_operand"))
+		 (match_operand 3 "branch_on_bit_operand"))
 		 (const_int 0)])
 	 (label_ref (match_operand 1))
 	 (pc)))
@@ -1978,7 +1979,7 @@
 	(if_then_else
 	 (match_operator 0 "equality_operator"
 	  [(zero_extract:GPR (match_operand:GPR 2 "register_operand" "r")
-		 (match_operand 3 "const_int_operand")
+		 (match_operand 3 "branch_on_bit_operand")
 		 (const_int 0))
 		 (const_int 0)])
 	 (label_ref (match_operand 1))

@@ -18,14 +18,16 @@ AC_PATH_PROGS_FEATURE_CHECK([GSED], [gsed sed],
 	[AC_MSG_ERROR([GNU sed not found])])
 AC_SUBST([GSED], [$ac_cv_path_GSED])
 
+need_gcc_external_libraries="no"
 AC_CHECK_LIB(gmp, __gmpz_init, ,
-	[AC_MSG_ERROR([GNU MP not found; see https://gmplib.org/])])
-
+        [need_gcc_external_libraries="yes"])
 AC_CHECK_LIB(mpfr, mpfr_init, ,
-	[AC_MSG_ERROR([MPFR not found; see http://www.mpfr.org/])])
-
+        [need_gcc_external_libraries="yes"])
 AC_CHECK_LIB(mpc, mpc_init2, ,
-	[AC_MSG_ERROR([MPC not found; see http://www.multiprecision.org/])])
+        [need_gcc_external_libraries="yes"])
+AS_IF([test x"$need_gcc_external_libraries" != xno],
+      [AC_SUBST(NEED_GCC_EXTERNAL_LIBRARIES,true)],
+      [AC_SUBST(NEED_GCC_EXTERNAL_LIBRARIES,false)])
 
 AC_PATH_PROG([CURL], [curl], [no])
 AC_PATH_PROG([WGET], [wget], [no])
@@ -90,7 +92,7 @@ AS_IF([test "x$enable_multilib" != xno],
 	[AC_SUBST(multilib_flags,--disable-multilib)])
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([scripts/wrapper/awk], [chmod +x scripts/wrapper/awk])
-AC_CONFIG_FILES([scripts/wrapper/sed], [chmod +x scripts/wrapper/sed])
+AC_CONFIG_FILES([scripts/wrapper/awk/awk], [chmod +x scripts/wrapper/awk])
+AC_CONFIG_FILES([scripts/wrapper/sed/sed], [chmod +x scripts/wrapper/sed])
 
 AC_OUTPUT

@@ -3,7 +3,7 @@ builddir := @abs_top_builddir@
 INSTALL_DIR := @prefix@
 
 PACKAGES := binutils gcc glibc newlib
-gcc_version := 4.9.2
+gcc_version := 5.1.0
 binutils_version := 2.25
 glibc_version := 2.21
 newlib_version := 1.18.0
@@ -21,7 +21,18 @@ SYSROOT := $(INSTALL_DIR)/sysroot
 SHELL := /bin/sh
 AWK := @GAWK@
 SED := @GSED@
-PATH := $(INSTALL_DIR)/bin:$(builddir)/scripts/wrapper:$(PATH)
+PATH := $(INSTALL_DIR)/bin:$(PATH)
+
+# Check to see if we need wrapper scripts for awk/sed (which point to
+# gawk/gsed on platforms where these aren't the default), otherwise
+# don't override these as the wrappers don't always work.
+ifneq (@GSED@,/bin/sed)
+	PATH := $(base_dir)/sed:$(PATH)
+endif
+ifneq (@GAWK@,/usr/bin/gawk)
+	PATH := $(base_dir)/awk:$(PATH)
+endif
+
 export PATH AWK SED
 
 MULTILIB_FLAGS := @multilib_flags@
@@ -62,6 +73,7 @@ $(addprefix src/,$(PACKAGES)): src/%: src/original-%
 	cp -R $< $@.tmp
 	$(srcdir)/scripts/cp_s $(srcdir)/$(notdir $@) $@.tmp
 	cd $@.tmp && patch -p1 < $(srcdir)/patches/$(notdir $@)
+	if test -f $@.tmp/contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" == "true"; then cd $@.tmp && ./contrib/download_prerequisites; fi
 	mv $@.tmp $@
 
 .PHONY: patches $(addprefix $(srcdir)/patches/,$(PACKAGES))
@@ -90,7 +102,7 @@ stamps/build-linux-headers:
 	cp -R $(srcdir)/linux-headers/include $(SYSROOT)/usr/
 	mkdir -p $(dir $@) && touch $@
 
-stamps/build-glibc-linux-headers: src/glibc
+stamps/build-glibc-linux-headers: src/glibc stamps/build-gcc-linux-stage1
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	mkdir -p $(SYSROOT)/usr/lib $(SYSROOT)/lib
@@ -127,7 +139,6 @@ stamps/build-glibc-linux$(XLEN): src/glibc stamps/build-gcc-linux-stage1
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-gcc-linux-stage1: src/gcc stamps/build-binutils-linux \
-                               stamps/build-glibc-linux-headers \
                                stamps/build-linux-headers
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
@@ -155,7 +166,8 @@ stamps/build-gcc-linux-stage1: src/gcc stamps/build-binutils-linux \
 	$(MAKE) -C $(notdir $@) inhibit-libc=true install-target-libgcc
 	mkdir -p $(dir $@) && touch $@
 
-stamps/build-gcc-linux-stage2: src/gcc stamps/build-glibc-linux$(XLEN)
+stamps/build-gcc-linux-stage2: src/gcc stamps/build-glibc-linux$(XLEN) \
+                               stamps/build-glibc-linux-headers
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \

@@ -28,26 +28,12 @@ Software Foundation, 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, US
 
 /* RVC fields */
 
-#define OP_MASK_CRD		0x1f
-#define OP_SH_CRD		5
-#define OP_MASK_CRS2	0x1f
-#define OP_SH_CRS2	5
-#define OP_MASK_CRS1	0x1f
-#define OP_SH_CRS1	10
-#define OP_MASK_CRDS		0x7
-#define OP_SH_CRDS		13
-#define OP_MASK_CRS2S	0x7
-#define OP_SH_CRS2S	13
-#define OP_MASK_CRS2BS	0x7
-#define OP_SH_CRS2BS	5
-#define OP_MASK_CRS1S	0x7
-#define OP_SH_CRS1S	10
-#define OP_MASK_CIMM6	0x3f
-#define OP_SH_CIMM6	10
-#define OP_MASK_CIMM5	0x1f
-#define OP_SH_CIMM5	5
-#define OP_MASK_CIMM10	0x3ff
-#define OP_SH_CIMM10	5
+#define OP_MASK_CRS1 0x1f
+#define OP_SH_CRS1 2
+#define OP_MASK_CRS1S 0x7
+#define OP_SH_CRS1S 2
+#define OP_MASK_CRDS 0x7
+#define OP_SH_CRDS 7
 
 static const char rvc_rs1_regmap[8] = { 20, 21, 2, 3, 4, 5, 6, 7 };
 #define rvc_rd_regmap rvc_rs1_regmap
@@ -83,15 +69,11 @@ static const char * const riscv_hwacha_svbits[24] = {
   "sss",  "ssv",  "svs",  "svv",  "vss",  "vsv",  "vvs",  "vvv"
 };
 
-#define RVC_JUMP_BITS 10
-#define RVC_JUMP_ALIGN_BITS 1
-#define RVC_JUMP_ALIGN (1 << RVC_JUMP_ALIGN_BITS)
-#define RVC_JUMP_REACH ((1ULL<<RVC_JUMP_BITS)*RVC_JUMP_ALIGN)
+#define RVC_JUMP_BITS 11
+#define RVC_JUMP_REACH ((1ULL<<RVC_JUMP_BITS)*RISCV_JUMP_ALIGN)
 
-#define RVC_BRANCH_BITS 5
-#define RVC_BRANCH_ALIGN_BITS RVC_JUMP_ALIGN_BITS
-#define RVC_BRANCH_ALIGN (1 << RVC_BRANCH_ALIGN_BITS)
-#define RVC_BRANCH_REACH ((1ULL<<RVC_BRANCH_BITS)*RVC_BRANCH_ALIGN)
+#define RVC_BRANCH_BITS 8
+#define RVC_BRANCH_REACH ((1ULL<<RVC_BRANCH_BITS)*RISCV_BRANCH_ALIGN)
 
 #define RV_X(x, s, n) (((x) >> (s)) & (((insn_t)1<<(n))-1))
 #define RV_IMM_SIGN(x) (-(((x) >> 31) & 1))
@@ -106,6 +88,20 @@ static const char * const riscv_hwacha_svbits[24] = {
   ((RV_X(x, 12, 20) << 12) | (RV_IMM_SIGN(x) << 32))
 #define EXTRACT_UJTYPE_IMM(x) \
   ((RV_X(x, 21, 10) << 1) | (RV_X(x, 20, 1) << 11) | (RV_X(x, 12, 8) << 12) | (RV_IMM_SIGN(x) << 20))
+#define EXTRACT_RVC_IMM(x) \
+  (RV_X(x, 2, 5) | (-RV_X(x, 12, 1) << 5))
+#define EXTRACT_RVC_LW_IMM(x) \
+  ((RV_X(x, 11, 1) << 2) | (RV_X(x, 5, 2) << 3) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 10, 1) << 6))
+#define EXTRACT_RVC_LD_IMM(x) \
+  ((RV_X(x, 5, 2) << 3) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 10, 2) << 6))
+#define EXTRACT_RVC_LWSP_IMM(x) \
+  ((RV_X(x, 4, 3) << 2) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 2, 2) << 6))
+#define EXTRACT_RVC_LDSP_IMM(x) \
+  ((RV_X(x, 5, 2) << 3) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 2, 3) << 6))
+#define EXTRACT_RVC_B_IMM(x) \
+  ((RV_X(x, 7, 1) << 1) | (RV_X(x, 11, 1) << 2) | (RV_X(x, 5, 2) << 3) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 10, 1) << 6) | (RV_X(x, 8, 1) << 7) | (-RV_X(x, 9, 1) << 8))
+#define EXTRACT_RVC_J_IMM(x) \
+  ((RV_X(x, 7, 1) << 1) | (RV_X(x, 11, 1) << 2) | (RV_X(x, 5, 2) << 3) | (RV_X(x, 12, 1) << 5) | (RV_X(x, 10, 1) << 6) | (RV_X(x, 8, 2) << 7) | (RV_X(x, 2, 2) << 9) | (-RV_X(x, 4, 1) << 11))
 
 #define ENCODE_ITYPE_IMM(x) \
   (RV_X(x, 0, 12) << 20)
@@ -117,6 +113,20 @@ static const char * const riscv_hwacha_svbits[24] = {
   (RV_X(x, 12, 20) << 12)
 #define ENCODE_UJTYPE_IMM(x) \
   ((RV_X(x, 1, 10) << 21) | (RV_X(x, 11, 1) << 20) | (RV_X(x, 12, 8) << 12) | (RV_X(x, 20, 1) << 31))
+#define ENCODE_RVC_IMM(x) \
+  ((RV_X(x, 0, 5) << 2) | (RV_X(x, 5, 1) << 12))
+#define ENCODE_RVC_LW_IMM(x) \
+  ((RV_X(x, 2, 1) << 11) | (RV_X(x, 3, 2) << 5) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 1) << 10))
+#define ENCODE_RVC_LD_IMM(x) \
+  ((RV_X(x, 3, 2) << 5) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 2) << 10))
+#define ENCODE_RVC_LWSP_IMM(x) \
+  ((RV_X(x, 2, 3) << 4) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 2) << 2))
+#define ENCODE_RVC_LDSP_IMM(x) \
+  ((RV_X(x, 3, 2) << 5) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 3) << 2))
+#define ENCODE_RVC_B_IMM(x) \
+  ((RV_X(x, 1, 1) << 7) | (RV_X(x, 2, 1) << 11) | (RV_X(x, 3, 2) << 5) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 1) << 10) | (RV_X(x, 7, 2) << 8))
+#define ENCODE_RVC_J_IMM(x) \
+  ((RV_X(x, 1, 1) << 7) | (RV_X(x, 2, 1) << 11) | (RV_X(x, 3, 2) << 5) | (RV_X(x, 5, 1) << 12) | (RV_X(x, 6, 1) << 10) | (RV_X(x, 7, 2) << 8) | (RV_X(x, 9, 3) << 2))
 //vector imm encoding
 #define ENCODE_ITYPE_VIMM(x) \
   ((insn_t)RV_X(x, 0, 32) << 32)
@@ -128,6 +138,13 @@ static const char * const riscv_hwacha_svbits[24] = {
 #define VALID_SBTYPE_IMM(x) (EXTRACT_SBTYPE_IMM(ENCODE_SBTYPE_IMM(x)) == (x))
 #define VALID_UTYPE_IMM(x) (EXTRACT_UTYPE_IMM(ENCODE_UTYPE_IMM(x)) == (x))
 #define VALID_UJTYPE_IMM(x) (EXTRACT_UJTYPE_IMM(ENCODE_UJTYPE_IMM(x)) == (x))
+#define VALID_RVC_IMM(x) (EXTRACT_RVC_IMM(ENCODE_RVC_IMM(x)) == (x))
+#define VALID_RVC_LW_IMM(x) (EXTRACT_RVC_LW_IMM(ENCODE_RVC_LW_IMM(x)) == (x))
+#define VALID_RVC_LD_IMM(x) (EXTRACT_RVC_LD_IMM(ENCODE_RVC_LD_IMM(x)) == (x))
+#define VALID_RVC_LWSP_IMM(x) (EXTRACT_RVC_LWSP_IMM(ENCODE_RVC_LWSP_IMM(x)) == (x))
+#define VALID_RVC_LDSP_IMM(x) (EXTRACT_RVC_LDSP_IMM(ENCODE_RVC_LDSP_IMM(x)) == (x))
+#define VALID_RVC_B_IMM(x) (EXTRACT_RVC_B_IMM(ENCODE_RVC_B_IMM(x)) == (x))
+#define VALID_RVC_J_IMM(x) (EXTRACT_RVC_J_IMM(ENCODE_RVC_J_IMM(x)) == (x))
 
 #define RISCV_RTYPE(insn, rd, rs1, rs2) \
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ((rs1) << OP_SH_RS1) | ((rs2) << OP_SH_RS2))
@@ -143,6 +160,7 @@ static const char * const riscv_hwacha_svbits[24] = {
   ((MATCH_ ## insn) | ((rd) << OP_SH_RD) | ENCODE_UJTYPE_IMM(target))
 
 #define RISCV_NOP RISCV_ITYPE(ADDI, 0, 0, 0)
+#define RVC_NOP MATCH_C_ADDI
 
 #define RISCV_CONST_HIGH_PART(VALUE) \
   (((VALUE) + (RISCV_IMM_REACH/2)) & ~(RISCV_IMM_REACH-1))
@@ -278,6 +296,7 @@ static const char * const riscv_hwacha_svbits[24] = {
 #define RISCV_BIGIMM_BITS (32-RISCV_IMM_BITS)
 #define RISCV_IMM_REACH (1LL<<RISCV_IMM_BITS)
 #define RISCV_BIGIMM_REACH (1LL<<RISCV_BIGIMM_BITS)
+#define RISCV_RVC_IMM_REACH (1LL<<6)
 #define RISCV_BRANCH_BITS RISCV_IMM_BITS
 #define RISCV_BRANCH_ALIGN_BITS RISCV_JUMP_ALIGN_BITS
 #define RISCV_BRANCH_ALIGN (1 << RISCV_BRANCH_ALIGN_BITS)

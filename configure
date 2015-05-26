@@ -595,6 +595,7 @@ FETCHER
 FTP
 WGET
 CURL
+NEED_GCC_EXTERNAL_LIBRARIES
 GSED
 GAWK
 BASH
@@ -2832,6 +2833,7 @@ fi
 GSED=$ac_cv_path_GSED
 
 
+need_gcc_external_libraries="no"
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __gmpz_init in -lgmp" >&5
 $as_echo_n "checking for __gmpz_init in -lgmp... " >&6; }
@@ -2877,9 +2879,8 @@ _ACEOF
   LIBS="-lgmp $LIBS"
 
 else
-  as_fn_error $? "GNU MP not found; see https://gmplib.org/" "$LINENO" 5
+  need_gcc_external_libraries="yes"
 fi
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mpfr_init in -lmpfr" >&5
 $as_echo_n "checking for mpfr_init in -lmpfr... " >&6; }
@@ -2925,9 +2926,8 @@ _ACEOF
   LIBS="-lmpfr $LIBS"
 
 else
-  as_fn_error $? "MPFR not found; see http://www.mpfr.org/" "$LINENO" 5
+  need_gcc_external_libraries="yes"
 fi
-
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for mpc_init2 in -lmpc" >&5
 $as_echo_n "checking for mpc_init2 in -lmpc... " >&6; }
@@ -2973,9 +2973,16 @@ _ACEOF
   LIBS="-lmpc $LIBS"
 
 else
-  as_fn_error $? "MPC not found; see http://www.multiprecision.org/" "$LINENO" 5
+  need_gcc_external_libraries="yes"
 fi
 
+if test x"$need_gcc_external_libraries" != xno; then :
+  NEED_GCC_EXTERNAL_LIBRARIES=true
+
+else
+  NEED_GCC_EXTERNAL_LIBRARIES=false
+
+fi
 
 # Extract the first word of "curl", so it can be a program name with args.
 set dummy curl; ac_word=$2
@@ -3192,9 +3199,9 @@ fi
 
 ac_config_files="$ac_config_files Makefile"
 
-ac_config_files="$ac_config_files scripts/wrapper/awk"
+ac_config_files="$ac_config_files scripts/wrapper/awk/awk"
 
-ac_config_files="$ac_config_files scripts/wrapper/sed"
+ac_config_files="$ac_config_files scripts/wrapper/sed/sed"
 
 
 cat >confcache <<\_ACEOF
@@ -3903,8 +3910,8 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "scripts/wrapper/awk") CONFIG_FILES="$CONFIG_FILES scripts/wrapper/awk" ;;
-    "scripts/wrapper/sed") CONFIG_FILES="$CONFIG_FILES scripts/wrapper/sed" ;;
+    "scripts/wrapper/awk/awk") CONFIG_FILES="$CONFIG_FILES scripts/wrapper/awk/awk" ;;
+    "scripts/wrapper/sed/sed") CONFIG_FILES="$CONFIG_FILES scripts/wrapper/sed/sed" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -4320,8 +4327,8 @@ which seems to be undefined.  Please make sure it is defined" >&2;}
 
 
   case $ac_file$ac_mode in
-    "scripts/wrapper/awk":F) chmod +x scripts/wrapper/awk ;;
-    "scripts/wrapper/sed":F) chmod +x scripts/wrapper/sed ;;
+    "scripts/wrapper/awk/awk":F) chmod +x scripts/wrapper/awk ;;
+    "scripts/wrapper/sed/sed":F) chmod +x scripts/wrapper/sed ;;
 
   esac
 done # for ac_tag
