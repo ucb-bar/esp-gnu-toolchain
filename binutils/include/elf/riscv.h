@@ -97,6 +97,9 @@ END_RELOC_NUMBERS (R_RISCV_max)
 #define EF_IS_RISCV_EXT_Xcustom(x) \
   (EF_GET_RISCV_EXT(x) == E_RISCV_EXT_Xcustom)
 
+#define EF_IS_RISCV_EXT_Xhwacha(x) \
+  (EF_GET_RISCV_EXT(x) == E_RISCV_EXT_Xhwacha)
+
 /* A mapping from extension names to elf flags  */
 
 struct riscv_extension_entry

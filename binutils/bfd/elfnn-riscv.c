@@ -2590,6 +2590,9 @@ _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, bfd *obfd)
       else if (EF_IS_RISCV_EXT_Xcustom(new_flags))
 	EF_SET_RISCV_EXT (elf_elfheader (obfd)->e_flags,
 			  EF_GET_RISCV_EXT (old_flags));
+      else if (EF_IS_RISCV_EXT_Xhwacha(new_flags))
+	EF_SET_RISCV_EXT (elf_elfheader (obfd)->e_flags,
+			  EF_GET_RISCV_EXT (new_flags));
     }
 
   return TRUE;
