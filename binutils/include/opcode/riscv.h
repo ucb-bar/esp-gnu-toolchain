@@ -265,7 +265,7 @@ static const char * const riscv_hwacha_svbits[24] = {
 #define OP_MASK_IMMNPPR         0xf
 #define OP_SH_IMMNPPR           28
 #define OP_MASK_IMMSEGNELM      0x7
-#define OP_SH_IMMSEGNELM        50
+#define OP_SH_IMMSEGNELM        45
 #define OP_MASK_CUSTOM_IMM      0x7f
 #define OP_SH_CUSTOM_IMM        25
 #define OP_MASK_CSR             0xfff

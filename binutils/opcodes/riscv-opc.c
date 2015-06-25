@@ -177,6 +177,7 @@ const char * const riscv_vec_ppr_names[16] =
 #define MASK_VRD (OP_MASK_VRD << OP_SH_VRD)
 #define MASK_VRS1 (OP_MASK_VRS << OP_SH_VRS)
 #define MASK_VRS2 ((insn_t)OP_MASK_VRT << OP_SH_VRT)
+#define MASK_VS1 ((insn_t)OP_MASK_VS1 << OP_SH_VS1)
 #define MASK_VIMM ENCODE_ITYPE_VIMM(-1U)
 #define MASK_VRM ((insn_t)OP_MASK_VRM << OP_SH_VRM)
 #define MASK_VAQ ((insn_t)OP_MASK_VAQ << OP_SH_VAQ)
@@ -687,7 +688,8 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vstop",     "Xhwacha", "", MATCH_VSTOP, MASK_VSTOP, match_opcode, 0},
 {"vfence",    "Xhwacha", "#G,#H", MATCH_VFENCE, MASK_VFENCE, match_opcode, 0},
 {"vfence",    "Xhwacha", "",  MATCH_VFENCE | MASK_VPREV | MASK_VSUCC, MASK_VFENCE | MASK_VRD,  match_opcode,   INSN_ALIAS },
-{"veidx",     "Xhwacha", "#N,#p,#d", MATCH_VEIDX, MASK_VEIDX, match_opcode, WR_xd},
+{"veidx",     "Xhwacha", "#N,#p,#w,#d,#s", MATCH_VEIDX, MASK_VEIDX, match_opcode, WR_xd},
+{"veidx",     "Xhwacha", "#N,#p,#d", MATCH_VEIDX, MASK_VEIDX | MASK_VRS1 | MASK_VS1, match_opcode, INSN_ALIAS | WR_xd},
 {"vfirst",    "Xhwacha", "#N,#p,#D,#s", MATCH_VFIRST, MASK_VFIRST, match_opcode, WR_xd},
 
 /* work thread control flow instructions */
