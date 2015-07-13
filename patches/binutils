@@ -219,22 +219,26 @@
      case EM_RL78:		return "Renesas RL78";
      case EM_RX:			return "Renesas RX";
      case EM_METAG:		return "Imagination Technologies Meta processor architecture";
-@@ -2951,6 +2958,14 @@ get_machine_flags (unsigned e_flags, uns
+@@ -2951,6 +2958,18 @@ get_machine_flags (unsigned e_flags, uns
  	  decode_NDS32_machine_flags (e_flags, buf, sizeof buf);
  	  break;
  
 +	case EM_RISCV:
 +          {
-+            unsigned int riscv_extension = EF_GET_RISCV_EXT(e_flags);
-+            strcat (buf, ", ");
-+            strcat (buf, riscv_elf_flag_to_name (riscv_extension));
++	    if (e_flags & EF_RISCV_RVC)
++	      strcat (buf, ", RVC");
++
++	    if (!EF_GET_RISCV_EXT (e_flags))
++	      break;
++	    strcat (buf, ", ");
++	    strcat (buf, riscv_elf_flag_to_name (EF_GET_RISCV_EXT (e_flags)));
 +          }
 +	  break;
 +
  	case EM_SH:
  	  switch ((e_flags & EF_SH_MACH_MASK))
  	    {
-@@ -10789,6 +10804,8 @@ is_32bit_abs_reloc (unsigned int reloc_t
+@@ -10789,6 +10808,8 @@ is_32bit_abs_reloc (unsigned int reloc_t
        return reloc_type == 1; /* R_PPC64_ADDR32.  */
      case EM_PPC:
        return reloc_type == 1; /* R_PPC_ADDR32.  */
@@ -243,7 +247,7 @@
      case EM_RL78:
        return reloc_type == 1; /* R_RL78_DIR32.  */
      case EM_RX:
-@@ -10924,6 +10941,8 @@ is_64bit_abs_reloc (unsigned int reloc_t
+@@ -10924,6 +10945,8 @@ is_64bit_abs_reloc (unsigned int reloc_t
        return reloc_type == 80; /* R_PARISC_DIR64.  */
      case EM_PPC64:
        return reloc_type == 38; /* R_PPC64_ADDR64.  */
@@ -252,7 +256,7 @@
      case EM_SPARC32PLUS:
      case EM_SPARCV9:
      case EM_SPARC:
-@@ -11072,6 +11091,7 @@ is_none_reloc (unsigned int reloc_type)
+@@ -11072,6 +11095,7 @@ is_none_reloc (unsigned int reloc_type)
      case EM_ADAPTEVA_EPIPHANY:
      case EM_PPC:     /* R_PPC_NONE.  */
      case EM_PPC64:   /* R_PPC64_NONE.  */
@@ -272,13 +276,36 @@
  
  	strongarm | thumb | xscale)
  		basic_machine=arm-unknown
+--- original-binutils/gas/configure.ac
++++ binutils/gas/configure.ac
+@@ -453,7 +453,7 @@ changequote([,])dnl
+ 	AC_MSG_RESULT($enable_audio_ext)
+ 	;;
+ 
+-      i386 | s390 | sparc)
++      i386 | riscv | s390 | sparc)
+ 	if test $this_target = $target ; then
+ 	  AC_DEFINE_UNQUOTED(DEFAULT_ARCH, "${arch}", [Default architecture.])
+ 	fi
+--- original-binutils/gas/configure
++++ binutils/gas/configure
+@@ -12402,7 +12402,7 @@ $as_echo "#define NDS32_DEFAULT_AUDIO_EXT 1" >>confdefs.h
+ $as_echo "$enable_audio_ext" >&6; }
+ 	;;
+ 
+-      i386 | s390 | sparc)
++      i386 | riscv | s390 | sparc)
+ 	if test $this_target = $target ; then
+ 
+ cat >>confdefs.h <<_ACEOF
 --- original-binutils/gas/configure.tgt
 +++ binutils/gas/configure.tgt
-@@ -86,6 +86,7 @@ case ${cpu} in
+@@ -86,6 +86,8 @@ case ${cpu} in
    pj*)			cpu_type=pj endian=big ;;
    powerpc*le*)		cpu_type=ppc endian=little ;;
    powerpc*)		cpu_type=ppc endian=big ;;
-+  riscv*)		cpu_type=riscv endian=little ;;
++  riscv32*)		cpu_type=riscv endian=little arch=riscv32 ;;
++  riscv*)		cpu_type=riscv endian=little arch=riscv64 ;;
    rs6000*)		cpu_type=ppc ;;
    rl78*)		cpu_type=rl78 ;;
    rx)			cpu_type=rx ;;
@@ -286,11 +313,20 @@
    ppc-*-kaos*)				fmt=elf ;;
    ppc-*-lynxos*)			fmt=elf em=lynx ;;
  
-+  riscv*-*-*)			fmt=elf endian=little em=linux bfd_gas=yes ;;
++  riscv*-*-*)			fmt=elf endian=little em=linux ;;
 +
    s390-*-linux-*)			fmt=elf em=linux ;;
    s390-*-tpf*)				fmt=elf ;;
  
+@@ -489,7 +490,7 @@ case ${generic_target} in
+ esac
+ 
+ case ${cpu_type} in
+-  aarch64 | alpha | arm | i386 | ia64 | microblaze | mips | ns32k | or1k | or1knd | pdp11 | ppc | sparc | z80 | z8k)
++  aarch64 | alpha | arm | i386 | ia64 | microblaze | mips | ns32k | or1k | or1knd | pdp11 | ppc | riscv | sparc | z80 | z8k)
+     bfd_gas=yes
+     ;;
+ esac
 --- original-binutils/gas/Makefile.am
 +++ binutils/gas/Makefile.am
 @@ -171,6 +171,7 @@ TARGET_CPU_CFILES = \

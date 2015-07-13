@@ -56,6 +56,13 @@ AC_ARG_WITH(xlen,
 	AC_SUBST(XLEN, 64)
 	)
 
+AC_ARG_WITH(arch,
+	[AS_HELP_STRING([--with-arch=IMAFD],
+		[Sets the base RISC-V ISA, defaults to IMAFD])],
+	AC_SUBST(ARCH, $withval),
+	AC_SUBST(ARCH, IMAFD)
+	)
+
 AC_ARG_ENABLE(atomic,
 	[AS_HELP_STRING([--disable-atomic],
 		[disable use of atomic memory instructions in glibc @<:@--enable-atomic@:>@])],

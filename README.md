@@ -25,11 +25,17 @@ Contributors
 Several standard packages are needed to build the toolchain.  On Ubuntu,
 executing the following command should suffice:
 
-    $ sudo apt-get install autoconf automake autotools-dev libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo patchutils
+    $ sudo apt-get install autoconf automake autotools-dev curl libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils
 
 On Mac OS, the source and build directories must live in a case-sensitive file
 system.  The simplest approach is to create and mount a new disk image with
 that property.  Make sure that the mount point does not contain spaces.
+
+This process will start by downloading about 200 MiB of upstream sources, then
+will patch, build, and install the toolchain.  If a local cache of the
+upstream sources exists in $(DISTDIR), it will be used; the default location
+is /var/cache/distfiles.  Your computer will need about 8 GiB of disk space to
+complete the process.
 
 ### Installation (Newlib)
 
