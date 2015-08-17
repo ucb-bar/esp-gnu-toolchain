@@ -1308,7 +1308,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
   const char *args;
   char c = 0;
   struct riscv_opcode *insn, *end = &riscv_opcodes[NUMOPCODES];
-  char *argsStart;
+  char *argsStart = 0;
   unsigned int regno;
   char save_c = 0;
   int argnum;
@@ -2236,7 +2236,7 @@ jump:
 
 out:
   /* Restore the character we might have clobbered above.  */
-  if (save_c)
+  if (save_c && argsStart)
     *(argsStart - 1) = save_c;
 
   return error;
