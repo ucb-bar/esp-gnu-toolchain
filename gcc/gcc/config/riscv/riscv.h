@@ -30,20 +30,21 @@ along with GCC; see the file COPYING3.  If not see
 #define TARGET_CPU_CPP_BUILTINS()					\
   do									\
     {									\
-      builtin_assert ("machine=riscv");                        	        \
+      builtin_assert ("machine=riscv");					\
 									\
       builtin_assert ("cpu=riscv");					\
-      builtin_define ("__riscv__");     				\
-      builtin_define ("__riscv");     					\
+      builtin_define ("__riscv__");					\
+      builtin_define ("__riscv");					\
       builtin_define ("_riscv");					\
+      builtin_define ("__riscv");					\
 									\
       if (TARGET_64BIT)							\
 	{								\
 	  builtin_define ("__riscv64");					\
-	  builtin_define ("_RISCV_SIM=_ABI64");			        \
+	  builtin_define ("_RISCV_SIM=_ABI64");				\
 	}								\
-      else						        	\
-	builtin_define ("_RISCV_SIM=_ABI32");			        \
+      else								\
+	builtin_define ("_RISCV_SIM=_ABI32");				\
 									\
       builtin_define ("_ABI32=1");					\
       builtin_define ("_ABI64=3");					\
@@ -54,14 +55,16 @@ along with GCC; see the file COPYING3.  If not see
       builtin_define_with_int_value ("_RISCV_SZPTR", POINTER_SIZE);	\
       builtin_define_with_int_value ("_RISCV_FPSET", 32);		\
 									\
-      if (TARGET_ATOMIC) {                                              \
-        builtin_define ("__riscv_atomic");                              \
-      }                                                                 \
-                                                                        \
-      if (TARGET_HWACHA4) {                                             \
-        builtin_define ("__riscv_hwacha4");                             \
-      }                                                                 \
-                                                                        \
+      if (TARGET_RVC)							\
+	builtin_define ("__riscv_compressed");				\
+									\
+      if (TARGET_ATOMIC)						\
+	builtin_define ("__riscv_atomic");				\
+									\
+      if (TARGET_HWACHA4)							\
+  builtin_define ("__riscv_hwacha4");				\
+									\
+
       /* These defines reflect the ABI in use, not whether the  	\
 	 FPU is directly accessible.  */				\
       if (TARGET_HARD_FLOAT_ABI) {					\
@@ -553,6 +556,7 @@ enum reg_class
 {
   NO_REGS,			/* no registers in set */
   T_REGS,			/* registers used by indirect sibcalls */
+  JALR_REGS,			/* registers used by indirect calls */
   GR_REGS,			/* integer registers */
   FP_REGS,			/* floating point registers */
   FRAME_REGS,			/* $arg and $frame */
@@ -572,6 +576,7 @@ enum reg_class
 {									\
   "NO_REGS",								\
   "T_REGS",								\
+  "JALR_REGS",								\
   "GR_REGS",								\
   "FP_REGS",								\
   "FRAME_REGS",								\
@@ -592,7 +597,8 @@ enum reg_class
 #define REG_CLASS_CONTENTS									\
 {												\
   { 0x00000000, 0x00000000, 0x00000000 },	/* NO_REGS */		\
-  { 0xf00000e0, 0x00000000, 0x00000000 },	/* T_REGS */		\
+  { 0xf0000040, 0x00000000, 0x00000000 },	/* T_REGS */		\
+  { 0xffffff40, 0x00000000, 0x00000000 },	/* JALR_REGS */		\
   { 0xffffffff, 0x00000000, 0x00000000 },	/* GR_REGS */		\
   { 0x00000000, 0xffffffff, 0x00000000 },	/* FP_REGS */		\
   { 0x00000000, 0x00000000, 0x00000003 },	/* FRAME_REGS */	\

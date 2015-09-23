@@ -3,10 +3,10 @@ builddir := @abs_top_builddir@
 INSTALL_DIR := @prefix@
 
 PACKAGES := binutils gcc glibc newlib
-gcc_version := 5.1.0
+gcc_version := 5.2.0
 binutils_version := 2.25
-glibc_version := 2.21
-newlib_version := 1.18.0
+glibc_version := 2.22
+newlib_version := 2.2.0
 
 DISTDIR ?= /var/cache/distfiles
 GNU_MIRROR := http://mirrors.kernel.org/gnu
@@ -16,7 +16,7 @@ glibc_url := $(GNU_MIRROR)/glibc/glibc-$(glibc_version).tar.gz
 newlib_url := ftp://sourceware.org/pub/newlib/newlib-$(newlib_version).tar.gz
 
 XLEN ?= @XLEN@
-ARCH ?= @ARCH@
+WITH_ARCH ?= @WITH_ARCH@
 SYSROOT := $(INSTALL_DIR)/sysroot
 
 SHELL := /bin/sh
@@ -71,7 +71,7 @@ $(addprefix src/original-,$(PACKAGES)):
 
 $(addprefix src/,$(PACKAGES)): src/%: src/original-%
 	rm -rf $@ $@.tmp
-	cp -R $< $@.tmp
+	cp -a $< $@.tmp
 	$(srcdir)/scripts/cp_s $(srcdir)/$(notdir $@) $@.tmp
 	cd $@.tmp && patch -p1 < $(srcdir)/patches/$(notdir $@)
 	if test -f $@.tmp/contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" == "true"; then cd $@.tmp && ./contrib/download_prerequisites; fi
@@ -100,7 +100,7 @@ stamps/build-binutils-linux: src/binutils
 
 stamps/build-linux-headers:
 	mkdir -p $(SYSROOT)/usr/
-	cp -R $(srcdir)/linux-headers/include $(SYSROOT)/usr/
+	cp -a $(srcdir)/linux-headers/include $(SYSROOT)/usr/
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-glibc-linux-headers: src/glibc stamps/build-gcc-linux-stage1
@@ -161,7 +161,7 @@ stamps/build-gcc-linux-stage1: src/gcc stamps/build-binutils-linux \
 		--disable-nls \
 		$(MULTILIB_FLAGS) \
 		--disable-bootstrap \
-		--with-arch=$(ARCH)
+		$(WITH_ARCH)
 	$(MAKE) -C $(notdir $@) inhibit-libc=true all-gcc
 	$(MAKE) -C $(notdir $@) inhibit-libc=true install-gcc
 	$(MAKE) -C $(notdir $@) inhibit-libc=true all-target-libgcc
@@ -185,7 +185,7 @@ stamps/build-gcc-linux-stage2: src/gcc stamps/build-glibc-linux$(XLEN) \
 		--disable-nls \
 		$(MULTILIB_FLAGS) \
 		--disable-bootstrap \
-		--with-arch=$(ARCH)
+		$(WITH_ARCH)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -204,9 +204,9 @@ stamps/build-binutils-newlib: src/binutils
 
 src/newlib-gcc: src/gcc src/newlib
 	rm -rf $@ $@.tmp
-	cp -R src/gcc $@.tmp
-	cp -R src/newlib/newlib $@.tmp
-	cp -R src/newlib/libgloss $@.tmp
+	cp -a src/gcc $@.tmp
+	cp -a src/newlib/newlib $@.tmp
+	cp -a src/newlib/libgloss $@.tmp
 	$(srcdir)/scripts/cp_s $(srcdir)/newlib $@.tmp
 	mv $@.tmp $@
 
@@ -226,7 +226,7 @@ stamps/build-gcc-newlib: src/newlib-gcc stamps/build-binutils-newlib
 		--disable-libquadmath \
 		--disable-libgomp \
 		--disable-nls \
-		--with-arch=$(ARCH)
+		$(WITH_ARCH)
 	$(MAKE) -C $(notdir $@) inhibit-libc=true
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
