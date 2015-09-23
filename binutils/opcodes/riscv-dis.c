@@ -116,7 +116,7 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset)
 
 /* Print insn prefixes for hwacha.  */
 static void
-print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
+print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
   bfd_boolean scalar = 1;
   for (; *d != '\0'; d++)
     {
@@ -150,7 +150,7 @@ print_insn_prefix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
 
 /* Print insn suffixes for hwacha.  */
 static void
-print_insn_suffix (const char *d, insn_t l, bfd_vma pc, disassemble_info *info){
+print_insn_suffix (const char *d, insn_t l, disassemble_info *info){
   bfd_boolean suffix = 0;
   for (; *d != '\0'; d++)
     {
@@ -421,10 +421,6 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	case 'C': /* RVC */
 	  switch (*++d)
 	    {
-	    case 'd': /* RD x8-x15 */
-	      print (info->stream, "%s",
-		     riscv_gpr_names[((l >> OP_SH_CRDS) & OP_MASK_CRDS) + 8]);
-	      break;
 	    case 's': /* RS1 x8-x15 */
 	    case 'w': /* RS1 x8-x15 */
 	      print (info->stream, "%s",
@@ -441,12 +437,12 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	      break;
 	    case 'c': /* RS1, constrained to equal sp */
 	      print (info->stream, "%s", riscv_gpr_names[X_SP]);
-	      continue;
+	      break;
 	    case 'T': /* RS2, nonzero */
 	    case 'V': /* RS2 */
 	      print (info->stream, "%s",
 		     riscv_gpr_names[(l >> OP_SH_CRS2) & OP_MASK_CRS2]);
-	      continue;
+	      break;
 	    case 'i':
 	      print (info->stream, "%d", (int)EXTRACT_RVC_SIMM3 (l));
 	      break;
@@ -494,6 +490,23 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	      break;
 	    case '<':
 	      print (info->stream, "0x%x", (int)EXTRACT_RVC_IMM (l) & 0x1f);
+	      break;
+	    }
+	  break;
+
+	case 'F': /* RVC floating-point */
+	  switch (*++d)
+	    {
+	    case 't': /* RS2 x8-x15 */
+	      print (info->stream, "%s",
+		     riscv_gpr_names[((l >> OP_SH_CRS2S) & OP_MASK_CRS2S) + 8]);
+	      break;
+	    case 'D': /* RD */
+	      print (info->stream, "%s", riscv_gpr_names[rd]);
+	      break;
+	    case 'V': /* RS2 */
+	      print (info->stream, "%s",
+		     riscv_gpr_names[(l >> OP_SH_CRS2) & OP_MASK_CRS2]);
 	      break;
 	    }
 	  break;
@@ -697,6 +710,7 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
     {
       const char *extension = NULL;
       int xlen = 0;
+      int hwacha = 0;
 
       /* The incoming section might not always be complete.  */
       if (info->section != NULL)
@@ -704,6 +718,7 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 	  Elf_Internal_Ehdr *ehdr = elf_elfheader (info->section->owner);
 	  unsigned int e_flags = ehdr->e_flags;
 	  extension = riscv_elf_flag_to_name (EF_GET_RISCV_EXT (e_flags));
+    hwacha = EF_IS_RISCV_EXT_Xhwacha(e_flags);
 
 	  xlen = 32;
 	  if (ehdr->e_ident[EI_CLASS] == ELFCLASS64)
@@ -718,12 +733,12 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 		   && strcmp (op->subset, extension))
 	      && !(isdigit(op->subset[0]) && atoi(op->subset) != xlen))
 	    {
-        if(op->subset == "Xhwacha" && insnlen == 8)
-	        print_insn_prefix (op->args, word, memaddr, info);
+        if(hwacha && insnlen == 8)
+	        print_insn_prefix (op->args, word, info);
 	      (*info->fprintf_func) (info->stream, "%s", op->name);
-        if(op->subset == "Xhwacha" && insnlen == 8)
-	        print_insn_suffix (op->args, word, memaddr, info);
-        if(op->subset == "Xhwacha" && insnlen == 8)
+        if(hwacha && insnlen == 8)
+	        print_insn_suffix (op->args, word, info);
+        if(hwacha && insnlen == 8)
 	        (*info->fprintf_func) (info->stream, "\t");
 	      print_insn_args (op->args, word, memaddr, info);
 	      if (pd->print_addr != (bfd_vma)-1)

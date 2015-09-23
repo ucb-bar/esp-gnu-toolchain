@@ -540,7 +540,6 @@ validate_riscv_insn (const struct riscv_opcode *opc)
       switch (c = *p++)
 	{
 	case 'g': USE_BITS (OP_MASK_IMMNGPR, OP_SH_IMMNGPR); break;
-	case 'g': USE_BITS (OP_MASK_IMMNGPR, OP_SH_IMMNGPR); break;
 	case 'f': USE_BITS (OP_MASK_IMMNPPR, OP_SH_IMMNPPR); break;
 	case 'n': USE_BITS (OP_MASK_IMMSEGNELM, OP_SH_IMMSEGNELM); break;
 	case 'j': USE_BITS (OP_MASK_VIMM, OP_SH_VIMM); break;
@@ -588,7 +587,6 @@ validate_riscv_insn (const struct riscv_opcode *opc)
       case 'C': /* RVC */
 	switch (c = *p++)
 	  {
-	  case 'd': USE_BITS (OP_MASK_CRDS, OP_SH_CRDS); break;
 	  case 's': USE_BITS (OP_MASK_CRS1S, OP_SH_CRS1S); break;
 	  case 't': USE_BITS (OP_MASK_CRS2S, OP_SH_CRS2S); break;
 	  case 'w': break; /* RS1S, constrained to equal RD */
@@ -616,6 +614,18 @@ validate_riscv_insn (const struct riscv_opcode *opc)
 	  case 'p': used_bits |= ENCODE_RVC_B_IMM(-1U); break;
 	  default:
 	    as_bad (_("internal: bad RISC-V opcode (unknown operand type `C%c'): %s %s"),
+		    c, opc->name, opc->args);
+	    return 0;
+	  }
+	break;
+      case 'F': /* RVC floating-point */
+	switch (c = *p++)
+	  {
+	  case 'D': USE_BITS (OP_MASK_RD, OP_SH_RD); break;
+	  case 'V': USE_BITS (OP_MASK_CRS2, OP_SH_CRS2); break;
+	  case 't': USE_BITS (OP_MASK_CRS2S, OP_SH_CRS2S); break;
+	  default:
+	    as_bad (_("internal: bad RISC-V opcode (unknown operand type `F%c'): %s %s"),
 		    c, opc->name, opc->args);
 	    return 0;
 	  }
@@ -1518,7 +1528,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	                imm_expr->X_op = O_absent;
 	                s = expr_end;
 	                continue;
-          
 	              case '>':		/* shift amount, 0 - (XLEN-1) */
 	                my_getExpression (imm_expr, s);
 	                check_absolute_expr (ip, imm_expr);
@@ -1537,7 +1546,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		            if (imm_expr->X_add_number < 0
 		                || imm_expr->X_add_number >= (signed)RISCV_BIGIMM_REACH)
 		              as_bad (_("vlui expression not in range 0..1048575"));
-	                
 		            imm_reloc = BFD_RELOC_RISCV_HI20;
 		            imm_expr->X_add_number <<= RISCV_IMM_BITS;
 		          }
@@ -1802,19 +1810,12 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                   INSERT_OPERAND( SVSRDLO, *ip, regno );
                   INSERT_OPERAND( SVSRDHI, *ip, regno >> 5 );
                   continue;
-                }
       }
       break;
 
 	    case 'C': /* RVC */
 	      switch (*++args)
 		{
-		case 'd': /* RD x8-x15 */
-		  if (!reg_lookup (&s, RCLASS_GPR, &regno)
-		      || !(regno >= 8 && regno <= 15))
-		    break;
-		  INSERT_OPERAND (CRDS, *ip, regno % 8);
-		  continue;
 		case 's': /* RS1 x8-x15 */
 		  if (!reg_lookup (&s, RCLASS_GPR, &regno)
 		      || !(regno >= 8 && regno <= 15))
@@ -1983,6 +1984,30 @@ rvc_lui:
 		  goto jump;
 		default:
 		  as_bad (_("bad RVC field specifier 'C%c'\n"), *args);
+		}
+	      break;
+
+	    case 'F': /* RVC floating-point */
+	      switch (*++args)
+		{
+		case 't': /* RS2 x8-x15 */
+		  if (!reg_lookup (&s, RCLASS_FPR, &regno)
+		      || !(regno >= 8 && regno <= 15))
+		    break;
+		  INSERT_OPERAND (CRS2S, *ip, regno % 8);
+		  continue;
+		case 'D': /* RD */
+		  if (!reg_lookup (&s, RCLASS_FPR, &regno))
+		    break;
+		  INSERT_OPERAND (RD, *ip, regno);
+		  continue;
+		case 'V': /* RS2 */
+		  if (!reg_lookup (&s, RCLASS_FPR, &regno))
+		    break;
+		  INSERT_OPERAND (CRS2, *ip, regno);
+		  continue;
+		default:
+		  as_bad (_("bad RVC field specifier 'F%c'\n"), *args);
 		}
 	      break;
 
@@ -2749,10 +2774,6 @@ md_convert_frag_branch (fragS *fragp)
 	      insn = MATCH_BEQ | (rs1 << OP_SH_RS1);
 	    else if ((insn & MASK_C_BNEZ) == MATCH_C_BNEZ)
 	      insn = MATCH_BNE | (rs1 << OP_SH_RS1);
-	    else if ((insn & MASK_C_BLTZ) == MATCH_C_BLTZ)
-	      insn = MATCH_BLT | (rs1 << OP_SH_RS1);
-	    else if ((insn & MASK_C_BGEZ) == MATCH_C_BGEZ)
-	      insn = MATCH_BGE | (rs1 << OP_SH_RS1);
 	    else
 	      abort ();
 	    bfd_putl32 (insn, buf);
