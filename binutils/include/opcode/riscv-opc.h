@@ -928,7 +928,7 @@
 #define MATCH_VPANDXOR 0x855a00000000063fL
 #define MASK_VPANDXOR  0xffffe1e1f0f0ffffL
 #define MATCH_VPCLEAR 0x840200000000063fL
-#define MASK_VPCLEAR  0xffffe1e1f0f0ffffL
+#define MASK_VPCLEAR  0xfffffffffff0ffffL
 #define MATCH_VPL 0x8002000000000b3fL
 #define MASK_VPL  0xffffffffe0f0ffffL
 #define MATCH_VPOP 0x840200000000063fL
@@ -942,7 +942,7 @@
 #define MATCH_VPS 0x8002000000000f3fL
 #define MASK_VPS  0xffffffe1e0ffffffL
 #define MATCH_VPSET 0x87fe00000000063fL
-#define MASK_VPSET  0xffffe1e1f0f0ffffL
+#define MASK_VPSET  0xfffffffffff0ffffL
 #define MATCH_VPXORAND 0x845200000000063fL
 #define MASK_VPXORAND  0xffffe1e1f0f0ffffL
 #define MATCH_VPXOROR 0x85f600000000063fL

@@ -936,8 +936,8 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 
 /* Vector predicate register arithmetic */
 {"vpop",     "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q,#z", MATCH_VPOP, MASK_VPOP, match_opcode, 0 },
-{"vpclear",  "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPCLEAR, MASK_VPCLEAR, match_opcode, 0 },
-{"vpset",    "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPSET, MASK_VPSET, match_opcode, 0 },
+{"vpclear",  "Xhwacha",   "#F",    MATCH_VPCLEAR, MASK_VPCLEAR, match_opcode, 0 },
+{"vpset",    "Xhwacha",   "#F",    MATCH_VPSET, MASK_VPSET, match_opcode, 0 },
 {"vpxorxor", "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXORXOR, MASK_VPXORXOR, match_opcode, 0 },
 {"vpxorand", "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXORAND, MASK_VPXORAND, match_opcode, 0 },
 {"vpxoror",  "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXOROR, MASK_VPXOROR, match_opcode, 0 },
