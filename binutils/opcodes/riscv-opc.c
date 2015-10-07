@@ -935,18 +935,18 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vps", "Xhwacha", "#N,#p,,#A,#B", MATCH_VPS, MASK_VPS, match_opcode, 0},
 
 /* Vector predicate register arithmetic */
-{"vpop",     "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q,#z", MATCH_VPOP, MASK_VPOP, match_opcode, 0 },
+{"vpop",     "Xhwacha",   "#F,#O,#P,#Q,#z", MATCH_VPOP, MASK_VPOP, match_opcode, 0 },
 {"vpclear",  "Xhwacha",   "#F",    MATCH_VPCLEAR, MASK_VPCLEAR, match_opcode, 0 },
 {"vpset",    "Xhwacha",   "#F",    MATCH_VPSET, MASK_VPSET, match_opcode, 0 },
-{"vpxorxor", "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXORXOR, MASK_VPXORXOR, match_opcode, 0 },
-{"vpxorand", "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXORAND, MASK_VPXORAND, match_opcode, 0 },
-{"vpxoror",  "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPXOROR, MASK_VPXOROR, match_opcode, 0 },
-{"vandxor",  "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPANDXOR, MASK_VPANDXOR, match_opcode, 0 },
-{"vandand",  "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPANDAND, MASK_VPANDAND, match_opcode, 0 },
-{"vandor",   "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPANDOR, MASK_VPANDOR, match_opcode, 0 },
-{"vorxor",   "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPORXOR, MASK_VPORXOR, match_opcode, 0 },
-{"vorand",   "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPORAND, MASK_VPORAND, match_opcode, 0 },
-{"voror",    "Xhwacha",   "#N,#p,#y,#F,#O,#P,#Q",    MATCH_VPOROR, MASK_VPOROR, match_opcode, 0 },
+{"vpxorxor", "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPXORXOR, MASK_VPXORXOR, match_opcode, 0 },
+{"vpxorand", "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPXORAND, MASK_VPXORAND, match_opcode, 0 },
+{"vpxoror",  "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPXOROR, MASK_VPXOROR, match_opcode, 0 },
+{"vandxor",  "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPANDXOR, MASK_VPANDXOR, match_opcode, 0 },
+{"vandand",  "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPANDAND, MASK_VPANDAND, match_opcode, 0 },
+{"vandor",   "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPANDOR, MASK_VPANDOR, match_opcode, 0 },
+{"vorxor",   "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPORXOR, MASK_VPORXOR, match_opcode, 0 },
+{"vorand",   "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPORAND, MASK_VPORAND, match_opcode, 0 },
+{"voror",    "Xhwacha",   "#F,#O,#P,#Q",    MATCH_VPOROR, MASK_VPOROR, match_opcode, 0 },
 
 /* Atomic memory operation instruction subset */
 {"vamoadd.w",     "Xhwacha", "#N,#p,#v,#x,#d,0(#s),#t",  MATCH_VAMOADD_W, MASK_VAMOADD_W | MASK_VAQRL, match_opcode,   WR_xd|RD_xs1|RD_xs2 },

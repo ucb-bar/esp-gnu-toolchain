@@ -118,6 +118,7 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset)
 static void
 print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
   bfd_boolean scalar = 1;
+  bfd_boolean all = 1;
   for (; *d != '\0'; d++)
     {
       switch (*d){
@@ -125,6 +126,7 @@ print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
           switch ( *++d ) {
             case 'p':
               scalar = 0;
+              all = 0;
               if(EXTRACT_OPERAND(VN,l) ||
                  EXTRACT_OPERAND(VPRED,l) > 0){
               (*info->fprintf_func)
@@ -134,6 +136,10 @@ print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
               }else
                 (*info->fprintf_func) (info->stream, "      ");
               continue;
+            case 'F':
+              all = scalar; // if it wasn't predicated but we write to pred its all
+              scalar = 0;
+              break;
             default:
               continue;
             }
@@ -146,6 +152,8 @@ print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
 	}
   if(scalar)
     (*info->fprintf_func) (info->stream, "@s    ");
+  else if(all)
+    (*info->fprintf_func) (info->stream, "@all  ");
 }
 
 /* Print insn suffixes for hwacha.  */
@@ -402,6 +410,21 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
                 ( info->stream, "%s",
                   riscv_vec_ppr_names[(l >> OP_SH_VPR) & OP_MASK_VPR]);
               break;
+        case 'z':
+              {
+              uint64_t func = EXTRACT_OPERAND( VPFUNC, l);
+              (*info->fprintf_func)
+                ( info->stream, "%d%d%d%d%d%d%d%d",
+                  0x80 & func ? 1 : 0,
+                  0x40 & func ? 1 : 0,
+                  0x20 & func ? 1 : 0,
+                  0x10 & func ? 1 : 0,
+                  0x08 & func ? 1 : 0,
+                  0x04 & func ? 1 : 0,
+                  0x02 & func ? 1 : 0,
+                  0x01 & func ? 1 : 0);
+              break;
+              }
         case 'e':
               (*info->fprintf_func)
                 ( info->stream, "%s",
