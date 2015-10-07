@@ -414,15 +414,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
               {
               uint64_t func = EXTRACT_OPERAND( VPFUNC, l);
               (*info->fprintf_func)
-                ( info->stream, "%d%d%d%d%d%d%d%d",
-                  0x80 & func ? 1 : 0,
-                  0x40 & func ? 1 : 0,
-                  0x20 & func ? 1 : 0,
-                  0x10 & func ? 1 : 0,
-                  0x08 & func ? 1 : 0,
-                  0x04 & func ? 1 : 0,
-                  0x02 & func ? 1 : 0,
-                  0x01 & func ? 1 : 0);
+                ( info->stream, "0x%x", func);
               break;
               }
         case 'e':
