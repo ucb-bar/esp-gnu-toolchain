@@ -1679,7 +1679,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 case 'p':
                   /* handled in riscv_unrecognized_line */
                   INSERT_OPERAND( VPRED, *ip, riscv_prednum );
-                  riscv_prednum = 0;
                   //absorb ","
                   if(*(args+1) == ',')
                   {
@@ -1690,7 +1689,6 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 case 'N':
                   /* handled in riscv_unrecognized_line */
                   INSERT_OPERAND( VN, *ip, riscv_predneg );
-                  riscv_predneg = FALSE;
                   //absorb ","
                   if(*(args+1) == ',')
                   {
@@ -2263,6 +2261,10 @@ out:
   /* Restore the character we might have clobbered above.  */
   if (save_c && argsStart)
     *(argsStart - 1) = save_c;
+
+  /* Reset predicate line state */
+  riscv_predneg = FALSE;
+  riscv_prednum = 0;
 
   return error;
 }
