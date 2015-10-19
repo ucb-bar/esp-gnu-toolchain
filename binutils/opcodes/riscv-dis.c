@@ -119,6 +119,7 @@ static void
 print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
   bfd_boolean scalar = 1;
   bfd_boolean all = 1;
+  if(*d == '\0') scalar = 0; // empty args also means all and not scalar
   for (; *d != '\0'; d++)
     {
       switch (*d){
@@ -136,7 +137,8 @@ print_insn_prefix (const char *d, insn_t l, disassemble_info *info){
               }else
                 (*info->fprintf_func) (info->stream, "      ");
               continue;
-            case 'F':
+            case 'F':// vpop
+            case 'G':// vfence
               all = scalar; // if it wasn't predicated but we write to pred its all
               scalar = 0;
               break;
