@@ -712,7 +712,7 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 
   insnlen = riscv_insn_length (word);
 
-  info->bytes_per_chunk = insnlen % 4 == 0 ? 4 : 2;
+  info->bytes_per_chunk = insnlen % 8 == 0 ? 8 : insnlen % 4 == 0 ? 4 : 2;
   info->bytes_per_line = 8;
   info->display_endian = info->endian;
   info->insn_info_valid = 1;
