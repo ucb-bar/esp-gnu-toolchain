@@ -1538,19 +1538,19 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	                imm_expr->X_op = O_absent;
 	                s = expr_end;
 	                continue;
-	              case 'k':		/* upper 20 bits */
-	                p = percent_op_utype;
-	                if (!my_getSmallExpression (imm_expr, imm_reloc, s, p)
-		            && imm_expr->X_op == O_constant)
-		          {
-		            if (imm_expr->X_add_number < 0
-		                || imm_expr->X_add_number >= (signed)RISCV_BIGIMM_REACH)
-		              as_bad (_("vlui expression not in range 0..1048575"));
-		            imm_reloc = BFD_RELOC_RISCV_HI20;
-		            imm_expr->X_add_number <<= RISCV_IMM_BITS;
-		          }
-	                s = expr_end;
-	                continue;
+	              case 'k':		/* 29 bit immediate shifted up to fill 32 bits */
+                  my_getExpression( imm_expr, s );
+                  /* check_absolute_expr( ip, imm_expr ); */
+                  if ((signed long) imm_expr->X_add_number > ((signed long)(1 << 29) - 1) ||
+                      (signed long) imm_expr->X_add_number < ((signed long)-1*(1 << 29)))
+                    as_warn( _( "Improper vcimm amount (%ld), must be between %lu and %ld" ),
+                             (signed long) imm_expr->X_add_number,
+                             ((unsigned long)(1 << 29) - 1),
+                             ((signed long)-1*(1 << 29)));
+                  INSERT_OPERAND( VCIMM, *ip, imm_expr->X_add_number);
+                  imm_expr->X_op = O_absent;
+                  s = expr_end;
+                  continue;
                 case 'd':
                   if (riscv_sv_auto) {
                     if (!reg_lookup( &s, RCLASS_VEC_GPR, &regno ) ) {
@@ -1698,7 +1698,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                   continue;
                 case 'c':
                   my_getExpression( imm_expr, s );
-                  /* check_absolute_expr( ip, imm_expr ); */
+                  check_absolute_expr( ip, imm_expr );
                   if ((unsigned long) imm_expr->X_add_number > 3 )
                     as_warn( _( "Improper predicate condition (%lu)" ),
                              (unsigned long) imm_expr->X_add_number );

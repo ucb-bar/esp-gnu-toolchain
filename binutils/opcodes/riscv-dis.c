@@ -292,7 +292,7 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
             case 'k':
               (*info->fprintf_func)
                 ( info->stream, "%d",
-                  (int)((l >> OP_SH_VCIMM) & OP_MASK_VCIMM));
+                  (int)(((l >> OP_SH_VCIMM) & OP_MASK_VCIMM)<<3));
               break;
             case 'c':
               (*info->fprintf_func)
