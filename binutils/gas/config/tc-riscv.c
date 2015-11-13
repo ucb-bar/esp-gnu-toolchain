@@ -1472,22 +1472,22 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
                 case 'g':
                   my_getExpression( imm_expr, s );
                   /* check_absolute_expr( ip, imm_expr ); */
-                  if ((unsigned long) imm_expr->X_add_number > NVGPR || 
-                      (unsigned long) imm_expr->X_add_number == 0)
+                  if ((unsigned long) imm_expr->X_add_number > NVGPR ||
+                      ((unsigned long) imm_expr->X_add_number & ~OP_MASK_IMMNGPR))
                     as_bad( _( "Improper ngpr amount (%lu)" ),
                              (unsigned long) imm_expr->X_add_number );
-                  INSERT_OPERAND( IMMNGPR, *ip, imm_expr->X_add_number - 1);
+                  INSERT_OPERAND( IMMNGPR, *ip, imm_expr->X_add_number );
                   imm_expr->X_op = O_absent;
                   s = expr_end;
                   continue;
                 case 'f':
                   my_getExpression( imm_expr, s );
                   /* check_absolute_expr( ip, imm_expr ); */
-                  if ((unsigned long) imm_expr->X_add_number > NVSPR || 
-                      (unsigned long) imm_expr->X_add_number == 0)
+                  if ((unsigned long) imm_expr->X_add_number > NVSPR ||
+                      ((unsigned long) imm_expr->X_add_number & ~OP_MASK_IMMNPPR))
                     as_bad( _( "Improper nppr amount (%lu)" ),
                              (unsigned long) imm_expr->X_add_number );
-                  INSERT_OPERAND( IMMNPPR, *ip, imm_expr->X_add_number - 1);
+                  INSERT_OPERAND( IMMNPPR, *ip, imm_expr->X_add_number );
                   imm_expr->X_op = O_absent;
                   s = expr_end;
                   continue;
