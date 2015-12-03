@@ -720,8 +720,8 @@ const struct riscv_opcode riscv_builtin_opcodes[] =
 {"vgetvl",    "Xhwacha", "d", MATCH_VGETVL, MASK_VGETVL, match_opcode, 0},
 {"vuncfg",    "Xhwacha", "", MATCH_VUNCFG, MASK_VUNCFG, match_opcode, 0},
 
-{"vmss",      "Xhwacha", "#E,s", MATCH_VMSS, MASK_VMSS, match_opcode, 0},
-{"vmsa",      "Xhwacha", "#e,s", MATCH_VMSA, MASK_VMSA, match_opcode, 0},
+{"vmcs",      "Xhwacha", "#E,s", MATCH_VMCS, MASK_VMCS, match_opcode, 0},
+{"vmca",      "Xhwacha", "#e,s", MATCH_VMCA, MASK_VMCA, match_opcode, 0},
 
 {"vf",        "Xhwacha", "q(s)", MATCH_VF, MASK_VF, match_opcode, 0},
 {"vf",        "Xhwacha", "A,s", 0, (int) M_VF, match_never, INSN_MACRO },
