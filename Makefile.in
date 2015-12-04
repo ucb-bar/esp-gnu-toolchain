@@ -56,8 +56,8 @@ linux:
 	$(MAKE) stamps/build-gcc-linux-stage1 XLEN=
 	$(MAKE) stamps/build-glibc-linux XLEN=
 	$(MAKE) stamps/build-glibc-linux32 XLEN=32 \
-		CC="riscv-unknown-linux-gnu-gcc -m32" \
-		READELF=riscv-unknown-linux-gnu-readelf \
+		CC="riscvesp-unknown-linux-gnu-gcc -m32" \
+		READELF=riscvesp-unknown-linux-gnu-readelf \
 		CFLAGS_FOR_TARGET_EXTRA="-m32" \
 		ASFLAGS_FOR_TARGET_EXTRA="-m32"
 	$(MAKE) stamps/build-gcc-linux-stage2 XLEN=
@@ -89,7 +89,7 @@ stamps/build-binutils-linux: src/binutils
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--target=riscv$(XLEN)-unknown-linux-gnu \
+		--target=riscv$(XLEN)esp-unknown-linux-gnu \
 		--prefix=$(INSTALL_DIR) \
 		--with-sysroot=$(SYSROOT) \
 		$(MULTILIB_FLAGS) \
@@ -108,7 +108,7 @@ stamps/build-glibc-linux-headers: src/glibc stamps/build-gcc-linux-stage1
 	mkdir $(notdir $@)
 	mkdir -p $(SYSROOT)/usr/lib $(SYSROOT)/lib
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--host=riscv$(XLEN)-unknown-linux-gnu \
+		--host=riscv$(XLEN)esp-unknown-linux-gnu \
 		--prefix=/usr \
 		libc_cv_forced_unwind=yes \
 		libc_cv_c_cleanup=yes \
@@ -126,7 +126,7 @@ stamps/build-glibc-linux$(XLEN): src/glibc stamps/build-gcc-linux-stage1
 	cd $(notdir $@) && CFLAGS="$(CFLAGS_FOR_TARGET) -g -O2" \
 		ASFLAGS="$(ASFLAGS_FOR_TARGET)" \
 		$(CURDIR)/$</configure \
-		--host=riscv$(XLEN)-unknown-linux-gnu \
+		--host=riscv$(XLEN)esp-unknown-linux-gnu \
 		--prefix=/usr \
 		libc_cv_forced_unwind=yes \
 		libc_cv_c_cleanup=yes \
@@ -144,7 +144,7 @@ stamps/build-gcc-linux-stage1: src/gcc stamps/build-binutils-linux \
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--target=riscv$(XLEN)-unknown-linux-gnu \
+		--target=riscv$(XLEN)esp-unknown-linux-gnu \
 		--prefix=$(INSTALL_DIR) \
 		--with-sysroot=$(SYSROOT) \
 		--with-newlib \
@@ -173,7 +173,7 @@ stamps/build-gcc-linux-stage2: src/gcc stamps/build-glibc-linux$(XLEN) \
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--target=riscv$(XLEN)-unknown-linux-gnu \
+		--target=riscv$(XLEN)esp-unknown-linux-gnu \
 		--prefix=$(INSTALL_DIR) \
 		--with-sysroot=$(SYSROOT) \
 		--enable-shared \
@@ -194,7 +194,7 @@ stamps/build-binutils-newlib: src/binutils
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--target=riscv$(XLEN)-unknown-elf \
+		--target=riscv$(XLEN)esp-unknown-elf \
 		--prefix=$(INSTALL_DIR) \
 		--enable-tls \
 		--disable-werror
@@ -214,7 +214,7 @@ stamps/build-gcc-newlib: src/newlib-gcc stamps/build-binutils-newlib
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $(CURDIR)/$</configure \
-		--target=riscv$(XLEN)-unknown-elf \
+		--target=riscv$(XLEN)esp-unknown-elf \
 		--prefix=$(INSTALL_DIR) \
 		--disable-shared \
 		--disable-threads \
