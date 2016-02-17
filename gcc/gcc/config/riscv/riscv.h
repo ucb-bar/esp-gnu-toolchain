@@ -53,7 +53,6 @@ along with GCC; see the file COPYING3.  If not see
       builtin_define_with_int_value ("_RISCV_SZINT", INT_TYPE_SIZE);	\
       builtin_define_with_int_value ("_RISCV_SZLONG", LONG_TYPE_SIZE);	\
       builtin_define_with_int_value ("_RISCV_SZPTR", POINTER_SIZE);	\
-      builtin_define_with_int_value ("_RISCV_FPSET", 32);		\
 									\
       if (TARGET_RVC)							\
 	builtin_define ("__riscv_compressed");				\
@@ -64,46 +63,24 @@ along with GCC; see the file COPYING3.  If not see
       if (TARGET_HWACHA4)							\
   builtin_define ("__riscv_hwacha4");				\
 									\
-      /* These defines reflect the ABI in use, not whether the  	\
-	 FPU is directly accessible.  */				\
-      if (TARGET_HARD_FLOAT_ABI) {					\
-	builtin_define ("__riscv_hard_float");				\
-	if (TARGET_FDIV) {						\
-	  builtin_define ("__riscv_fdiv");				\
-	  builtin_define ("__riscv_fsqrt");				\
+      if (TARGET_MULDIV)						\
+	builtin_define ("__riscv_muldiv");				\
+									\
+      if (TARGET_HARD_FLOAT_ABI)					\
+	{								\
+	  builtin_define ("__riscv_hard_float");			\
+	  if (TARGET_FDIV)						\
+	    {								\
+	      builtin_define ("__riscv_fdiv");				\
+	      builtin_define ("__riscv_fsqrt");				\
+	    }								\
 	}								\
-      } else								\
+      else								\
 	builtin_define ("__riscv_soft_float");				\
 									\
       /* The base RISC-V ISA is always little-endian. */		\
       builtin_define_std ("RISCVEL");					\
-      builtin_define ("_RISCVEL");					\
 									\
-      /* Macros dependent on the C dialect.  */				\
-      if (preprocessing_asm_p ())					\
-	{								\
-	  builtin_define_std ("LANGUAGE_ASSEMBLY");			\
-	  builtin_define ("_LANGUAGE_ASSEMBLY");			\
-	}								\
-      else if (c_dialect_cxx ())					\
-	{								\
-	  builtin_define ("_LANGUAGE_C_PLUS_PLUS");			\
-	  builtin_define ("__LANGUAGE_C_PLUS_PLUS");			\
-	  builtin_define ("__LANGUAGE_C_PLUS_PLUS__");			\
-	}								\
-      else								\
-	{								\
-	  builtin_define_std ("LANGUAGE_C");				\
-	  builtin_define ("_LANGUAGE_C");				\
-	}								\
-      if (c_dialect_objc ())						\
-	{								\
-	  builtin_define ("_LANGUAGE_OBJECTIVE_C");			\
-	  builtin_define ("__LANGUAGE_OBJECTIVE_C");			\
-	  /* Bizarre, but needed at least for Irix.  */			\
-	  builtin_define_std ("LANGUAGE_C");				\
-	  builtin_define ("_LANGUAGE_C");				\
-	}								\
       if (riscv_cmodel == CM_MEDANY)					\
 	builtin_define ("_RISCV_CMODEL_MEDANY");			\
     }									\
@@ -175,7 +152,8 @@ along with GCC; see the file COPYING3.  If not see
 #define ASM_SPEC "\
 %(subtarget_asm_debugging_spec) \
 %{m32} %{m64} %{!m32:%{!m64: %(asm_abi_default_spec)}} \
-%{mrvc} \
+%{mrvc} %{mno-rvc} \
+%{msoft-float} %{mhard-float} \
 %{fPIC|fpic|fPIE|fpie:-fpic} \
 %{march=*} \
 %(subtarget_asm_spec)"
@@ -255,10 +233,6 @@ along with GCC; see the file COPYING3.  If not see
 
 /* We currently require both or neither of the `F' and `D' extensions. */
 #define UNITS_PER_FPREG 8
-
-/* If FP regs aren't wide enough for a given FP argument, it is passed in
-   integer registers. */
-#define MIN_FPRS_PER_FMT 1
 
 /* The largest size of value that can be held in floating-point
    registers and moved with a single instruction.  */
@@ -392,11 +366,11 @@ along with GCC; see the file COPYING3.  If not see
    Extensions of pointers to word_mode must be signed.  */
 #define POINTERS_EXTEND_UNSIGNED false
 
-/* RV32 double-precision FP <-> integer moves go through memory */
-#define SECONDARY_MEMORY_NEEDED(CLASS1,CLASS2,MODE) \
- (!TARGET_64BIT && GET_MODE_SIZE (MODE) == 8 && \
-   (((CLASS1) == FP_REGS && (CLASS2) != FP_REGS) \
-   || ((CLASS2) == FP_REGS && (CLASS1) != FP_REGS)))
+/* When floating-point registers are wider than integer ones, moves between
+   them must go through memory.  */
+#define SECONDARY_MEMORY_NEEDED(CLASS1,CLASS2,MODE)	\
+  (GET_MODE_SIZE (MODE) > UNITS_PER_WORD		\
+   && ((CLASS1) == FP_REGS) != ((CLASS2) == FP_REGS))
 
 /* Define if loading short immediate values into registers sign extends.  */
 #define SHORT_IMMEDIATES_SIGN_EXTEND
@@ -517,10 +491,7 @@ along with GCC; see the file COPYING3.  If not see
    the frame pointer, the EH stack adjustment, or the EH data registers. */
 
 #define RISCV_PROLOGUE_TEMP_REGNUM (GP_TEMP_FIRST + 1)
-#define RISCV_EPILOGUE_TEMP_REGNUM RISCV_PROLOGUE_TEMP_REGNUM
-
 #define RISCV_PROLOGUE_TEMP(MODE) gen_rtx_REG (MODE, RISCV_PROLOGUE_TEMP_REGNUM)
-#define RISCV_EPILOGUE_TEMP(MODE) gen_rtx_REG (MODE, RISCV_EPILOGUE_TEMP_REGNUM)
 
 #define FUNCTION_PROFILER(STREAM, LABELNO)	\
 {						\
@@ -631,7 +602,7 @@ enum reg_class
 #define REG_ALLOC_ORDER							\
 { \
   /* Call-clobbered GPRs.  */						\
-  15, 14, 13, 12, 11, 10, 16, 17, 5, 6, 7, 28, 29, 30, 31, 1,		\
+  15, 14, 13, 12, 11, 10, 16, 17, 6, 28, 29, 30, 31, 5, 7, 1,		\
   /* Call-saved GPRs.  */						\
   8, 9, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,	       			\
   /* GPRs that can never be exposed to the register allocator.  */	\
@@ -646,7 +617,7 @@ enum reg_class
   64, 65								\
 }
 
-/* True if VALUE is a signed 16-bit number.  */
+/* True if VALUE is a signed 12-bit number.  */
 
 #define SMALL_OPERAND(VALUE) \
   ((unsigned HOST_WIDE_INT) (VALUE) + IMM_REACH/2 < IMM_REACH)
@@ -656,29 +627,6 @@ enum reg_class
 #define LUI_OPERAND(VALUE)						\
   (((VALUE) | ((1UL<<31) - IMM_REACH)) == ((1UL<<31) - IMM_REACH)	\
    || ((VALUE) | ((1UL<<31) - IMM_REACH)) + IMM_REACH == 0)
-
-/* Return a value X with the low 16 bits clear, and such that
-   VALUE - X is a signed 16-bit value.  */
-
-#define SMALL_INT(X) SMALL_OPERAND (INTVAL (X))
-#define LUI_INT(X) LUI_OPERAND (INTVAL (X))
-
-/* The HI and LO registers can only be reloaded via the general
-   registers.  Condition code registers can only be loaded to the
-   general registers, and from the floating point registers.  */
-
-#define SECONDARY_INPUT_RELOAD_CLASS(CLASS, MODE, X)			\
-  riscv_secondary_reload_class (CLASS, MODE, X, true)
-#define SECONDARY_OUTPUT_RELOAD_CLASS(CLASS, MODE, X)			\
-  riscv_secondary_reload_class (CLASS, MODE, X, false)
-
-/* Return the maximum number of consecutive registers
-   needed to represent mode MODE in a register of class CLASS.  */
-
-#define CLASS_MAX_NREGS(CLASS, MODE) riscv_class_max_nregs (CLASS, MODE)
-
-/* It is undefined to interpret an FP register in a different format than
-   that which it was created to be. */
 
 #define CANNOT_CHANGE_MODE_CLASS(FROM, TO, CLASS) \
   reg_classes_intersect_p (FP_REGS, CLASS)

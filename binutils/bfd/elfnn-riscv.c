@@ -182,11 +182,14 @@ riscv_elf_got_plt_val (bfd_vma plt_index, struct bfd_link_info *info)
 # define MATCH_LREG MATCH_LD
 #endif
 
-/* The format of the first PLT entry.  */
+/* Generate a PLT header.  */
 
 static void
-riscv_make_plt0_entry (bfd_vma gotplt_addr, bfd_vma addr, uint32_t *entry)
+riscv_make_plt_header (bfd_vma gotplt_addr, bfd_vma addr, uint32_t *entry)
 {
+  bfd_vma gotplt_offset_high = RISCV_PCREL_HIGH_PART (gotplt_addr, addr);
+  bfd_vma gotplt_offset_low = RISCV_PCREL_LOW_PART (gotplt_addr, addr);
+
   /* auipc  t2, %hi(.got.plt)
      sub    t1, t1, t3               # shifted .got.plt offset + hdr size + 12
      l[w|d] t3, %lo(.got.plt)(t2)    # _dl_runtime_resolve
@@ -196,28 +199,28 @@ riscv_make_plt0_entry (bfd_vma gotplt_addr, bfd_vma addr, uint32_t *entry)
      l[w|d] t0, PTRSIZE(t0)          # link map
      jr     t3 */
 
-  entry[0] = RISCV_UTYPE (AUIPC, X_T2, RISCV_PCREL_HIGH_PART (gotplt_addr, addr));
+  entry[0] = RISCV_UTYPE (AUIPC, X_T2, gotplt_offset_high);
   entry[1] = RISCV_RTYPE (SUB, X_T1, X_T1, X_T3);
-  entry[2] = RISCV_ITYPE (LREG, X_T3, X_T2, RISCV_PCREL_LOW_PART (gotplt_addr, addr));
+  entry[2] = RISCV_ITYPE (LREG, X_T3, X_T2, gotplt_offset_low);
   entry[3] = RISCV_ITYPE (ADDI, X_T1, X_T1, -(PLT_HEADER_SIZE + 12));
-  entry[4] = RISCV_ITYPE (ADDI, X_T0, X_T2, RISCV_PCREL_LOW_PART (gotplt_addr, addr));
+  entry[4] = RISCV_ITYPE (ADDI, X_T0, X_T2, gotplt_offset_low);
   entry[5] = RISCV_ITYPE (SRLI, X_T1, X_T1, 4 - RISCV_ELF_LOG_WORD_BYTES);
   entry[6] = RISCV_ITYPE (LREG, X_T0, X_T0, RISCV_ELF_WORD_BYTES);
   entry[7] = RISCV_ITYPE (JALR, 0, X_T3, 0);
 }
 
-/* The format of subsequent PLT entries.  */
+/* Generate a PLT entry.  */
 
 static void
-riscv_make_plt_entry (bfd_vma got_address, bfd_vma addr, uint32_t *entry)
+riscv_make_plt_entry (bfd_vma got, bfd_vma addr, uint32_t *entry)
 {
   /* auipc  t3, %hi(.got.plt entry)
      l[w|d] t3, %lo(.got.plt entry)(t3)
      jalr   t1, t3
      nop */
 
-  entry[0] = RISCV_UTYPE (AUIPC, X_T3, RISCV_PCREL_HIGH_PART (got_address, addr));
-  entry[1] = RISCV_ITYPE (LREG,  X_T3, X_T3, RISCV_PCREL_LOW_PART(got_address, addr));
+  entry[0] = RISCV_UTYPE (AUIPC, X_T3, RISCV_PCREL_HIGH_PART (got, addr));
+  entry[1] = RISCV_ITYPE (LREG,  X_T3, X_T3, RISCV_PCREL_LOW_PART(got, addr));
   entry[2] = RISCV_ITYPE (JALR, X_T1, X_T3, 0);
   entry[3] = RISCV_NOP;
 }
@@ -585,7 +588,7 @@ riscv_elf_check_relocs (bfd *abfd, struct bfd_link_info *info,
 	case R_RISCV_RVC_BRANCH:
 	case R_RISCV_RVC_JUMP:
 	case R_RISCV_PCREL_HI20:
-	  /* In shared libs, these relocs are known to bind locally.  */
+	  /* In shared libraries, these relocs are known to bind locally.  */
 	  if (info->shared)
 	    break;
 	  goto static_reloc;
@@ -610,6 +613,7 @@ riscv_elf_check_relocs (bfd *abfd, struct bfd_link_info *info,
 	  /* Fall through.  */
 
 	static_reloc:
+	  /* This reloc might not bind locally.  */
 	  if (h != NULL)
 	    h->non_got_ref = 1;
 
@@ -969,9 +973,9 @@ riscv_elf_adjust_dynamic_symbol (struct bfd_link_info *info,
     }
 
   if (eh->tls_type & ~GOT_NORMAL)
-    return _bfd_elf_adjust_dynamic_copy (h, htab->sdyntdata);
+    return _bfd_elf_adjust_dynamic_copy (info, h, htab->sdyntdata);
 
-  return _bfd_elf_adjust_dynamic_copy (h, htab->sdynbss);
+  return _bfd_elf_adjust_dynamic_copy (info, h, htab->sdynbss);
 }
 
 /* Allocate space in .plt, .got and associated reloc sections for
@@ -1194,8 +1198,6 @@ readonly_dynrelocs (struct elf_link_hash_entry *h, void *inf)
       if (s != NULL && (s->flags & SEC_READONLY) != 0)
 	{
 	  ((struct bfd_link_info *) inf)->flags |= DF_TEXTREL;
-
-	  /* Short-circuit the traversal.  */
 	  return FALSE;
 	}
     }
@@ -1480,16 +1482,20 @@ perform_relocation (const reloc_howto_type *howto,
     case R_RISCV_GOT_HI20:
     case R_RISCV_TLS_GOT_HI20:
     case R_RISCV_TLS_GD_HI20:
+      if (ARCH_SIZE > 32 && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
+	return bfd_reloc_overflow;
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value));
       break;
 
     case R_RISCV_LO12_I:
+    case R_RISCV_GPREL_I:
     case R_RISCV_TPREL_LO12_I:
     case R_RISCV_PCREL_LO12_I:
       value = ENCODE_ITYPE_IMM (value);
       break;
 
     case R_RISCV_LO12_S:
+    case R_RISCV_GPREL_S:
     case R_RISCV_TPREL_LO12_S:
     case R_RISCV_PCREL_LO12_S:
       value = ENCODE_STYPE_IMM (value);
@@ -1497,7 +1503,7 @@ perform_relocation (const reloc_howto_type *howto,
 
     case R_RISCV_CALL:
     case R_RISCV_CALL_PLT:
-      if (!VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
+      if (ARCH_SIZE > 32 && !VALID_UTYPE_IMM (RISCV_CONST_HIGH_PART (value)))
 	return bfd_reloc_overflow;
       value = ENCODE_UTYPE_IMM (RISCV_CONST_HIGH_PART (value))
 	      | (ENCODE_ITYPE_IMM (value) << 32);
@@ -1525,6 +1531,12 @@ perform_relocation (const reloc_howto_type *howto,
       if (!VALID_RVC_J_IMM (value))
 	return bfd_reloc_overflow;
       value = ENCODE_RVC_J_IMM (value);
+      break;
+
+    case R_RISCV_RVC_LUI:
+      if (!VALID_RVC_LUI_IMM (RISCV_CONST_HIGH_PART (value)))
+	return bfd_reloc_overflow;
+      value = ENCODE_RVC_LUI_IMM (RISCV_CONST_HIGH_PART (value));
       break;
 
     case R_RISCV_32:
@@ -1796,9 +1808,12 @@ riscv_elf_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 	  /* These require nothing of us at all.  */
 	  continue;
 
+	case R_RISCV_HI20:
 	case R_RISCV_BRANCH:
 	case R_RISCV_RVC_BRANCH:
-	case R_RISCV_HI20:
+	case R_RISCV_RVC_LUI:
+	case R_RISCV_LO12_I:
+	case R_RISCV_LO12_S:
 	  /* These require no special handling beyond perform_relocation.  */
 	  break;
 
@@ -1846,8 +1861,8 @@ riscv_elf_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 
 	      off = local_got_offsets[r_symndx];
 
-	      /* The offset must always be a multiple of 8 on 64-bit.
-		 We use the least significant bit to record
+	      /* The offset must always be a multiple of the word size.
+		 So, we can use the least significant bit to record
 		 whether we have already processed this entry.  */
 	      if ((off & 1) != 0)
 		off &= ~1;
@@ -1932,8 +1947,8 @@ riscv_elf_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 	    }
 	  break;
 
-	case R_RISCV_LO12_I:
-	case R_RISCV_LO12_S:
+	case R_RISCV_GPREL_I:
+	case R_RISCV_GPREL_S:
 	  {
 	    bfd_vma gp = riscv_global_pointer_value (info);
 	    bfd_boolean x0_base = VALID_ITYPE_IMM (relocation + rel->r_addend);
@@ -1949,6 +1964,8 @@ riscv_elf_relocate_section (bfd *output_bfd, struct bfd_link_info *info,
 		  }
 		bfd_put_32 (input_bfd, insn, contents + rel->r_offset);
 	      }
+	    else
+	      r = bfd_reloc_overflow;
 	    break;
 	  }
 
@@ -2434,7 +2451,7 @@ riscv_elf_finish_dynamic_sections (bfd *output_bfd,
 	{
 	  int i;
 	  uint32_t plt_header[PLT_HEADER_INSNS];
-	  riscv_make_plt0_entry (sec_addr (htab->elf.sgotplt),
+	  riscv_make_plt_header (sec_addr (htab->elf.sgotplt),
 				 sec_addr (splt), plt_header);
 
 	  for (i = 0; i < PLT_HEADER_INSNS; i++)
@@ -2447,7 +2464,9 @@ riscv_elf_finish_dynamic_sections (bfd *output_bfd,
 
   if (htab->elf.sgotplt)
     {
-      if (bfd_is_abs_section (htab->elf.sgotplt->output_section))
+      asection *output_section = htab->elf.sgotplt->output_section;
+
+      if (bfd_is_abs_section (output_section))
 	{
 	  (*_bfd_error_handler)
 	    (_("discarded output section: `%A'"), htab->elf.sgotplt);
@@ -2463,12 +2482,13 @@ riscv_elf_finish_dynamic_sections (bfd *output_bfd,
 		      htab->elf.sgotplt->contents + GOT_ENTRY_SIZE);
 	}
 
-      elf_section_data (htab->elf.sgotplt->output_section)->this_hdr.sh_entsize =
-	GOT_ENTRY_SIZE;
+      elf_section_data (output_section)->this_hdr.sh_entsize = GOT_ENTRY_SIZE;
     }
 
   if (htab->elf.sgot)
     {
+      asection *output_section = htab->elf.sgot->output_section;
+
       if (htab->elf.sgot->size > 0)
 	{
 	  /* Set the first entry in the global offset table to the address of
@@ -2477,8 +2497,7 @@ riscv_elf_finish_dynamic_sections (bfd *output_bfd,
 	  bfd_put_NN (output_bfd, val, htab->elf.sgot->contents);
 	}
 
-      elf_section_data (htab->elf.sgot->output_section)->this_hdr.sh_entsize =
-	GOT_ENTRY_SIZE;
+      elf_section_data (output_section)->this_hdr.sh_entsize = GOT_ENTRY_SIZE;
     }
 
   return TRUE;
@@ -2512,22 +2531,14 @@ riscv_reloc_type_class (const struct bfd_link_info *info ATTRIBUTE_UNUSED,
     }
 }
 
-/* Return true if bfd machine EXTENSION is an extension of machine BASE.  */
-
-static bfd_boolean
-riscv_mach_extends_p (unsigned long base, unsigned long extension)
-{
-  return extension == base;
-}
-
 /* Merge backend specific data from an object file to the output
    object file when linking.  */
 
 static bfd_boolean
 _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, bfd *obfd)
 {
-  flagword old_flags;
-  flagword new_flags;
+  flagword new_flags = elf_elfheader (ibfd)->e_flags;
+  flagword old_flags = elf_elfheader (obfd)->e_flags;
 
   if (!is_riscv_elf (ibfd) || !is_riscv_elf (obfd))
     return TRUE;
@@ -2543,63 +2554,23 @@ _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, bfd *obfd)
   if (!_bfd_elf_merge_object_attributes (ibfd, obfd))
     return FALSE;
 
-  new_flags = elf_elfheader (ibfd)->e_flags;
-  old_flags = elf_elfheader (obfd)->e_flags;
-
   if (! elf_flags_init (obfd))
     {
       elf_flags_init (obfd) = TRUE;
       elf_elfheader (obfd)->e_flags = new_flags;
-      elf_elfheader (obfd)->e_ident[EI_CLASS]
-	= elf_elfheader (ibfd)->e_ident[EI_CLASS];
-
-      if (bfd_get_arch (obfd) == bfd_get_arch (ibfd)
-	  && (bfd_get_arch_info (obfd)->the_default
-	      || riscv_mach_extends_p (bfd_get_mach (obfd),
-				       bfd_get_mach (ibfd))))
-	{
-	  if (! bfd_set_arch_mach (obfd, bfd_get_arch (ibfd),
-				   bfd_get_mach (ibfd)))
-	    return FALSE;
-	}
-
       return TRUE;
     }
 
-  /* Check flag compatibility.  */
-
-  if (new_flags == old_flags)
-    return TRUE;
-
-  /* Don't link RV32 and RV64.  */
-  if (elf_elfheader (ibfd)->e_ident[EI_CLASS]
-      != elf_elfheader (obfd)->e_ident[EI_CLASS])
+  /* Disallow linking soft-float and hard-float.  */
+  if ((old_flags ^ new_flags) & EF_RISCV_SOFT_FLOAT)
     {
       (*_bfd_error_handler)
-	(_("%B: ELF class mismatch: can't link 32- and 64-bit modules"), ibfd);
+	(_("%B: can't link hard-float modules with soft-float modules"), ibfd);
       goto fail;
     }
 
-  /* Warn about any other mismatches.  */
-  if (new_flags != old_flags)
-    {
-      if (!EF_IS_RISCV_EXT_Xcustom (new_flags) &&
-	  !EF_IS_RISCV_EXT_Xcustom (old_flags))
-	{
-	  (*_bfd_error_handler)
-	    (_("%B: uses different e_flags (0x%lx) fields than previous "
-	       "modules (0x%lx)"),
-	     ibfd, (unsigned long) new_flags,
-	     (unsigned long) old_flags);
-	  goto fail;
-	}
-      else if (EF_IS_RISCV_EXT_Xcustom (new_flags))
-	EF_SET_RISCV_EXT (elf_elfheader (obfd)->e_flags,
-			  EF_GET_RISCV_EXT (old_flags));
-      else if (EF_IS_RISCV_EXT_Xhwacha(new_flags))
-	EF_SET_RISCV_EXT (elf_elfheader (obfd)->e_flags,
-			  EF_GET_RISCV_EXT (new_flags));
-    }
+  /* Allow linking RVC and non-RVC, and keep the RVC flag.  */
+  elf_elfheader (obfd)->e_flags |= new_flags & EF_RISCV_RVC;
 
   return TRUE;
 
@@ -2712,7 +2683,7 @@ _bfd_riscv_relax_call (bfd *abfd, asection *sec, asection *sym_sec,
   auipc = bfd_get_32 (abfd, contents + rel->r_offset);
   jalr = bfd_get_32 (abfd, contents + rel->r_offset + 4);
   rd = (jalr >> OP_SH_RD) & OP_MASK_RD;
-  rvc = rvc && VALID_RVC_J_IMM (foff);
+  rvc = rvc && VALID_RVC_J_IMM (foff) && ARCH_SIZE == 32;
 
   if (rvc && (rd == 0 || rd == X_RA))
     {
@@ -2747,26 +2718,70 @@ _bfd_riscv_relax_call (bfd *abfd, asection *sec, asection *sym_sec,
 /* Relax non-PIC global variable references.  */
 
 static bfd_boolean
-_bfd_riscv_relax_lui (bfd *abfd, asection *sec,
-		      asection *sym_sec ATTRIBUTE_UNUSED,
+_bfd_riscv_relax_lui (bfd *abfd, asection *sec, asection *sym_sec,
 		      struct bfd_link_info *link_info,
 		      Elf_Internal_Rela *rel,
 		      bfd_vma symval,
 		      bfd_boolean *again)
 {
+  bfd_byte *contents = elf_section_data (sec)->this_hdr.contents;
   bfd_vma gp = riscv_global_pointer_value (link_info);
+  int use_rvc = elf_elfheader (abfd)->e_flags & EF_RISCV_RVC;
 
-  /* Bail out if this symbol isn't in range of either gp or x0.  */
-  if (!VALID_ITYPE_IMM (symval - gp) && !(symval < RISCV_IMM_REACH/2))
+  /* Mergeable symbols might later move out of range.  */
+  if (sym_sec->flags & SEC_MERGE)
     return TRUE;
 
-  /* We can delete the unnecessary AUIPC. The corresponding LO12 reloc
-     will be converted to GPREL during relocation.  */
   BFD_ASSERT (rel->r_offset + 4 <= sec->size);
-  rel->r_info = ELFNN_R_INFO (0, R_RISCV_NONE);
 
-  *again = TRUE;
-  return riscv_relax_delete_bytes (abfd, sec, rel->r_offset, 4);
+  /* Is the reference in range of x0 or gp?  */
+  if (VALID_ITYPE_IMM (symval) || VALID_ITYPE_IMM (symval - gp))
+    {
+      unsigned sym = ELFNN_R_SYM (rel->r_info);
+      switch (ELFNN_R_TYPE (rel->r_info))
+	{
+	case R_RISCV_LO12_I:
+	  rel->r_info = ELFNN_R_INFO (sym, R_RISCV_GPREL_I);
+	  return TRUE;
+
+	case R_RISCV_LO12_S:
+	  rel->r_info = ELFNN_R_INFO (sym, R_RISCV_GPREL_S);
+	  return TRUE;
+
+	case R_RISCV_HI20:
+	  /* We can delete the unnecessary LUI and reloc.  */
+	  rel->r_info = ELFNN_R_INFO (0, R_RISCV_NONE);
+	  *again = TRUE;
+	  return riscv_relax_delete_bytes (abfd, sec, rel->r_offset, 4);
+
+	default:
+	  abort ();
+	}
+    }
+
+  /* Can we relax LUI to C.LUI?  Alignment might move the section forward;
+     account for this assuming page alignment at worst.  */
+  if (use_rvc
+      && ELFNN_R_TYPE (rel->r_info) == R_RISCV_HI20
+      && VALID_RVC_LUI_IMM (RISCV_CONST_HIGH_PART (symval))
+      && VALID_RVC_LUI_IMM (RISCV_CONST_HIGH_PART (symval + ELF_MAXPAGESIZE)))
+    {
+      /* Replace LUI with C.LUI if legal (i.e., rd != x2/sp).  */
+      bfd_vma lui = bfd_get_32 (abfd, contents + rel->r_offset);
+      if (((lui >> OP_SH_RD) & OP_MASK_RD) == X_SP)
+	return TRUE;
+
+      lui = (lui & (OP_MASK_RD << OP_SH_RD)) | MATCH_C_LUI;
+      bfd_put_32 (abfd, lui, contents + rel->r_offset);
+
+      /* Replace the R_RISCV_HI20 reloc.  */
+      rel->r_info = ELFNN_R_INFO (ELFNN_R_SYM (rel->r_info), R_RISCV_RVC_LUI);
+
+      *again = TRUE;
+      return riscv_relax_delete_bytes (abfd, sec, rel->r_offset + 2, 2);
+    }
+
+  return TRUE;
 }
 
 /* Relax non-PIC TLS references.  */
@@ -2882,7 +2897,9 @@ _bfd_riscv_relax_section (bfd *abfd, asection *sec,
 	{
 	  if (type == R_RISCV_CALL || type == R_RISCV_CALL_PLT)
 	    relax_func = _bfd_riscv_relax_call;
-	  else if (type == R_RISCV_HI20)
+	  else if (type == R_RISCV_HI20
+		   || type == R_RISCV_LO12_I
+		   || type == R_RISCV_LO12_S)
 	    relax_func = _bfd_riscv_relax_lui;
 	  else if (type == R_RISCV_TPREL_HI20 || type == R_RISCV_TPREL_ADD)
 	    relax_func = _bfd_riscv_relax_tls_le;
@@ -2941,8 +2958,6 @@ _bfd_riscv_relax_section (bfd *abfd, asection *sec,
 
 	  if (h->plt.offset != MINUS_ONE)
 	    symval = sec_addr (htab->elf.splt) + h->plt.offset;
-	  else if (h->root.type == bfd_link_hash_undefweak)
-	    symval = 0;
 	  else if (h->root.u.def.section->output_section == NULL
 		   || (h->root.type != bfd_link_hash_defined
 		       && h->root.type != bfd_link_hash_defweak))
