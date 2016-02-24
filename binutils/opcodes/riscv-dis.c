@@ -711,7 +711,7 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
   if (op != NULL)
     {
       int xlen = 0;
-      int hwacha = 0;
+      int hwacha = 1;
 
       /* The incoming section might not always be complete.  */
       if (info->section != NULL)
