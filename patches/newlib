@@ -39,7 +39,7 @@
  	;;
 +  riscv*)
 +	machine_dir=riscv
-+	newlib_cflags="${newlib_cflags} -DREENTRANT_SYSCALLS_PROVIDED"
++	newlib_cflags="${newlib_cflags}"
 +	;;
    mips*)
  	machine_dir=mips
@@ -51,7 +51,7 @@
  #endif
  
 +#ifdef __riscv__
-+# ifdef _RISCVEL
++# ifdef __RISCVEL__
 +#  define __IEEE_LITTLE_ENDIAN
 +# else
 +#  define __IEEE_BIG_ENDIAN

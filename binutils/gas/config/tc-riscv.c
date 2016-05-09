@@ -125,7 +125,7 @@ riscv_add_subset (const char *subset)
 {
   struct riscv_subset *s = xmalloc (sizeof *s);
   s->name = xstrdup (subset);
-  s->version_major = 1;
+  s->version_major = 2;
   s->version_minor = 0;
   s->next = riscv_subsets;
   riscv_subsets = s;
@@ -1906,7 +1906,8 @@ rvc_imm_done:
 		case 'L':
 		  if (my_getSmallExpression (imm_expr, imm_reloc, s, p)
 		      || imm_expr->X_op != O_constant
-		      || !VALID_RVC_ADDI16SP_IMM (imm_expr->X_add_number))
+		      || !VALID_RVC_ADDI16SP_IMM (imm_expr->X_add_number)
+		      || imm_expr->X_add_number == 0)
 		    break;
 		  ip->insn_opcode |=
 		    ENCODE_RVC_ADDI16SP_IMM (imm_expr->X_add_number);
@@ -2298,6 +2299,13 @@ struct option md_longopts[] =
 };
 size_t md_longopts_size = sizeof (md_longopts);
 
+enum float_mode {
+  FLOAT_MODE_DEFAULT,
+  FLOAT_MODE_SOFT,
+  FLOAT_MODE_HARD
+};
+static enum float_mode marg_float_mode = FLOAT_MODE_DEFAULT;
+
 int
 md_parse_option (int c, char *arg)
 {
@@ -2312,11 +2320,11 @@ md_parse_option (int c, char *arg)
       break;
 
     case OPTION_MSOFT_FLOAT:
-      elf_flags |= EF_RISCV_SOFT_FLOAT;
+      marg_float_mode = FLOAT_MODE_SOFT;
       break;
 
     case OPTION_MHARD_FLOAT:
-      elf_flags &= ~EF_RISCV_SOFT_FLOAT;
+      marg_float_mode = FLOAT_MODE_HARD;
       break;
 
     case OPTION_M32:
@@ -2349,6 +2357,9 @@ md_parse_option (int c, char *arg)
 void
 riscv_after_parse_args (void)
 {
+  struct riscv_subset *subset;
+  enum float_mode isa_float_mode, elf_float_mode;
+
   if (riscv_subsets == NULL)
     riscv_set_arch ("RVIMAFDXcustom");
 
@@ -2361,6 +2372,35 @@ riscv_after_parse_args (void)
       else
 	as_bad ("unknown default architecture `%s'", default_arch);
     }
+
+  isa_float_mode = FLOAT_MODE_SOFT;
+  for (subset = riscv_subsets; subset != NULL; subset = subset->next)
+    {
+       if (strcasecmp(subset->name, "F") == 0)
+         isa_float_mode = FLOAT_MODE_HARD;
+       if (strcasecmp(subset->name, "D") == 0)
+         isa_float_mode = FLOAT_MODE_HARD;
+    }
+
+  if (marg_float_mode == FLOAT_MODE_HARD && isa_float_mode == FLOAT_MODE_SOFT)
+    as_bad ("Architecture doesn't allow hardfloat ABI");
+
+  elf_float_mode = (marg_float_mode == FLOAT_MODE_DEFAULT) ? isa_float_mode
+                                                           : marg_float_mode;
+
+  switch (elf_float_mode) {
+  case FLOAT_MODE_DEFAULT:
+    as_bad("a specific float mode must be specified for an ELF");
+    break;
+
+  case FLOAT_MODE_SOFT:
+    elf_flags |= EF_RISCV_SOFT_FLOAT;
+    break;
+
+  case FLOAT_MODE_HARD:
+    elf_flags &= ~EF_RISCV_SOFT_FLOAT;
+    break;
+  }
 }
 
 void
