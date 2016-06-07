@@ -808,6 +808,14 @@ typedef struct {
 #define CASE_VECTOR_MODE SImode
 #define CASE_VECTOR_PC_RELATIVE (riscv_cmodel != CM_MEDLOW)
 
+/* The load-address macro is used for PC-relative addressing of symbols
+   that bind locally.  Don't use it for symbols that should be addressed
+   via the GOT.  Also, avoid it for CM_MEDLOW, where LUI addressing
+   currently results in more opportunities for linker relaxation.  */
+#define USE_LOAD_ADDRESS_MACRO(sym)             \
+  ((flag_pic && SYMBOL_REF_LOCAL_P (sym))       \
+   || riscv_cmodel == CM_MEDANY)
+
 /* Define this as 1 if `char' should by default be signed; else as 0.  */
 #define DEFAULT_SIGNED_CHAR 0
 
@@ -1012,7 +1020,7 @@ while (0)
 
 /* The maximum number of bytes that can be copied by one iteration of
    a movmemsi loop; see riscv_block_move_loop.  */
-#define RISCV_MAX_MOVE_BYTES_PER_LOOP_ITER (UNITS_PER_WORD * 4)
+#define RISCV_MAX_MOVE_BYTES_PER_LOOP_ITER 32
 
 /* The maximum number of bytes that can be copied by a straight-line
    implementation of movmemsi; see riscv_block_move_straight.  We want
