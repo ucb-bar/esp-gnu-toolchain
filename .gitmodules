@@ -12,4 +12,4 @@
 	url = ../riscv-dejagnu.git
 [submodule "riscv-newlib"]
 	path = riscv-newlib
-	url = ../riscv-newlib.git
+	url = git://github.com/riscv/riscv-newlib.git
