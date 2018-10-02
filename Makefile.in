@@ -1,7 +1,15 @@
 srcdir := @abs_top_srcdir@
-relsrcdir := @top_srcdir@
 builddir := @abs_top_builddir@
 INSTALL_DIR := @prefix@
+
+# We need a relative source dir for the gcc configure, to make msys2 mingw64
+# builds work.  Mayberelsrcdir is relative if a relative path was used to run
+# configure, otherwise absolute, so we have to check.
+mayberelsrcdir := @top_srcdir@
+gccsrcdir := $(shell case $(mayberelsrcdir) in \
+		  ([\\/]* | ?:[\\/]*)  echo $(mayberelsrcdir)/riscv-gcc ;; \
+		  (*)  echo ../$(mayberelsrcdir)/riscv-gcc ;; \
+		esac)
 
 PACKAGES :=
 
@@ -48,6 +56,9 @@ NEWLIB_TUPLE ?= $(call make_tuple,$(XLEN),elf)
 
 CFLAGS_FOR_TARGET := $(CFLAGS_FOR_TARGET_EXTRA) @cmodel@
 ASFLAGS_FOR_TARGET := $(ASFLAGS_FOR_TARGET_EXTRA) @cmodel@
+# --with-expat is required to enable XML support used by OpenOCD.
+BINUTILS_GDB_TARGET_FLAGS := --with-expat=yes $(BINUTILS_GDB_TARGET_FLAGS_EXTRA)
+BINUTILS_GDB_NATIVE_FLAGS := $(BINUTILS_GDB_NATIVE_FLAGS_EXTRA)
 GLIBC_TARGET_FLAGS := $(GLIBC_TARGET_FLAGS_EXTRA)
 GLIBC_CC_FOR_TARGET ?= $(LINUX_TUPLE)-gcc
 GLIBC_CXX_FOR_TARGET ?= $(LINUX_TUPLE)-g++
@@ -141,7 +152,8 @@ patches: $(addprefix $(srcdir)/patches/,$(PACKAGES))
 stamps/build-binutils-linux: $(srcdir)/riscv-binutils-gdb
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	cd $(notdir $@) && $</configure \
+# CC_FOR_TARGET is required for the ld testsuite.
+	cd $(notdir $@) && CC_FOR_TARGET=$(GLIBC_CC_FOR_TARGET) $</configure \
 		--target=$(LINUX_TUPLE) \
 		$(CONFIGURE_HOST) \
 		--prefix=$(INSTALL_DIR) \
@@ -150,6 +162,7 @@ stamps/build-binutils-linux: $(srcdir)/riscv-binutils-gdb
 		@with_guile@ \
 		--disable-werror \
 		--disable-nls \
+		$(BINUTILS_GDB_TARGET_FLAGS) \
 		@enable_gdb@
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
@@ -230,7 +243,7 @@ stamps/build-gcc-linux-stage1: $(srcdir)/riscv-gcc stamps/build-binutils-linux \
 		--disable-libgomp \
 		--disable-nls \
 		--disable-bootstrap \
-		--src=../$(relsrcdir)/riscv-gcc \
+		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(MULTILIB_FLAGS) \
 		$(WITH_ABI) \
@@ -259,7 +272,7 @@ stamps/build-gcc-linux-stage2: $(srcdir)/riscv-gcc $(addprefix stamps/build-glib
 		--disable-libquadmath \
 		--disable-nls \
 		--disable-bootstrap \
-		--src=../$(relsrcdir)/riscv-gcc \
+		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(MULTILIB_FLAGS) \
 		$(WITH_ABI) \
@@ -281,6 +294,7 @@ stamps/build-binutils-linux-native: $(srcdir)/riscv-binutils-gdb stamps/build-gc
 		@with_guile@ \
 		--disable-werror \
 		--disable-nls \
+		$(BINUTILS_GDB_NATIVE_FLAGS) \
 		@enable_gdb@
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
@@ -317,12 +331,14 @@ stamps/build-gcc-linux-native: $(srcdir)/riscv-gcc stamps/build-gcc-linux-stage2
 stamps/build-binutils-newlib: $(srcdir)/riscv-binutils-gdb
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	cd $(notdir $@) && $</configure \
+# CC_FOR_TARGET is required for the ld testsuite.
+	cd $(notdir $@) && CC_FOR_TARGET=$(NEWLIB_CC_FOR_TARGET) $</configure \
 		--target=$(NEWLIB_TUPLE) \
 		$(CONFIGURE_HOST) \
 		--prefix=$(INSTALL_DIR) \
 		@with_guile@ \
 		--disable-werror \
+		$(BINUTILS_GDB_TARGET_FLAGS) \
 		@enable_gdb@
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
@@ -348,7 +364,7 @@ stamps/build-gcc-newlib-stage1: $(srcdir)/riscv-gcc stamps/build-binutils-newlib
 		--disable-libquadmath \
 		--disable-libgomp \
 		--disable-nls \
-		--src=../$(relsrcdir)/riscv-gcc \
+		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(MULTILIB_FLAGS) \
 		$(WITH_ABI) \
@@ -437,7 +453,7 @@ stamps/build-gcc-newlib-stage2: $(srcdir)/riscv-gcc stamps/build-newlib \
 		--disable-libquadmath \
 		--disable-libgomp \
 		--disable-nls \
-		--src=../$(relsrcdir)/riscv-gcc \
+		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(MULTILIB_FLAGS) \
 		$(WITH_ABI) \
