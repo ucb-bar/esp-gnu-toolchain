@@ -9,12 +9,11 @@ GLIBC_SRCDIR := @with_glibc_src@
 MUSL_SRCDIR := @with_musl_src@
 LINUX_HEADERS_SRCDIR := @with_linux_headers_src@
 GDB_SRCDIR := @with_gdb_src@
+QEMU_SRCDIR := @with_qemu_src@
+SPIKE_SRCDIR := @with_spike_src@
+PK_SRCDIR := @with_pk_src@
 
-SIM:=qemu
-
-# Default branch for proxy kernel and spike
-SPIKE_BRANCH:=master
-PK_BRANCH:=master
+SIM ?= @WITH_SIM@
 
 ifeq ($(srcdir)/riscv-gcc,$(GCC_SRCDIR))
 # We need a relative source dir for the gcc configure, to make msys2 mingw64
@@ -32,7 +31,10 @@ endif
 WITH_ARCH ?= @WITH_ARCH@
 WITH_ABI ?= @WITH_ABI@
 WITH_TUNE ?= @WITH_TUNE@
+WITH_ISA_SPEC ?= @WITH_ISA_SPEC@
 SYSROOT := $(INSTALL_DIR)/sysroot
+ENABLE_LIBSANITIZER ?= @enable_libsanitizer@
+QEMU_TARGETS ?= @qemu_targets@
 
 SHELL := /bin/sh
 AWK := @GAWK@
@@ -101,7 +103,13 @@ CONFIGURE_HOST   = @configure_host@
 all: @default_target@
 newlib: stamps/build-gcc-newlib-stage2
 linux: stamps/build-gcc-linux-stage2
+ifneq (,$(findstring riscv32,$(MUSL_TUPLE)))
+.PHONY: musl
+musl:
+	@echo "musl only supports 64bit builds." && exit 1
+else
 musl: stamps/build-gcc-musl-stage2
+endif
 ifeq (@enable_gdb@,--enable-gdb)
 newlib: stamps/build-gdb-newlib
 linux: stamps/build-gdb-linux
@@ -113,7 +121,7 @@ build-binutils: stamps/build-binutils-@default_target@
 build-gdb: stamps/build-gdb-@default_target@
 build-gcc%: stamps/build-gcc-@default_target@-stage%
 ifeq (@default_target@,linux)
-build-libc: $(patsubst %,stamps/build-glibc-linux-%,$(MULTLIB_NAMES))
+build-libc: $(addprefix stamps/build-glibc-linux-,$(GLIBC_MULTILIB_NAMES))
 else
 build-libc: stamps/build-newlib stamps/build-newlib-nano \
 	stamps/merge-newlib-nano
@@ -163,14 +171,15 @@ report-gdb: report-gdb-@default_target@
 
 .PHONY: build-sim
 ifeq ($(SIM),qemu)
+QEMU_CPU=$(shell $(srcdir)/scripts/march-to-cpu-opt $(WITH_ARCH))
 SIM_PATH:=$(srcdir)/scripts/wrapper/qemu
-SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)"
+SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)" QEMU_CPU="$(QEMU_CPU)"
 SIM_STAMP:= stamps/build-qemu
 else
 ifeq ($(SIM),spike)
 # Using spike simulator.
 SIM_PATH:=$(srcdir)/scripts/wrapper/spike
-SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" PK_PATH="$(INSTALL_DIR)/$(NEWLIB_TUPLE)/bin/"
+SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" PK_PATH="$(INSTALL_DIR)/$(NEWLIB_TUPLE)/bin/" ARCH_STR="$(WITH_ARCH)"
 SIM_STAMP:= stamps/build-spike
 ifneq (,$(findstring rv32,$(NEWLIB_MULTILIB_NAMES)))
 SIM_STAMP+= stamps/build-pk32
@@ -243,6 +252,24 @@ else
 GLIBC_SRC_GIT :=
 endif
 
+ifeq ($(findstring $(srcdir),$(QEMU_SRCDIR)),$(srcdir))
+QEMU_SRC_GIT := $(QEMU_SRCDIR)/.git
+else
+QEMU_SRC_GIT :=
+endif
+
+ifeq ($(findstring $(srcdir),$(SPIKE_SRCDIR)),$(srcdir))
+SPIKE_SRC_GIT := $(SPIKE_SRCDIR)/.git
+else
+SPIKE_SRC_GIT :=
+endif
+
+ifneq ("$(wildcard $(GCC_SRCDIR)/.git)","")
+GCCPKGVER := g$(shell git -C $(GCC_SRCDIR) describe --always --dirty --exclude '*')
+else
+GCCPKGVER :=
+endif
+
 $(srcdir)/%/.git:
 	cd $(srcdir) && \
 	flock `git rev-parse --git-dir`/config git submodule init $(dir $@) && \
@@ -269,7 +296,8 @@ stamps/build-binutils-linux: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) stamps/check
 		--disable-gdb \
 		--disable-sim \
 		--disable-libdecnumber \
-		--disable-readline
+		--disable-readline \
+		$(WITH_ISA_SPEC)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -327,7 +355,7 @@ endif
 	mkdir $(notdir $@)
 	cd $(notdir $@) && \
 		CC="$(GLIBC_CC_FOR_TARGET) $($@_CFLAGS)" \
-		CXX="$(GLIBC_CXX_FOR_TARGET) $($@_CFLAGS)" \
+		CXX="this-is-not-the-compiler-youre-looking-for" \
 		CFLAGS="$(CFLAGS_FOR_TARGET) -g -O2 $($@_CFLAGS)" \
 		CXXFLAGS="$(CXXFLAGS_FOR_TARGET) -g -O2 $($@_CFLAGS)" \
 		ASFLAGS="$(ASFLAGS_FOR_TARGET) $($@_CFLAGS)" \
@@ -376,6 +404,7 @@ stamps/build-gcc-linux-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binutil
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-O2 $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-O2 $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) inhibit-libc=true all-gcc
@@ -388,14 +417,12 @@ stamps/build-gcc-linux-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) $(addprefix stamps/b
                                stamps/build-glibc-linux-headers
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	# libsanitizer not supported rv32,
-	# but it will break the rv64 multi-lib build, so we disable that
-	# temporally untill rv32 supported.
 	cd $(notdir $@) && $</configure \
 		--target=$(LINUX_TUPLE) \
 		$(CONFIGURE_HOST) \
 		--prefix=$(INSTALL_DIR) \
 		--with-sysroot=$(SYSROOT) \
+		--with-pkgversion="$(GCCPKGVER)" \
 		@with_system_zlib@ \
 		--enable-shared \
 		--enable-tls \
@@ -403,7 +430,7 @@ stamps/build-gcc-linux-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) $(addprefix stamps/b
 		--disable-libmudflap \
 		--disable-libssp \
 		--disable-libquadmath \
-		--disable-libsanitizer \
+		$(ENABLE_LIBSANITIZER) \
 		--disable-nls \
 		--disable-bootstrap \
 		--src=$(gccsrcdir) \
@@ -412,6 +439,7 @@ stamps/build-gcc-linux-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) $(addprefix stamps/b
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-O2 $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-O2 $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
@@ -435,7 +463,8 @@ stamps/build-binutils-linux-native: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) stamp
 		--disable-gdb \
 		--disable-sim \
 		--disable-libdecnumber \
-		--disable-readline
+		--disable-readline \
+		$(WITH_ISA_SPEC)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -463,7 +492,8 @@ stamps/build-gcc-linux-native: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-gcc-lin
 		$(MULTILIB_FLAGS) \
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
-		$(WITH_TUNE)
+		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	cp -a $(INSTALL_DIR)/$(LINUX_TUPLE)/lib* $(SYSROOT)
@@ -487,7 +517,8 @@ stamps/build-binutils-newlib: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) stamps/chec
 		--disable-gdb \
 		--disable-sim \
 		--disable-libdecnumber \
-		--disable-readline
+		--disable-readline \
+		$(WITH_ISA_SPEC)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -540,6 +571,7 @@ stamps/build-gcc-newlib-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binuti
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) all-gcc
@@ -557,8 +589,8 @@ stamps/build-newlib: $(NEWLIB_SRCDIR) $(NEWLIB_SRC_GIT) stamps/build-gcc-newlib-
 		--enable-newlib-io-long-long \
 		--enable-newlib-io-c99-formats \
 		--enable-newlib-register-fini \
-		CFLAGS_FOR_TARGET="-O2 -D_POSIX_MODE $(CFLAGS_FOR_TARGET)" \
-		CXXFLAGS_FOR_TARGET="-O2 -D_POSIX_MODE $(CXXFLAGS_FOR_TARGET)"
+		CFLAGS_FOR_TARGET="-O2 -D_POSIX_MODE -ffunction-sections -fdata-sections $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-O2 -D_POSIX_MODE -ffunction-sections -fdata-sections $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -621,6 +653,7 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 		--disable-shared \
 		--disable-threads \
 		--enable-languages=c,c++ \
+		--with-pkgversion="$(GCCPKGVER)" \
 		@with_system_zlib@ \
 		--enable-tls \
 		--with-newlib \
@@ -638,6 +671,7 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
@@ -665,7 +699,8 @@ stamps/build-binutils-musl: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) stamps/check-
 		--disable-gdb \
 		--disable-sim \
 		--disable-libdecnumber \
-		--disable-readline
+		--disable-readline \
+		$(WITH_ISA_SPEC)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -698,6 +733,7 @@ stamps/build-gcc-musl-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binutils
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-O2 $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-O2 $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) inhibit-libc=true all-gcc
@@ -765,6 +801,7 @@ stamps/build-gcc-musl-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-musl-lin
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
 		CFLAGS_FOR_TARGET="-O2 $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-O2 $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)
@@ -772,26 +809,20 @@ stamps/build-gcc-musl-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-musl-lin
 	cp -a $(INSTALL_DIR)/$(MUSL_TUPLE)/lib* $(SYSROOT)
 	mkdir -p $(dir $@) && touch $@
 
-spike-src:
-	git clone https://github.com/riscv/riscv-isa-sim.git -b $(SPIKE_BRANCH) $@
-
-pk-src:
-	git clone https://github.com/riscv/riscv-pk.git -b $(PK_BRANCH) $@
-
-stamps/build-spike: spike-src
+stamps/build-spike: $(SPIKE_SRCDIR) $(SPIKE_SRC_GIT)
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	cd $(notdir $@) && ../$</configure \
+	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR)
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@)
 	date > $@
 
-stamps/build-pk32: pk-src stamps/build-gcc-newlib-stage2
+stamps/build-pk32: $(PK_SRCDIR) stamps/build-gcc-newlib-stage2
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	cd $(notdir $@) && ../$</configure \
+	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR) \
 		--host=$(NEWLIB_TUPLE) \
 		--with-arch=rv32gc
@@ -800,10 +831,10 @@ stamps/build-pk32: pk-src stamps/build-gcc-newlib-stage2
 	mkdir -p $(dir $@)
 	date > $@
 
-stamps/build-pk64: pk-src stamps/build-gcc-newlib-stage2
+stamps/build-pk64: $(PK_SRCDIR) stamps/build-gcc-newlib-stage2
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
-	cd $(notdir $@) && ../$</configure \
+	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR) \
 		--host=$(NEWLIB_TUPLE) \
 		--with-arch=rv64gc
@@ -812,12 +843,12 @@ stamps/build-pk64: pk-src stamps/build-gcc-newlib-stage2
 	mkdir -p $(dir $@)
 	date > $@
 
-stamps/build-qemu: $(srcdir)/qemu $(srcdir)/qemu/.git
+stamps/build-qemu: $(QEMU_SRCDIR) $(QEMU_SRC_GIT)
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR) \
-		--target-list=riscv64-linux-user,riscv32-linux-user \
+		--target-list=$(QEMU_TARGETS) \
 		--interp-prefix=$(INSTALL_DIR)/sysroot \
 		--python=python3
 	$(MAKE) -C $(notdir $@)

@@ -28,11 +28,15 @@ On Fedora/CentOS/RHEL OS, executing the following command should suffice:
     
 On Arch Linux, executing the following command should suffice:
 
-    $ pacman -Syyu autoconf automake curl python3 mpc mpfr gmp gawk base-devel bison flex texinfo gperf libtool patchutils bc zlib expat
+    $ sudo pacman -Syyu autoconf automake curl python3 libmpc mpfr gmp gawk base-devel bison flex texinfo gperf libtool patchutils bc zlib expat
+
+Also available for Arch users on the AUR: [https://aur.archlinux.org/packages/riscv-gnu-toolchain/](https://aur.archlinux.org/packages/riscv-gnu-toolchain/)
 
 On OS X, you can use [Homebrew](http://brew.sh) to install the dependencies:
 
     $ brew install python3 gawk gnu-sed gmp mpfr libmpc isl zlib expat
+    $ brew tap discoteq/discoteq
+    $ brew install flock
 
 To build the glibc (Linux) on OS X, you will need to build within a case-sensitive file
 system.  The simplest approach is to create and mount a new disk image with
@@ -64,11 +68,14 @@ run the following command:
     ./configure --prefix=/opt/riscv
     make linux
 
-The build defaults to targetting RV64GC (64-bit), even on a 32-bit build
-environment.  To build the 32-bit RV32GC toolchain, use:
+The build defaults to targeting RV64GC (64-bit) with glibc, even on a 32-bit
+build environment. To build the 32-bit RV32GC toolchain, use:
 
     ./configure --prefix=/opt/riscv --with-arch=rv32gc --with-abi=ilp32d
     make linux
+
+In case you prefer musl libc over glibc, configure just like above and opt for
+`make musl` instead of `make linux`.
 
 Supported architectures are rv32i or rv64i plus standard extensions (a)tomics,
 (m)ultiplication and division, (f)loat, (d)ouble, or (g)eneral for MAFD.
@@ -84,11 +91,19 @@ To build either cross-compiler with support for both 32-bit and
 
     ./configure --prefix=/opt/riscv --enable-multilib
     
-And then either `make` or `make linux` for the Newlib or Linux cross-compiler respectively.
+And then either `make`, `make linux` or `make musl` for the Newlib, Linux
+glibc-based or Linux musl libc-based cross-compiler, respectively.
 
-The multilib compiler will have the prefix riscv64-unknown-elf- or riscv64-unknown-linux-gnu-,
-but will be able to target both 32-bit and 64-bit systems. It will support
-the most common `-march`/`-mabi` options, which can be seen by using the `--print-multi-lib` flag on either cross-compiler.
+The multilib compiler will have the prefix riscv64-unknown-elf- or
+riscv64-unknown-linux-gnu- but will be able to target both 32-bit and 64-bit
+systems.
+It will support the most common `-march`/`-mabi` options, which can be seen by
+using the `--print-multi-lib` flag on either cross-compiler.
+
+The musl compiler (riscv64-unknown-linux-musl-) will only be able to target
+64-bit systems due to limitations in the upstream musl architecture support.
+The `--enable-multilib` flag therefore does not actually enable multilib support
+for musl libc.
 
 ### Troubleshooting Build Problems
 
@@ -121,6 +136,17 @@ devtoolset-7 works.
 
 There are a number of additional options that may be passed to
 configure.  See './configure --help' for more details.
+
+#### Set default ISA spec version
+
+`--with-isa-spec=` can specify the default version of the RISC-V Unprivileged
+(formerly User-Level) ISA specification.
+
+Possible options are: `2.2`, `20190608` and `20191213`.
+
+The default version is `2.2`.
+
+More details about this option you can refer this post [RISC-V GNU toolchain bumping default ISA spec to 20191213](https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/aE1ZeHHCYf4).
 
 #### Build with customized multi-lib configure.
 
@@ -163,8 +189,9 @@ rv64imac with lp64 and rv64imafc with lp64 will reuse this multi-lib set.
 The Dejagnu test suite has been ported to RISC-V. This can be run with a
 simulator for the elf and linux toolchains. The simulator can be selected
 by the SIM variable in the Makefile, e.g. SIM=qemu, SIM=gdb, or SIM=spike
-(experimental). However, the testsuite allowlist is only mintained for qemu.
-Other simulators might get extra failures.
+(experimental).In addition, the simulator can also be selected with the 
+configure time option `--with-sim=`.However, the testsuite allowlist is 
+only mintained for qemu.Other simulators might get extra failures.
 To test GCC, run the following commands:
 
     ./configure --prefix=$RISCV --disable-linux --with-arch=rv64ima # or --with-arch=rv32ima
@@ -174,6 +201,10 @@ To test GCC, run the following commands:
     ./configure --prefix=$RISCV
     make linux
     make report-linux SIM=qemu # Run with qemu
+
+    ./configure --prefix=$RISCV --with-sim=spike
+    make linux
+    make report               # Run with spike
 
 Note:
 - spike only support rv64* bare-metal/elf toolchain.
@@ -236,4 +267,6 @@ Here is the list of configure option for specify source tree:
     --with-musl-src
     --with-gdb-src
     --with-linux-headers-src
-
+    --with-qemu-src
+    --with-spike-src
+    --with-pk-src

@@ -71,6 +71,20 @@ AC_ARG_WITH(tune,
 	[with_tune=rocket]
 	)
 
+AC_ARG_WITH(isa-spec,
+	[AS_HELP_STRING([--with-isa-spec=2.2],
+		[Set the default ISA spec version, default to 2.2, available options: 2.2, 20190608, 20191213])],
+	[],
+	[with_isa_spec=2.2]
+	)
+
+AC_ARG_WITH(sim,
+	[AS_HELP_STRING([--with-sim=qemu],
+		[Sets the base RISC-V Simulator, defaults to qemu])],
+	[],
+	[with_sim=qemu]
+	)
+
 AS_IF([test "x$with_abi" = xdefault],
 	[AS_CASE([$with_arch],
 		[*rv64g* | *rv64*d*], [with_abi=lp64d],
@@ -86,17 +100,19 @@ AS_IF([test "x$with_abi" = xdefault],
 AC_SUBST(WITH_ARCH, --with-arch=$with_arch)
 AC_SUBST(WITH_ABI, --with-abi=$with_abi)
 AC_SUBST(WITH_TUNE, --with-tune=$with_tune)
+AC_SUBST(WITH_ISA_SPEC, --with-isa-spec=$with_isa_spec)
+AC_SUBST(WITH_SIM, $with_sim)
 
 AC_ARG_ENABLE(multilib,
 	[AS_HELP_STRING([--enable-multilib],
-		[build both RV32 and RV64 runtime libraries @<:@--disable-multilib@:>@])],
+		[build both RV32 and RV64 runtime libraries (only RV64 for musl libc) @<:@--disable-multilib@:>@])],
 	[],
 	[enable_multilib=no]
 	)
 
 AC_ARG_WITH(multilib-generator,
 	[AS_HELP_STRING([--with-multilib-generator],
-		[Multi-libs configuration string, only supported for bare-metal/elf toolchaih, this option implied --enable-multilib])],
+		[Multi-libs configuration string, only supported for bare-metal/elf toolchain, this option implied --enable-multilib])],
 	[],
 	[with_multilib_generator=no]
 	)
@@ -117,6 +133,10 @@ AS_IF([test "x$enable_multilib" != xno],
 AS_IF([test "x$enable_multilib" != xno],
         [AC_SUBST(newlib_multilib_names,"rv32i-ilp32 rv32iac-ilp32 rv32im-ilp32 rv32imac-ilp32 rv32imafc-ilp32f rv64imac-lp64 rv64imafdc-lp64d")],
         [AC_SUBST(newlib_multilib_names,"$with_arch-$with_abi")])
+
+AS_IF([test "x$enable_multilib" != xno],
+        [AC_SUBST(musl_multilib_names,"rv64imac-lp64 rv64imafdc-lp64d")],
+        [AC_SUBST(musl_multilib_names,"$with_arch-$with_abi")])
 
 AC_ARG_ENABLE(gcc-checking,
         [AS_HELP_STRING([--enable-gcc-checking],
@@ -211,16 +231,19 @@ AC_DEFUN([AX_ARG_WITH_SRC],
 		)
 	  AS_IF([test "x$opt_name" != xdefault],
 		[AC_SUBST(opt_name,$opt_name)],
-		[AC_SUBST(opt_name,"\$(srcdir)/riscv-$1")])
+		[AC_SUBST(opt_name,"\$(srcdir)/$2")])
 	  m4_popdef([opt_name])
 	}])
 
-AX_ARG_WITH_SRC(gcc)
-AX_ARG_WITH_SRC(binutils)
-AX_ARG_WITH_SRC(newlib)
-AX_ARG_WITH_SRC(glibc)
-AX_ARG_WITH_SRC(musl)
-AX_ARG_WITH_SRC(gdb)
+AX_ARG_WITH_SRC(gcc, riscv-gcc)
+AX_ARG_WITH_SRC(binutils, riscv-binutils)
+AX_ARG_WITH_SRC(newlib, newlib)
+AX_ARG_WITH_SRC(glibc, glibc)
+AX_ARG_WITH_SRC(musl, musl)
+AX_ARG_WITH_SRC(gdb, riscv-gdb)
+AX_ARG_WITH_SRC(qemu, qemu)
+AX_ARG_WITH_SRC(spike, spike)
+AX_ARG_WITH_SRC(pk, pk)
 
 AC_ARG_WITH(linux-headers-src,
 	[AC_HELP_STRING([--with-linux-headers-src],
@@ -232,5 +255,27 @@ AC_ARG_WITH(linux-headers-src,
 AS_IF([test "x$with_linux_headers_src" != xdefault],
 	[AC_SUBST(with_linux_headers_src,$with_linux_headers_src)],
 	[AC_SUBST(with_linux_headers_src,"\$(srcdir)/linux-headers/include")])
+
+AC_ARG_ENABLE(libsanitizer,
+	[AS_HELP_STRING([--enable-libsanitizer],
+		[Build libsanitizer, which only supports rv64])],
+	[],
+	[enable_libsanitizer=no]
+	)
+
+AS_IF([test "x$enable_libsanitizer" != xno],
+	[AC_SUBST(enable_libsanitizer, --enable-libsanitizer)],
+	[AC_SUBST(enable_libsanitizer, --disable-libsanitizer)])
+
+AC_ARG_ENABLE(qemu_system,
+	[AS_HELP_STRING([--enable-qemu-system],
+		[Build qemu with system-mode emulation])],
+	[],
+	[enable_qemu_system=no]
+	)
+
+AS_IF([test "x$enable_qemu_system" != xno],
+	[AC_SUBST(qemu_targets, [riscv64-linux-user,riscv32-linux-user,riscv64-softmmu,riscv32-softmmu])],
+	[AC_SUBST(qemu_targets, [riscv64-linux-user,riscv32-linux-user])])
 
 AC_OUTPUT

@@ -6,3 +6,6 @@ Makefile
 .DS_Store
 *.swp
 !/regression/Makefile
+/build-*/
+/install-newlib-nano/
+/stamps/
